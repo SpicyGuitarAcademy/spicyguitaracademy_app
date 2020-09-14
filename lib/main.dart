@@ -22,8 +22,8 @@ import 'pages/user/userprofile_page.dart';
 import 'pages/user/all_courses_lessons.dart';
 import 'pages/user/studying_courses_lessons.dart';
 import 'pages/user/quicklesson_video.dart';
-import 'pages/user/tutorial_page.dart';
-import 'pages/user/tutorial_tab.dart';
+// import 'pages/user/tutorial_page.dart';
+// import 'pages/user/tutorial_tab.dart';
 
 // import 'services/app.dart';
 
@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
         '/allcourses_lessons': (BuildContext context) => new AllCoursesLessons(),
         '/studying_courses_lessons': (BuildContext context) => new StudyingCoursesLessons(),
         '/quicklesson_video': (BuildContext context) => new QuickLessonVideo(),
-        '/tutorial_page': (BuildContext context) => new TutorialPage(),
-        '/tutorial_tab': (BuildContext context) => new TutorialTab(),
+        // '/tutorial_page': (BuildContext context) => new TutorialPage(),
+        // '/tutorial_tab': (BuildContext context) => new TutorialTab(),
       },
     );
   }

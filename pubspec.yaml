@@ -30,6 +30,9 @@ dependencies:
   # For rendering SVG Images
   flutter_svg: ^0.13.0
 
+  # For Payments with Paystack
+  flutter_paystack: ^1.0.3+1
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
