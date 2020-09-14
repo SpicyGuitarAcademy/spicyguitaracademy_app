@@ -4,22 +4,23 @@ import 'dart:convert';
 import 'common.dart';
 
 class App extends Common {
-  
   // static String appurl = 'https://spicyguitaracademy.com';
   static String appurl = 'http://test.initframework.com';
   static String appName = "Spicy Guitar Academy";
-  static String paystackPublicKey = 'pk_test_2aedc9b8a06baff2b47a08a08cd1b0237c260e4a';
+  static String paystackPublicKey =
+      'pk_test_2aedc9b8a06baff2b47a08a08cd1b0237c260e4a';
 
-  static Future<bool> signup(scaffold, String firstname, String lastname, String email, String telephone, String password, String cpassword) async {
+  static Future<bool> signup(scaffold, String firstname, String lastname,
+      String email, String telephone, String password, String cpassword) async {
     var resp = await http.post(
       appurl + '/api/register',
       body: {
-        'firstname':firstname,
-        'lastname':lastname,
-        'email':email,
-        'telephone':telephone,
-        'password':password,
-        'cpassword':cpassword
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'telephone': telephone,
+        'password': password,
+        'cpassword': cpassword
       },
     );
 
@@ -41,13 +42,8 @@ class App extends Common {
 
   static Future<bool> login(scaffold, String email, String password) async {
     User.reset();
-    var resp = await http.post(
-      'http://test.initframework.com/api/login',
-      body: {
-        'email':email,
-        'password':password
-      }
-    );
+    var resp = await http.post('http://test.initframework.com/api/login',
+        body: {'email': email, 'password': password});
 
     if (resp.statusCode != 200) {
       showMessage(scaffold, 'Login Failed.');
@@ -86,13 +82,11 @@ class App extends Common {
   }
 
   static studentStatistics() async {
-    var resp = await http.get(
-      'http://test.initframework.com/api/student/statistics',
-      headers: {
-        'cache-control': 'no-cache',
-        'JWToken': User.token,
-      }
-    );
+    var resp = await http
+        .get('http://test.initframework.com/api/student/statistics', headers: {
+      'cache-control': 'no-cache',
+      'JWToken': User.token,
+    });
 
     if (resp.statusCode != 200) {
       print('Getting Student Subscription Status Failed (${resp.statusCode}).');
@@ -114,12 +108,8 @@ class App extends Common {
 
   static getSubscriptionPlans() async {
     var resp = await http.get(
-      'http://test.initframework.com/api/subscription/plans',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/subscription/plans',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('Getting Subscription Plans Failed.');
@@ -132,12 +122,8 @@ class App extends Common {
 
   static getUserSubscriptionStatus() async {
     var resp = await http.get(
-      'http://test.initframework.com/api/subscription/status',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/subscription/status',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -148,20 +134,13 @@ class App extends Common {
       User.subStatus = json['status'];
       User.daysRemaining = json['days'];
     }
-
   }
 
   static Future initiatePayment(scaffold, String plan) async {
     var resp = await http.post(
-      'http://test.initframework.com/api/subscription/initiate',
-      headers: {
-        'JWToken':User.token
-      },
-      body: {
-        'email':User.email,
-        'plan':plan
-      }
-    );
+        'http://test.initframework.com/api/subscription/initiate',
+        headers: {'JWToken': User.token},
+        body: {'email': User.email, 'plan': plan});
 
     if (resp.statusCode != 200) {
       showMessage(scaffold, 'Initiate Subscription Failed.');
@@ -182,14 +161,9 @@ class App extends Common {
 
   static Future verifyPayment(String reference) async {
     var resp = await http.post(
-      "http://test.initframework.com/api/subscription/verify/$reference",
-      headers: {
-        'JWToken':User.token
-      },
-      body: {
-        'plan':reference
-      }
-    );
+        "http://test.initframework.com/api/subscription/verify/$reference",
+        headers: {'JWToken': User.token},
+        body: {'plan': reference});
 
     if (resp.statusCode != 200) {
       print('Error Occurred.');
@@ -200,21 +174,14 @@ class App extends Common {
         Subscription.paystatus = true;
         getUserSubscriptionStatus();
       }
-      
     }
   }
 
   static Future chooseCategory(String category) async {
     var resp = await http.post(
-      'http://test.initframework.com/api/student/category/select',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      },
-      body: {
-        'category': category
-      }
-    );
+        'http://test.initframework.com/api/student/category/select',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
+        body: {'category': category});
 
     if (resp.statusCode != 200) {
       print('Getting Student Subscription Status Failed. (${resp.body}) ');
@@ -229,13 +196,8 @@ class App extends Common {
   }
 
   static Future getAllCourses() async {
-    var resp = await http.get(
-      'http://test.initframework.com/api/course/all',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+    var resp = await http.get('http://test.initframework.com/api/course/all',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -250,12 +212,8 @@ class App extends Common {
 
   static Future studyingCourses() async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/courses/studying',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/courses/studying',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -270,12 +228,8 @@ class App extends Common {
 
   static Future courseLessons(int course) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/course/$course/lessons',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/course/$course/lessons',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -284,18 +238,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future getLesson(int lesson) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/lesson/$lesson',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/lesson/$lesson',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -304,18 +254,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future studyingLesson(lesson) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/lesson/$lesson',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/lesson/$lesson',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -324,18 +270,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future nextLesson(lesson) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/lesson/$lesson/next?course=${User.studyingCourse}',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/lesson/$lesson/next?course=${User.studyingCourse}',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -344,18 +286,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future prevLesson(lesson) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/lesson/$lesson/previous?course=${User.studyingCourse}',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/lesson/$lesson/previous?course=${User.studyingCourse}',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -364,21 +302,15 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future answerAssignment(assignment) async {
     var resp = await http.post(
-      'http://test.initframework.com/api/student/assignment/answer',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      },
-      body: {
-        'assignment': assignment
-      }
-    );
+        'http://test.initframework.com/api/student/assignment/answer',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
+        body: {'assignment': assignment});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -387,18 +319,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future search(query) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/courses/search?q=$query',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/courses/search?q=$query',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -407,21 +335,15 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future inviteAFriend(String friend) async {
     var resp = await http.post(
-      'http://test.initframework.com/api/invite-a-friend',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      },
-      body: {
-        'friend': friend
-      }
-    );
+        'http://test.initframework.com/api/invite-a-friend',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
+        body: {'friend': friend});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -430,21 +352,15 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future uploadAvatar(String base64Image) async {
     var resp = await http.post(
-      'http://test.initframework.com/api/student/avatar/update',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      },
-      body: {
-        'avatar': base64Image
-      }
-    );
+        'http://test.initframework.com/api/student/avatar/update',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
+        body: {'avatar': base64Image});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -453,18 +369,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future quicklessons() async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/quicklessons',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/quicklessons',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -473,18 +385,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future quicklesson(lesson) async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/quicklesson/$lesson',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/quicklesson/$lesson',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -493,18 +401,14 @@ class App extends Common {
       var respb = resp.body;
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
-			return true;
+      return true;
     }
   }
 
   static Future freelesson() async {
     var resp = await http.get(
-      'http://test.initframework.com/api/student/freelessons',
-      headers: {
-        'JWToken': User.token,
-				'cache-control': 'no-cache'
-      }
-    );
+        'http://test.initframework.com/api/student/freelessons',
+        headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
       print('${resp.statusCode} Getting Student Subscription Status Failed.');
@@ -516,9 +420,6 @@ class App extends Common {
       print(Courses.freeLessons);
     }
   }
-
-
-
 
   // static tempStore(String field, value, String type) async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -546,7 +447,7 @@ class App extends Common {
   //   } else {
   //     print("Trying to add temp: $field that already exists");
   //   }
-    
+
   // }
 
   // static tempGet(String field, String type) async {
@@ -584,11 +485,9 @@ class App extends Common {
   static showMessage(scaffoldKey, String message) {
     Common.showMessage(scaffoldKey, message);
   }
-
 }
 
-class User
-{
+class User {
   static bool justLoggedIn = false;
   static String id;
   static String firstname;
@@ -620,11 +519,9 @@ class User
     User.subStatus = null;
     User.daysRemaining = null;
   }
-
 }
 
-class Courses
-{
+class Courses {
   static Map<String, dynamic> allCourses;
   static List<dynamic> studyingCourses;
   static Map<String, dynamic> freeLessons;
@@ -635,8 +532,7 @@ class Courses
   }
 }
 
-class Lessons
-{
+class Lessons {
   // the properties on the class
   String thumbnail, tutor, title, description;
 
@@ -644,17 +540,15 @@ class Lessons
   Lessons(this.thumbnail, this.tutor, this.title, this.description);
 
   // constructing from json
-  Lessons.fromJson(Map <String, dynamic> json) {
+  Lessons.fromJson(Map<String, dynamic> json) {
     thumbnail = json['thumbnail'];
     tutor = json['tutor'];
     title = json['title'];
     description = json['description'];
   }
-
 }
 
-class Subscription
-{
+class Subscription {
   static String status;
   static String reference;
   // ignore: non_constant_identifier_names
