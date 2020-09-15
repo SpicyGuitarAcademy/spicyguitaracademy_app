@@ -28,10 +28,11 @@ dependencies:
   http: ^0.12.2
 
   # For rendering SVG Images
-  flutter_svg: ^0.13.0
+  # flutter_svg: ^0.13.0
+  flutter_svg: ^0.19.0
 
   # For Payments with Paystack
-  flutter_paystack: ^1.0.3+1
+  flutter_paystack: ^1.0.4+1
 
 
   # The following adds the Cupertino Icons font to your application.
