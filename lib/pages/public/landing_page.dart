@@ -31,8 +31,8 @@ class LandingPageState extends State<LandingPage> {
           children: <Widget>[
             
             SvgPicture.asset(
-              // "assets/imgs/icons/spicy_guitar_logo.svg",
-              "assets/imgs/icons/1MS_icon.svg",
+              "assets/imgs/icons/spicy_guitar_logo.svg",
+              // "assets/imgs/icons/1MS_icon.svg",
               // matchTextDirection: true,
             ),
 
