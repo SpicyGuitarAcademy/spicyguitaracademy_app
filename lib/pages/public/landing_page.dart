@@ -17,7 +17,7 @@ class LandingPageState extends State<LandingPage> {
   }
 
   void _initializeTimer() {
-    Timer(const Duration(seconds: 5), () => Navigator.pushReplacementNamed(context, "/welcome_page"));
+    Timer(const Duration(seconds: 7), () => Navigator.pushReplacementNamed(context, "/welcome_page"));
     // Timer(const Duration(seconds: 5), () => Navigator.pushReplacementNamed(context, "/dashboard"));
   }
 
@@ -32,7 +32,6 @@ class LandingPageState extends State<LandingPage> {
             
             SvgPicture.asset(
               "assets/imgs/icons/spicy_guitar_logo.svg",
-              // "assets/imgs/icons/1MS_icon.svg",
               // matchTextDirection: true,
             ),
 

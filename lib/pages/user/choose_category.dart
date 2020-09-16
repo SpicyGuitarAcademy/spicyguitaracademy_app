@@ -239,10 +239,25 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                 default:
                                   category = '1';
                               }
+                              
+                              var resp = await request('POST', chooseCategory, body: {'category': category});
+                              Map<String, dynamic> json = resp;
+                              App.showMessage(_scaffoldKey, json['message']);
 
-                              print(category);
+                              {
+                                // get the current category and stats
+                                var resp = await request('GET', studentStats);
+                                if (resp == false) Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                Map<String, dynamic> json = resp;
+                                if (json['status'] == false) {
+                                  User.categoryStats = null;
+                                  User.category = null;
+                                } else {
+                                  User.categoryStats = json['stats'];
+                                  User.category = json['category'];
+                                }
+                              }
 
-                              await App.chooseCategory(category);
                               if (User.category == null) {
                                 Navigator.popAndPushNamed(context, "/choose_category");
                                 App.showMessage(_scaffoldKey, "Please Try Again.");

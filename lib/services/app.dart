@@ -1,7 +1,67 @@
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'common.dart';
+
+Future request(String method, String uri, {dynamic body}) async {
+  // String appurl = 'https://spicyguitaracademy.com';
+  String baseUrl = 'http://test.initframework.com';
+  dynamic headers = {'cache-control': 'no-cache', 'JWToken': User.token};
+  var response;
+  switch (method) {
+    case 'GET':
+      response = await http.get(baseUrl + uri, headers: headers);
+      break;
+    case 'POST':
+      response = await http.post(baseUrl + uri, headers: headers, body: body);
+      break;
+    case 'PATCH':
+      response = await http.patch(baseUrl + uri, headers: headers, body: body);
+      break;
+    case 'PUT':
+      response = await http.put(baseUrl + uri, headers: headers, body: body);
+      break;
+    case 'DELETE':
+      response = await http.delete(baseUrl + uri, headers: headers);
+      break;
+    default:
+  }
+  print("\n\n" + uri + " => " + response.body + "\n\n");
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else if (response.statusCode == 401 || response.statusCode == 403) {
+    return false;
+  } else {
+    print('Error: ' + response.statusCode + ', ' + response.body);
+  }
+}
+
+String register = '/api/register';
+String login = '/api/login';
+String studentStats = '/api/student/statistics';
+String subscriptionPlan = '/api/subscription/plans';
+String initiatePayment = '/api/subscription/initiate';
+String verifyPayment(String reference) => '/api/subscription/verify/$reference';
+String chooseCategory = '/api/student/category/select';
+String allCourses = '/api/course/all';
+String studyingCourses = '/api/student/courses/studying';
+String courseLessons(int course) => '/api/course/$course/lessons';
+String getLesson(int lesson) => '/api/lesson/$lesson';
+String studyingLesson(int lesson) => '/api/student/lesson/$lesson';
+String nextLesson(int lesson, int course) =>
+    '/api/student/lesson/$lesson/next?course=$course';
+String prevLesson(int lesson, int course) =>
+    '/api/student/lesson/$lesson/previous?course=$course';
+String answerAssignment = '/api/student/assignment/answer';
+String search(String query) => '/api/courses/search?q=$query';
+String invite = '/api/invite-a-friend';
+String updateAvatar = '/api/student/avatar/update';
+String quickLessons = '/api/student/quicklessons';
+String quickLesson(int lesson) => '/api/student/quicklesson/$lesson';
+String freeLessons = '/api/student/freelessons';
+String subscriptionStatus = '/api/subscription/status';
+// String register = '/api/register';
 
 class App extends Common {
   // static String appurl = 'https://spicyguitaracademy.com';
@@ -29,6 +89,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       if (json['success'] != '') {
         showMessage(scaffold, json['success']);
@@ -44,12 +105,15 @@ class App extends Common {
     User.reset();
     var resp = await http.post('http://test.initframework.com/api/login',
         body: {'email': email, 'password': password});
+    // j.hamlet@gmail.com
+    // Jhamlett09
 
     if (resp.statusCode != 200) {
       showMessage(scaffold, 'Login Failed.');
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(scaffold, respb);
       if (json['success'] != '') {
@@ -67,11 +131,11 @@ class App extends Common {
         // set the student subscription details
         getUserSubscriptionStatus();
 
-        // get subscription plans
-        getSubscriptionPlans();
-
         // get the student's category and stats
         studentStatistics();
+
+        // get subscription plans
+        getSubscriptionPlans();
 
         return true;
       } else {
@@ -93,6 +157,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       print(json['status']);
       if (json['status'] == false) {
@@ -115,6 +180,7 @@ class App extends Common {
       print('Getting Subscription Plans Failed.');
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       Subscription.plans = json['plans'];
     }
@@ -130,6 +196,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       User.subStatus = json['status'];
       User.daysRemaining = json['days'];
@@ -147,6 +214,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       if (json['flag'] == true) {
         Subscription.reference = json['data']['reference'];
@@ -188,6 +256,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       print("response message: ${json['message']}");
 
@@ -204,9 +273,10 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       Courses.allCourses = json;
-      print(json);
+      return true;
     }
   }
 
@@ -220,9 +290,11 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       Courses.studyingCourses = json['courses'];
       print(json['courses']);
+      return true;
     }
   }
 
@@ -236,6 +308,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -252,6 +325,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -268,6 +342,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -284,6 +359,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -300,6 +376,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -317,6 +394,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -333,6 +411,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -350,6 +429,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -367,6 +447,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -383,6 +464,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -399,6 +481,7 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
       // showMessage(json['status']);
       return true;
@@ -415,72 +498,12 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
+      print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
-      Courses.freeLessons = json['lessons'];
+      if (json['lessons'] != null) Courses.freeLessons = json['lessons'];
       print(Courses.freeLessons);
     }
   }
-
-  // static tempStore(String field, value, String type) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   if (prefs.containsKey(field) == false) {
-  //     switch (type) {
-  //       case 'string':
-  //         prefs.setString(field, value);
-  //       break;
-  //       case 'int':
-  //         prefs.setInt(field, value);
-  //       break;
-  //       case 'double':
-  //         prefs.setDouble(field, value);
-  //       break;
-  //       case 'bool':
-  //         prefs.setBool(field, value);
-  //       break;
-  //       case 'slist':
-  //         prefs.setStringList(field, value);
-  //       break;
-  //       default:
-  //         prefs.setString(field, value);
-  //       break;
-  //     }
-  //   } else {
-  //     print("Trying to add temp: $field that already exists");
-  //   }
-
-  // }
-
-  // static tempGet(String field, String type) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   if (prefs.containsKey(field) == true) {
-  //     switch (type) {
-  //       case 'string':
-  //         return prefs.getString(field);
-  //       case 'int':
-  //         return prefs.getInt(field);
-  //       case 'double':
-  //         return prefs.getDouble(field);
-  //       case 'bool':
-  //         return prefs.getBool(field);
-  //       case 'slist':
-  //         return prefs.getStringList(field);
-  //       default:
-  //         return prefs.get(field);
-  //     }
-  //   }
-  // }
-
-  // static tempRemove(String field) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   if (prefs.containsKey(field) == true) {
-  //     prefs.remove(field);
-  //   }
-  // }
-
-  // static tempRemoveAll() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.clear();
-  // }
 
   static showMessage(scaffoldKey, String message) {
     Common.showMessage(scaffoldKey, message);
@@ -503,7 +526,7 @@ class User {
   static String studyingCourse;
 
   static String subStatus;
-  static String daysRemaining;
+  static int daysRemaining;
 
   static reset() {
     User.id = null;
@@ -524,7 +547,9 @@ class User {
 class Courses {
   static Map<String, dynamic> allCourses;
   static List<dynamic> studyingCourses;
-  static Map<String, dynamic> freeLessons;
+  // static Map<String, dynamic>
+  // static Map<String, dynamic> freeLessons;
+  static List<dynamic> freeLessons;
   static Map<String, dynamic> quickLessons;
 
   static getAllCourses() {
