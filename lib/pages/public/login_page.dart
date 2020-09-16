@@ -132,9 +132,12 @@ class LoginPageState extends State<LoginPage> {
                             'email': _email.text,
                             'password': _pass.text
                           });
-                          if (resp == false) Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                          if (resp == false)
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/login_page', (route) => false);
                           Map<String, dynamic> json = resp;
                           if (json['success'] != '') {
+                            User.reset();
                             User.id = json['student']['id'];
                             User.firstname = json['student']['firstname'];
                             User.lastname = json['student']['lastname'];
@@ -144,7 +147,12 @@ class LoginPageState extends State<LoginPage> {
                             User.token = json['token'];
                             User.justLoggedIn = true;
 
-                            Navigator.pushNamed(context, "/welcome_note");
+                            if (User.wasLoggedIn == true) {
+                              Navigator.pushNamed(context, "/ready_to_play");
+                            } else {
+                              User.wasLoggedIn = true;
+                              Navigator.pushNamed(context, "/welcome_note");
+                            }
                           }
                         },
                         color: Color.fromRGBO(107, 43, 20, 1.0),

@@ -57,6 +57,7 @@ String answerAssignment = '/api/student/assignment/answer';
 String search(String query) => '/api/courses/search?q=$query';
 String invite = '/api/invite-a-friend';
 String updateAvatar = '/api/student/avatar/update';
+String allQuickLessons = '/api/student/quicklessons/all';
 String quickLessons = '/api/student/quicklessons';
 String quickLesson(int lesson) => '/api/student/quicklesson/$lesson';
 String freeLessons = '/api/student/freelessons';
@@ -512,6 +513,7 @@ class App extends Common {
 
 class User {
   static bool justLoggedIn = false;
+  static bool wasLoggedIn = false;
   static String id;
   static String firstname;
   static String lastname;
@@ -547,7 +549,7 @@ class User {
 class Courses {
   static Map<String, dynamic> allCourses;
   static List<dynamic> studyingCourses;
-  // static Map<String, dynamic>
+  static List<dynamic> allQuickLessons;
   // static Map<String, dynamic> freeLessons;
   static List<dynamic> freeLessons;
   static Map<String, dynamic> quickLessons;

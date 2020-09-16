@@ -55,7 +55,8 @@ class ChoosePlanState extends State<ChoosePlan> {
   _loadSubscriptionPlans() async {
     var resp = await request('GET', subscriptionPlan);
     if (resp == false)
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login_page', (route) => false);
     Map<String, dynamic> json = resp;
     Subscription.plans = json['plans'];
   }
@@ -97,7 +98,7 @@ class ChoosePlanState extends State<ChoosePlan> {
               body: {'email': User.email});
           if (resp == false)
             Navigator.pushNamedAndRemoveUntil(
-                context, '/login', (route) => false);
+                context, '/login_page', (route) => false);
           Map<String, dynamic> json = resp;
           if (json['success'] == true) {
             Subscription.paystatus = true;
@@ -106,7 +107,7 @@ class ChoosePlanState extends State<ChoosePlan> {
               var resp = await request('GET', subscriptionStatus);
               if (resp == false)
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/login', (route) => false);
+                    context, '/login_page', (route) => false);
               Map<String, dynamic> json = resp;
               User.subStatus = json['status'];
               User.daysRemaining = json['days'];
@@ -437,7 +438,7 @@ class ChoosePlanState extends State<ChoosePlan> {
                                 });
                                 if (resp == false)
                                   Navigator.pushNamedAndRemoveUntil(
-                                      context, '/login', (route) => false);
+                                      context, '/login_page', (route) => false);
                                 Map<String, dynamic> json = resp;
                                 if (json['flag'] == true) {
                                   Subscription.reference =

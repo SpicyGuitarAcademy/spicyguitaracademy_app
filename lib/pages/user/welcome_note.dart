@@ -109,16 +109,22 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
                                 onPressed: () async {
                                   {
                                     // get subscription status
-                                    var resp = await request('GET', subscriptionStatus);
-                                    if (resp == false) Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                    var resp = await request(
+                                        'GET', subscriptionStatus);
+                                    if (resp == false)
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          '/login_page', (route) => false);
                                     Map<String, dynamic> json = resp;
                                     User.subStatus = json['status'];
                                     User.daysRemaining = json['days'];
                                   }
                                   {
                                     // get the current category and stats
-                                    var resp = await request('GET', studentStats);
-                                    if (resp == false) Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                                    var resp =
+                                        await request('GET', studentStats);
+                                    if (resp == false)
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          '/login_page', (route) => false);
                                     Map<String, dynamic> json = resp;
                                     if (json['status'] == false) {
                                       User.categoryStats = null;
