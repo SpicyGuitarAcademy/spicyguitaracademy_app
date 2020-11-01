@@ -13,12 +13,12 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => new HomePageState(orientation);
 }
 
-class Lessons {
+class Lesson {
   // the properties on the class
   String thumbnail, tutor, title, description, id;
 
   // constructing from json
-  Lessons.fromJson(Map<String, dynamic> json) {
+  Lesson.fromJson(Map<String, dynamic> json) {
     thumbnail = json['thumbnail'];
     tutor = json['tutor'];
     title = json['lesson'];
@@ -31,7 +31,7 @@ parseLessons() {
   var freelessons = Courses.freeLessons;
   var lessons = <dynamic>[];
   for (var lesson in freelessons) {
-    lessons.add(new Lessons.fromJson(lesson));
+    lessons.add(new Lesson.fromJson(lesson));
   }
   return lessons;
 }
@@ -43,7 +43,7 @@ class HomePageState extends State<HomePage> {
   // properties
   // all these variables should be abstracted in a class and used globally
   String _firstname = User.firstname;
-  bool _notificationsExist = true;
+  bool _notificationsExist = false;
 
   final lessons = parseLessons();
 
@@ -58,7 +58,6 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     _notJustLoggedIn();
   }
 

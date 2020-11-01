@@ -1,32 +1,30 @@
 import 'package:flutter/material.dart';
-import '../../services/app.dart';
 
-class AllCoursesLessons extends StatefulWidget{
-
+class AllCoursesLessons extends StatefulWidget {
   AllCoursesLessons();
 
   @override
   AllCoursesLessonsState createState() => new AllCoursesLessonsState();
 }
 
-class Lessons
-{
+class Lessons {
   // the properties on the class
-  String thumbnail, tutor, title, description, lessons;
+  String thumbnail, tutor, title, description;
   // the constructor
   Lessons(this.thumbnail, this.tutor, this.title, this.description);
 
   // constructing from json
-  Lessons.fromJson(Map <String, dynamic> json) {
+  Lessons.fromJson(Map<String, dynamic> json) {
     thumbnail = json['thumbnail'];
     tutor = json['tutor'];
-    title = json['title'];
+    title = json['lesson'];
     description = json['description'];
+
+
   }
 }
 
-class AllCoursesLessonsState extends State<AllCoursesLessons>{
-
+class AllCoursesLessonsState extends State<AllCoursesLessons> {
   // properties
 
   @override
@@ -34,35 +32,27 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
     super.initState();
   }
 
-  
-  final courseLessons = [
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Ebuka Odini", "Beginners Chords", "Learn how to play open chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Oc Omofuma", "G Chords", "Learn how to play G chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Samuel Kalu", "Bar Chords", "Learn how to play bar chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Lionel Lionel", "Strumming", "Learn how to strum strings easily."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Oc Omofuma", "G Chords", "Learn how to play G chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Samuel Kalu", "Bar Chords", "Learn how to play bar chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Lionel Lionel", "Strumming", "Learn how to strum strings easily."),
-  ];
-
-  Widget _loadLessons(orientation) {
-    List <Widget> vids = new List<Widget>();
+  Widget _loadLessons(orientation, lessons) {
+    
+    List<Widget> vids = new List<Widget>();
     int count = 0;
-    courseLessons.forEach((lesson){
+    lessons.toList().forEach((lesson) {
       count++;
+
+      lesson = new Lessons(lesson['thumbnail'], lesson["tutor"],
+          lesson["lesson"], lesson["description"]);
+
       vids.add(
-        new 
-        Container(
+        new Container(
           margin: EdgeInsets.symmetric(vertical: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              
               Container(
                 margin: EdgeInsets.only(top: 5),
                 child: Text(
-                  count.toString() + ".", 
+                  count.toString() + ".",
                   textAlign: TextAlign.left,
                   // overflow: TextOverflow.visible,
                   style: TextStyle(
@@ -72,16 +62,14 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                   ),
                 ),
               ),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-
                   Container(
                     width: orientation == Orientation.portrait ? 300 : 650,
                     child: Text(
-                      lesson.title, 
+                      lesson.title,
                       // textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -90,9 +78,7 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-
                   ),
-
                   Container(
                     margin: EdgeInsets.only(top: 3, bottom: 10),
                     child: Text(
@@ -105,11 +91,10 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                       ),
                     ),
                   ),
-
                   Container(
                     width: orientation == Orientation.portrait ? 300 : 650,
                     child: Text(
-                      lesson.description, 
+                      lesson.description,
                       overflow: TextOverflow.visible,
                       style: TextStyle(
                         color: Color.fromRGBO(112, 112, 112, 1.0),
@@ -118,36 +103,33 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                       ),
                     ),
                   ),
-                  
                 ],
               )
-
             ],
           ),
         ),
       );
-
     });
-      
-    return new Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: vids);
+
+    return new Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: vids);
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    return new Scaffold(
-      backgroundColor: Color.fromRGBO(243, 243, 243, 1.0),
-      body: OrientationBuilder(
-        
-        builder: (context, orientation) {
-          return 
-          SafeArea(
-            minimum: EdgeInsets.only(top: 20),
-            child: SingleChildScrollView(
-              child: 
-              Column(
-                children: <Widget>[
+    final Map args = ModalRoute.of(context).settings.arguments as Map;
+    String courseTitle = args['courseTitle'] ?? "HHH";
+    String noLessons = args['noLessons'];
+    List<dynamic> courseLessons = args['courseLessons'];
 
+    return new Scaffold(
+        backgroundColor: Color.fromRGBO(243, 243, 243, 1.0),
+        body: OrientationBuilder(builder: (context, orientation) {
+          return SafeArea(
+              minimum: EdgeInsets.only(top: 20),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: <Widget>[
                   // back button
                   Container(
                     alignment: Alignment.topLeft,
@@ -155,15 +137,20 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                     child: MaterialButton(
                       minWidth: 20,
                       color: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                      onPressed: (){ Navigator.pop(context);},
-                      child: new Icon(Icons.arrow_back_ios, color: Color.fromRGBO(107, 43, 20, 1.0), size: 20.0,),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
-                        side: BorderSide(color: Colors.white)
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: new Icon(
+                        Icons.arrow_back_ios,
+                        color: Color.fromRGBO(107, 43, 20, 1.0),
+                        size: 20.0,
                       ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(15.0),
+                          side: BorderSide(color: Colors.white)),
                     ),
-                    
                   ),
 
                   // course title and the number of lessons
@@ -176,40 +163,35 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        
                         // Number of Lessons
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 20),
                           decoration: BoxDecoration(
-                            borderRadius: new BorderRadius.all(Radius.circular(20)),
+                            borderRadius:
+                                new BorderRadius.all(Radius.circular(20)),
                             color: Color.fromRGBO(71, 29, 14, 1.0),
                           ),
-                          child: Text(
-                            "18",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            )
-                          ),
+                          child: Text(noLessons,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              )),
                         ),
 
                         // Lesson Title
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 50),
-                            child: 
-                            Text(
-                              "Open Chords",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              )
-                            ),
+                            margin: EdgeInsets.only(left: 10),
+                            child: Text(courseTitle,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                )),
                           ),
                         )
-
                       ],
                     ),
                   ),
@@ -221,24 +203,16 @@ class AllCoursesLessonsState extends State<AllCoursesLessons>{
                     padding: EdgeInsets.symmetric(horizontal: 25, vertical: 35),
                     // height: orientation == Orientation.portrait ? MediaQuery.of(context).copyWith().size.height : 600,
                     decoration: BoxDecoration(
-                      borderRadius: new BorderRadius.only(topLeft: Radius.circular(45), topRight: Radius.circular(45)),
+                      borderRadius: new BorderRadius.only(
+                          topLeft: Radius.circular(45),
+                          topRight: Radius.circular(45)),
                       color: Colors.white,
                     ),
 
-                    child: _loadLessons(orientation),
-
+                    child: _loadLessons(orientation, courseLessons),
                   ),
-
-
                 ],
-              )
-              
-            )
-          );
-        }
-      )
-    );
-
+              )));
+        }));
   }
-
 }

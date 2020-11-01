@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
+import '../../services/app.dart';
 
 class StudyingCoursesLessons extends StatefulWidget{
 
@@ -21,7 +22,7 @@ class Lessons
   Lessons.fromJson(Map <String, dynamic> json) {
     thumbnail = json['thumbnail'];
     tutor = json['tutor'];
-    title = json['title'];
+    title = json['lesson'];
     description = json['description'];
   }
 }
@@ -36,19 +37,13 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
     super.initState();
   }
 
-  final courseLessons = [
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Ebuka Odini", "Beginners Chords", "Learn how to play open chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Oc Omofuma", "G Chords", "Learn how to play G chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Samuel Kalu", "Bar Chords", "Learn how to play bar chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Lionel Lionel", "Strumming", "Learn how to strum strings easily."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Oc Omofuma", "G Chords", "Learn how to play G chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Samuel Kalu", "Bar Chords", "Learn how to play bar chords from scratch."),
-    new Lessons("assets/imgs/pictures/course_img_default.jpg", "Lionel Lionel", "Strumming", "Learn how to strum strings easily."),
-  ];
-
-  Widget _loadLessons(orientation) {
+  Widget _loadLessons(orientation, courseLessons) {
     List <Widget> vids = new List<Widget>();
-    courseLessons.forEach((lesson){
+    courseLessons.toList().forEach((lesson){
+
+      lesson = new Lessons(lesson['thumbnail'], lesson["tutor"],
+          lesson["lesson"], lesson["description"]);
+
       vids.add(
         new 
         CupertinoButton(
@@ -75,7 +70,7 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
                   height: 200.00,
                   decoration: new BoxDecoration(
                     image: new DecorationImage(
-                      image: ExactAssetImage(lesson.thumbnail),
+                      image: NetworkImage('${App.appurl}/${lesson.thumbnail}'),
                       fit: BoxFit.fitWidth,
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -156,7 +151,12 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
 
   @override
   Widget build(BuildContext context) {
-    
+
+    final Map args = ModalRoute.of(context).settings.arguments as Map;
+    String courseTitle = args['courseTitle'] ?? "No Title";
+    num noLessons = args['noLessons'];
+    List<dynamic> courseLessons = args['courseLessons'];
+
     return new Scaffold(
       backgroundColor: Color.fromRGBO(243, 243, 243, 1.0),
       body: OrientationBuilder(
@@ -207,7 +207,7 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
                             color: Color.fromRGBO(71, 29, 14, 1.0),
                           ),
                           child: Text(
-                            "18",
+                            noLessons.toString(),
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -219,10 +219,10 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
                         // Lesson Title
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 50),
+                            margin: EdgeInsets.only(left: 10),
                             child: 
                             Text(
-                              "Open Chords",
+                              courseTitle,
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w600,
@@ -248,7 +248,7 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
                   //   ),
 
                     // child: 
-                    _loadLessons(orientation),
+                    _loadLessons(orientation, courseLessons),
 
                   // ),
 
