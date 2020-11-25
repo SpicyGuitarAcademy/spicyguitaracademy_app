@@ -19,9 +19,8 @@ class Lessons {
     tutor = json['tutor'];
     title = json['lesson'];
     description = json['description'];
-
-
   }
+  
 }
 
 class AllCoursesLessonsState extends State<AllCoursesLessons> {
@@ -71,7 +70,7 @@ class AllCoursesLessonsState extends State<AllCoursesLessons> {
                     child: Text(
                       lesson.title,
                       // textAlign: TextAlign.left,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.clip,
                       style: TextStyle(
                         color: Color.fromRGBO(107, 43, 20, 1.0),
                         fontSize: 25,
@@ -118,7 +117,7 @@ class AllCoursesLessonsState extends State<AllCoursesLessons> {
   @override
   Widget build(BuildContext context) {
     final Map args = ModalRoute.of(context).settings.arguments as Map;
-    String courseTitle = args['courseTitle'] ?? "HHH";
+    String courseTitle = args['courseTitle'] ?? "No Title";
     String noLessons = args['noLessons'];
     List<dynamic> courseLessons = args['courseLessons'];
 

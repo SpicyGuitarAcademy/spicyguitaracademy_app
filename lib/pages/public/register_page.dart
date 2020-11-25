@@ -302,6 +302,8 @@ class RegisterPageState extends State<RegisterPage> {
                               var resp = await App.signup(_scaffoldKey,_fname.text, _lname.text, _email.text, _tel.text, _pass.text, _cpass.text);
                               if (resp == true) {
                                 Navigator.pushNamed(context, "/login_page"); 
+                              } else {
+                                
                               }
                             } else {
                               App.showMessage(_scaffoldKey, "Please agree to Terms and Condition.");

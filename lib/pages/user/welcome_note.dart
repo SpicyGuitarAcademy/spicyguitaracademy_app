@@ -19,6 +19,15 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
     _firstname = User.firstname;
   }
 
+  _loadSubscriptionPlans() async {
+    var resp = await request('GET', subscriptionPlan);
+    if (resp == false)
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login_page', (route) => false);
+    Map<String, dynamic> json = resp;
+    Subscription.plans = json['plans'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -111,12 +120,16 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
                                     // get subscription status
                                     var resp = await request(
                                         'GET', subscriptionStatus);
-                                    if (resp == false)
+                                    if (resp == false) {
                                       Navigator.pushNamedAndRemoveUntil(context,
                                           '/login_page', (route) => false);
-                                    Map<String, dynamic> json = resp;
-                                    User.subStatus = json['status'];
-                                    User.daysRemaining = json['days'];
+                                    } else {
+                                      Map<String, dynamic> json = resp;
+                                      User.subStatus = json['status'];
+                                      User.daysRemaining = json['days'];
+                                    }
+                                    print(User.subStatus);
+                                    print(User.daysRemaining);
                                   }
                                   {
                                     // get the current category and stats
@@ -144,6 +157,7 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
                                           context, "/ready_to_play");
                                     }
                                   } else if (User.subStatus == "INACTIVE") {
+                                    await _loadSubscriptionPlans();
                                     Navigator.popAndPushNamed(
                                         context, "/choose_plan");
                                   }

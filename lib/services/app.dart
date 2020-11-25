@@ -5,32 +5,33 @@ import 'dart:convert';
 import 'common.dart';
 
 Future request(String method, String uri, {dynamic body}) async {
+  String appurl = 'https://spicyguitaracademy.com';
   // String appurl = 'https://spicyguitaracademy.com';
-  String baseUrl = 'http://test.initframework.com';
   dynamic headers = {'cache-control': 'no-cache', 'JWToken': User.token};
   var response;
   switch (method) {
     case 'GET':
-      response = await http.get(baseUrl + uri, headers: headers);
+      response = await http.get(appurl + uri, headers: headers);
       break;
     case 'POST':
-      response = await http.post(baseUrl + uri, headers: headers, body: body);
+      response = await http.post(appurl + uri, headers: headers, body: body);
       break;
     case 'PATCH':
-      response = await http.patch(baseUrl + uri, headers: headers, body: body);
+      response = await http.patch(appurl + uri, headers: headers, body: body);
       break;
     case 'PUT':
-      response = await http.put(baseUrl + uri, headers: headers, body: body);
+      response = await http.put(appurl + uri, headers: headers, body: body);
       break;
     case 'DELETE':
-      response = await http.delete(baseUrl + uri, headers: headers);
+      response = await http.delete(appurl + uri, headers: headers);
       break;
     default:
   }
   print("\n\n" + uri + " => " + response.body + "\n\n");
   if (response.statusCode == 200) {
     return jsonDecode(response.body);
-  } else if (response.statusCode == 401 || response.statusCode == 403) {
+  } else if (response.statusCode == 400 || response.statusCode == 401 || response.statusCode == 403) {
+    print('Error: ' + response.statusCode + ', ' + response.body);
     return false;
   } else {
     print('Error: ' + response.statusCode + ', ' + response.body);
@@ -65,8 +66,8 @@ String subscriptionStatus = '/api/subscription/status';
 // String register = '/api/register';
 
 class App extends Common {
+  static String appurl = 'https://spicyguitaracademy.com';
   // static String appurl = 'https://spicyguitaracademy.com';
-  static String appurl = 'http://test.initframework.com';
   static String appName = "Spicy Guitar Academy";
   static String paystackPublicKey =
       'pk_test_2aedc9b8a06baff2b47a08a08cd1b0237c260e4a';
@@ -90,13 +91,14 @@ class App extends Common {
       return false;
     } else {
       var respb = resp.body;
-      print(respb);
+      // print(respb);
       Map<String, dynamic> json = jsonDecode(respb);
-      if (json['success'] != '') {
+      if (json['success'] != null) {
         showMessage(scaffold, json['success']);
         return true;
       } else {
-        showMessage(scaffold, json['error']);
+        // showMessage(scaffold, "Sign up failed");
+        showMessage(scaffold, json['errors'][0]);
         return false;
       }
     }
@@ -104,7 +106,7 @@ class App extends Common {
 
   static Future<bool> login(scaffold, String email, String password) async {
     User.reset();
-    var resp = await http.post('http://test.initframework.com/api/login',
+    var resp = await http.post('https://spicyguitaracademy.com/api/login',
         body: {'email': email, 'password': password});
     // j.hamlet@gmail.com
     // Jhamlett09
@@ -148,7 +150,7 @@ class App extends Common {
 
   static studentStatistics() async {
     var resp = await http
-        .get('http://test.initframework.com/api/student/statistics', headers: {
+        .get('https://spicyguitaracademy.com/api/student/statistics', headers: {
       'cache-control': 'no-cache',
       'JWToken': User.token,
     });
@@ -174,7 +176,7 @@ class App extends Common {
 
   static getSubscriptionPlans() async {
     var resp = await http.get(
-        'http://test.initframework.com/api/subscription/plans',
+        'https://spicyguitaracademy.com/api/subscription/plans',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -189,7 +191,7 @@ class App extends Common {
 
   static getUserSubscriptionStatus() async {
     var resp = await http.get(
-        'http://test.initframework.com/api/subscription/status',
+        'https://spicyguitaracademy.com/api/subscription/status',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -206,7 +208,7 @@ class App extends Common {
 
   static Future initiatePayment(scaffold, String plan) async {
     var resp = await http.post(
-        'http://test.initframework.com/api/subscription/initiate',
+        'https://spicyguitaracademy.com/api/subscription/initiate',
         headers: {'JWToken': User.token},
         body: {'email': User.email, 'plan': plan});
 
@@ -230,7 +232,7 @@ class App extends Common {
 
   static Future verifyPayment(String reference) async {
     var resp = await http.post(
-        "http://test.initframework.com/api/subscription/verify/$reference",
+        "https://spicyguitaracademy.com/api/subscription/verify/$reference",
         headers: {'JWToken': User.token},
         body: {'plan': reference});
 
@@ -248,7 +250,7 @@ class App extends Common {
 
   static Future chooseCategory(String category) async {
     var resp = await http.post(
-        'http://test.initframework.com/api/student/category/select',
+        'https://spicyguitaracademy.com/api/student/category/select',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
         body: {'category': category});
 
@@ -266,7 +268,7 @@ class App extends Common {
   }
 
   static Future getAllCourses() async {
-    var resp = await http.get('http://test.initframework.com/api/course/all',
+    var resp = await http.get('https://spicyguitaracademy.com/api/course/all',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -283,7 +285,7 @@ class App extends Common {
 
   static Future studyingCourses() async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/courses/studying',
+        'https://spicyguitaracademy.com/api/student/courses/studying',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -301,7 +303,7 @@ class App extends Common {
 
   static Future courseLessons(int course) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/course/$course/lessons',
+        'https://spicyguitaracademy.com/api/course/$course/lessons',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -318,7 +320,7 @@ class App extends Common {
 
   static Future getLesson(int lesson) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/lesson/$lesson',
+        'https://spicyguitaracademy.com/api/lesson/$lesson',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -335,7 +337,7 @@ class App extends Common {
 
   static Future studyingLesson(lesson) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/lesson/$lesson',
+        'https://spicyguitaracademy.com/api/student/lesson/$lesson',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -352,7 +354,7 @@ class App extends Common {
 
   static Future nextLesson(lesson) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/lesson/$lesson/next?course=${User.studyingCourse}',
+        'https://spicyguitaracademy.com/api/student/lesson/$lesson/next?course=${User.studyingCourse}',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -369,7 +371,7 @@ class App extends Common {
 
   static Future prevLesson(lesson) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/lesson/$lesson/previous?course=${User.studyingCourse}',
+        'https://spicyguitaracademy.com/api/student/lesson/$lesson/previous?course=${User.studyingCourse}',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -386,7 +388,7 @@ class App extends Common {
 
   static Future answerAssignment(assignment) async {
     var resp = await http.post(
-        'http://test.initframework.com/api/student/assignment/answer',
+        'https://spicyguitaracademy.com/api/student/assignment/answer',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
         body: {'assignment': assignment});
 
@@ -404,7 +406,7 @@ class App extends Common {
 
   static Future search(query) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/courses/search?q=$query',
+        'https://spicyguitaracademy.com/api/courses/search?q=$query',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -421,7 +423,7 @@ class App extends Common {
 
   static Future inviteAFriend(String friend) async {
     var resp = await http.post(
-        'http://test.initframework.com/api/invite-a-friend',
+        'https://spicyguitaracademy.com/api/invite-a-friend',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
         body: {'friend': friend});
 
@@ -439,7 +441,7 @@ class App extends Common {
 
   static Future uploadAvatar(String base64Image) async {
     var resp = await http.post(
-        'http://test.initframework.com/api/student/avatar/update',
+        'https://spicyguitaracademy.com/api/student/avatar/update',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'},
         body: {'avatar': base64Image});
 
@@ -457,7 +459,7 @@ class App extends Common {
 
   static Future quicklessons() async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/quicklessons',
+        'https://spicyguitaracademy.com/api/student/quicklessons',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -474,7 +476,7 @@ class App extends Common {
 
   static Future quicklesson(lesson) async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/quicklesson/$lesson',
+        'https://spicyguitaracademy.com/api/student/quicklesson/$lesson',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -491,7 +493,7 @@ class App extends Common {
 
   static Future freelesson() async {
     var resp = await http.get(
-        'http://test.initframework.com/api/student/freelessons',
+        'https://spicyguitaracademy.com/api/student/freelessons',
         headers: {'JWToken': User.token, 'cache-control': 'no-cache'});
 
     if (resp.statusCode != 200) {
@@ -549,6 +551,7 @@ class User {
 class Courses {
   static Map<String, dynamic> allCourses;
   static List<dynamic> studyingCourses;
+  // static Map<String, dynamic> allQuickLessons;
   static List<dynamic> allQuickLessons;
   // static Map<String, dynamic> freeLessons;
   static List<dynamic> freeLessons;

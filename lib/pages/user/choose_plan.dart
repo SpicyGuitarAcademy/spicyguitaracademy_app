@@ -47,18 +47,9 @@ class ChoosePlanState extends State<ChoosePlan> {
 
   @override
   void initState() {
+    // _loadSubscriptionPlans();
     PaystackPlugin.initialize(publicKey: App.paystackPublicKey);
-    _loadSubscriptionPlans();
     super.initState();
-  }
-
-  _loadSubscriptionPlans() async {
-    var resp = await request('GET', subscriptionPlan);
-    if (resp == false)
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/login_page', (route) => false);
-    Map<String, dynamic> json = resp;
-    Subscription.plans = json['plans'];
   }
 
   @override
@@ -100,7 +91,7 @@ class ChoosePlanState extends State<ChoosePlan> {
             Navigator.pushNamedAndRemoveUntil(
                 context, '/login_page', (route) => false);
           Map<String, dynamic> json = resp;
-          if (json['success'] == true) {
+          if (json['success'] != null) {
             Subscription.paystatus = true;
             {
               // get subscription status
@@ -125,6 +116,7 @@ class ChoosePlanState extends State<ChoosePlan> {
     }
 
     _titleOrient(orientation) {
+      // await _loadSubscriptionPlans();
       if (orientation == Orientation.landscape) {
         return Container(
           child: Text(

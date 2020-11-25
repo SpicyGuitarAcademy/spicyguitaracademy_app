@@ -99,7 +99,7 @@ class StudyingCoursesLessonsState extends State<StudyingCoursesLessons>{
                       child: Text(
                         lesson.title, 
                         // textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.clip,
                         style: TextStyle(
                           color: Color.fromRGBO(107, 43, 20, 1.0),
                           fontSize: 25,

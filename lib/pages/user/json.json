@@ -1,18 +1,40 @@
 {
-   "courses": [
+   "lessons": [
       {
+         "price": "10",
+         "free": "1",
          "id": "2",
-         "category": "1",
-         "course": "Welcome",
+         "course": "2",
+         "lesson": "Z Lesson",
+         "description": "This Description",
+         "thumbnail": "storage\/public\/thumbnails\/e488ec1.jpg",
+         "tutor": "Ebuka Odini",
+         "low_video": "storage\/public\/tutorials\/videos\/fa33c5d.mp4",
+         "high_video": "storage\/public\/tutorials\/videos\/d1f5f9f.mp4",
+         "audio": "storage\/public\/tutorials\/audios\/27122bf.mpeg",
+         "practice_audio": "storage\/public\/tutorials\/practice\/462c349.mpeg",
+         "tablature": "storage\/public\/tutorials\/tablatures\/852f6df.pdf",
+         "note": "Note.",
+         "date_added": "2020-09-16 03:56:32",
+         "active": "1"
+      },
+      {
+         "price": "10",
+         "free": "1",
+         "id": "3",
+         "course": "2",
+         "lesson": "Lesson Two",
          "description": "No Description",
          "thumbnail": "storage\/public\/thumbnails\/default.jpg",
-         "tutor": "Ebuka Odini",
-         "ord": "1",
-         "date_added": "2020-10-25 18:38:11",
-         "active": "1",
-         "status": "1",
-         "done": "j",
-         "total": "."
+         "tutor": "No Tutor",
+         "low_video": null,
+         "high_video": null,
+         "audio": null,
+         "practice_audio": null,
+         "tablature": null,
+         "note": null,
+         "date_added": "2020-05-27 15:22:45",
+         "active": "1"
       }
    ]
 }
