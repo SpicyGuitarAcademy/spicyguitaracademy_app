@@ -2,7 +2,7 @@
     package="com.example.spicyguitaracademy">
    <application
         android:name="androidx.multidex.MultiDexApplication"
-        android:label="spicyguitaracademy"
+        android:label="Spicy Guitar Academy"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -39,4 +39,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
