@@ -22,13 +22,16 @@ class _WelcomePageState extends State<WelcomePage> {
   Future<void> checkForUpdate() async {
     InAppUpdate.checkForUpdate().then((info) {
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-        InAppUpdate.startFlexibleUpdate().then((_) {
-          setState(() {
-            _flexibleUpdateAvailable = true;
-          });
-        }).catchError((e) {
-          snackbar(context, stripExceptions(e.toString()));
-        });
+        // InAppUpdate.startFlexibleUpdate().then((_) {
+        //   setState(() {
+        //     _flexibleUpdateAvailable = true;
+        //   });
+        // }).catchError((e) {
+        //   snackbar(context, stripExceptions(e.toString()));
+        // });
+
+        InAppUpdate.performImmediateUpdate().catchError(
+            (e) => snackbar(context, stripExceptions(e.toString())));
       }
     }).catchError((e) {
       snackbar(context, e.toString());
