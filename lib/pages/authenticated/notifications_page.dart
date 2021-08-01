@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:spicyguitaracademy/common.dart';
+import 'package:spicyguitaracademy/models.dart';
 // import 'package:spicyguitaracademy/models.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -10,12 +13,83 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> {
   // properties
-  List<Widget> _notifications = [];
-  // TextEditingController _search = TextEditingController();
+  // List<dynamic> _notifications = [];
 
   @override
   void initState() {
     super.initState();
+    // _notifications = Student.notifications;
+  }
+
+  markAsRead(context, element) async {
+    try {
+      loading(context);
+      await Student.markNotificationAsRead(context, element['id']);
+      await Student.getNotifications(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pushNamed(context, '/notification');
+    } catch (e) {
+      Navigator.pop(context);
+      error(context, stripExceptions(e));
+    }
+  }
+
+  List<Widget> loadNotifications() {
+    List<Widget> notifications = [];
+
+    Student.notifications.forEach((element) {
+      notifications.add(
+        Container(
+          padding: EdgeInsets.all(5),
+          width: screen(context).width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                element['created_at'],
+                style: TextStyle(color: brown),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              element['route'] == ''
+                  ? Text(element['message'])
+                  : InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, element['route']);
+                      },
+                      child: Text(element['message']),
+                    ),
+              SizedBox(
+                height: 5,
+              ),
+              element['status'] == 'unread'
+                  ? Align(
+                      alignment: Alignment.centerRight,
+                      child: RaisedButton(
+                        onPressed: () async {
+                          markAsRead(context, element);
+                        },
+                        child: Text(
+                          'Mark as read',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
+            ],
+          ),
+          decoration: BoxDecoration(
+            color: grey,
+          ),
+        ),
+      );
+      notifications.add(SizedBox(height: 10));
+    });
+
+    return notifications;
   }
 
   @override
@@ -31,29 +105,35 @@ class NotificationPageState extends State<NotificationPage> {
           'Notifications',
           style: TextStyle(
               color: brown,
-              // fontSize: 30,
               fontFamily: "Poppins",
               fontWeight: FontWeight.normal),
         ),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: _notifications.length > 0
-            ? Column(children: <Widget>[])
-            : Center(
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 100),
-                  child: Column(
-                    children: [
-                      Icon(Icons.notifications_off_outlined),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text('Unavailable for now')
-                    ],
+      body: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 5),
+        child: SingleChildScrollView(
+          child: Student.notifications.length > 0
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: loadNotifications(),
+                )
+              : Center(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 100),
+                    child: Column(
+                      children: [
+                        Icon(Icons.notifications_off_outlined),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('No notifications')
+                      ],
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

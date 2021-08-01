@@ -20,9 +20,8 @@ class AuthException {
   }
 }
 
-const String baseUrl = "https://spicyguitaracademy.com";
-// const String baseUrl = "http://10.0.2.2/sga_web";
-// const String baseUrl = "http://localhost/sga_web";
+// const String baseUrl = "https://spicyguitaracademy.com";
+const String baseUrl = "http://10.0.2.2/sga_web";
 
 const String appName = "Spicy Guitar Academy";
 
@@ -236,13 +235,13 @@ void success(BuildContext context, String message, {String title: 'Message'}) {
         scrollable: true,
         title: Row(
           children: [
-            Icon(Icons.done, color: Colors.green),
+            Icon(Icons.done, color: brown),
             SizedBox(width: 2.0),
-            Text("$title", style: TextStyle(color: Colors.green)),
+            Text("$title", style: TextStyle(color: brown)),
           ],
           mainAxisAlignment: MainAxisAlignment.start,
         ),
-        content: Text(message, style: TextStyle(color: Colors.green)),
+        content: Text(message, style: TextStyle(color: brown)),
         backgroundColor: Colors.white,
         // actions: [
         //   MaterialButton(
@@ -295,6 +294,9 @@ void snackbar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
+      duration: Duration(seconds: 10),
+      action: SnackBarAction(
+          label: 'dismiss', textColor: Colors.white, onPressed: () {}),
     ),
   );
 }

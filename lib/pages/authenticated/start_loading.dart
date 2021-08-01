@@ -37,6 +37,8 @@ class StartLoadingState extends State<StartLoading> {
       // get free lessons
       await Lessons.getFreeLessons(context);
 
+      await Student.getNotifications(context);
+
       Student.isLoaded = true;
 
       // route to dashboard

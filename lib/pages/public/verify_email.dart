@@ -20,7 +20,7 @@ class VerifyPageState extends State<VerifyPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (Student.forgotPassword) {
+    if (Student.forgotPassword == true) {
       final Map args = ModalRoute.of(context).settings.arguments as Map;
       _email = args['email'];
     }
@@ -47,6 +47,10 @@ class VerifyPageState extends State<VerifyPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                   SizedBox(height: 40.0),
+
+                  Text(
+                      'A 6 digit verification token has been sent to your email.'),
+                  SizedBox(height: 20.0),
 
                   // Email field
                   TextField(

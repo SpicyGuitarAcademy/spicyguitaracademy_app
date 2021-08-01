@@ -15,6 +15,8 @@ class Student {
   static bool isNewStudent;
   static bool forgotPassword;
 
+  static List<dynamic> notifications;
+
   static bool subscription;
   static int daysRemaining;
   static String subscriptionPlan;
@@ -220,6 +222,32 @@ class Student {
     }
   }
 
+  static getNotifications(context) async {
+    try {
+      var resp = await request('/api/notifications', method: 'GET', headers: {
+        'JWToken': Auth.token,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+
+      notifications = resp['data']['notifications'];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  static markNotificationAsRead(context, notificationId) async {
+    try {
+      await request('/api/notification/markasread', method: 'POST', body: {
+        'notificationId': notificationId
+      }, headers: {
+        'JWToken': Auth.token,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   static chooseCategory(String category) async {
     try {
       var resp = await request('/api/student/category/select',
@@ -234,6 +262,28 @@ class Student {
 
       if (resp['status'] == true) {
         await getStudentCategoryAndStats();
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  static rechooseCategory(context, String category) async {
+    try {
+      var resp = await request('/api/student/category/re-select',
+          method: 'POST',
+          headers: {
+            'JWToken': Auth.token,
+            'cache-control': 'max-age=0, must-revalidate'
+          },
+          body: {
+            'category': category
+          });
+
+      if (resp['status'] == true) {
+        snackbar(context, resp['message']);
+      } else {
+        throw Exception([resp['message']]);
       }
     } catch (e) {
       throw (e);
@@ -477,9 +527,13 @@ class Courses {
         studyingCourses[studyingCourses.indexOf(Courses.currentCourse)] =
             Courses.currentCourse;
       } else {
-        // activateCourseErrMsg =
+        Courses.currentCourse.status = false;
         if (resp['message'] != "Course already activated") {
           snackbar(context, resp['message']);
+        } else {
+          Courses.currentCourse.status = true;
+          studyingCourses[studyingCourses.indexOf(Courses.currentCourse)] =
+              Courses.currentCourse;
         }
       }
     } on AuthException catch (e) {
@@ -795,6 +849,8 @@ class Lesson {
 
 // the list of lessons in a tutorial used for moving forward and backward in the tutorial
 List<Lesson> tutorialLessons = [];
+// a boolean to determine of the tutorial lessons are loaded from a course or some free lessons
+bool tutorialLessonsIsLoadedFromCourse = false;
 // the current tutorial which is gotten from the lesson object
 Lesson currentTutorial;
 
@@ -881,7 +937,8 @@ class Assignment {
       await request('/api/student/assignment/answer', method: 'POST', body: {
         'note': answer,
         'answerId': Assignment.answerId.toString(),
-        'assignment': Assignment.id.toString()
+        'assignment': Assignment.id.toString(),
+        'courseId': Courses.currentCourse.id.toString()
       }, headers: {
         'JWToken': Auth.token,
         'cache-control': 'max-age=0, must-revalidate'

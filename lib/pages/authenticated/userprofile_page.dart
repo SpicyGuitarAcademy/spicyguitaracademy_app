@@ -331,7 +331,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                           padding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 25),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/help');
+                            Navigator.pushNamed(context, '/contactus');
                           },
                           color: Colors.white,
                           textColor: brown,

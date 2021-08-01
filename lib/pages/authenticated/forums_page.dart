@@ -80,7 +80,7 @@ class ForumsPageState extends State<ForumsPage> {
   sendMessage() async {
     try {
       loading(context);
-      print(replyId);
+      // print(replyId);
       await Forum.submitMessage(context, _message.text, replyId.toString());
       await loadForumMessages();
       _message.clear();
@@ -113,7 +113,7 @@ class ForumsPageState extends State<ForumsPage> {
       avatar = '${Student.avatar}';
       who = 'me';
     } else {
-      if (comment['is_admin'] == true) {
+      if (comment['is_admin'] == '1') {
         name = comment['tutor']['name'];
         avatar = comment['tutor']['avatar'];
         who = 'tutor';
@@ -201,14 +201,23 @@ class ForumsPageState extends State<ForumsPage> {
                               'cache-control': 'max-age=0, must-revalidate'
                             })),
                     SizedBox(width: 5),
+                    SizedBox(width: 5),
+                    comment['is_admin'] == '1'
+                        ? Icon(
+                            Icons.shield,
+                            color: brown,
+                            size: 14,
+                          )
+                        : SizedBox(),
                     Expanded(
-                        child: Text("$name",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: brown,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15))),
+                      child: Text("$name",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: brown,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15)),
+                    ),
                     Align(
                         alignment: Alignment.centerRight,
                         child: Text("$date",
@@ -219,7 +228,7 @@ class ForumsPageState extends State<ForumsPage> {
                 height: 1.0,
               ),
               Text(
-                "${comment['comment']}",
+                parseHtmlString("${comment['comment']}"),
                 textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 14),
               ),

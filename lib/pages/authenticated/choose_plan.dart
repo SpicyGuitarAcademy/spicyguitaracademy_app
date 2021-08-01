@@ -72,10 +72,11 @@ class ChoosePlanState extends State<ChoosePlan> {
             Navigator.pushNamed(context, "/failed_transaction");
           }
         } else {
-          Navigator.pushNamed(context, "/failed_transaction");
           Navigator.pop(context);
+          Navigator.pushNamed(context, "/failed_transaction");
         }
       } catch (e) {
+        Navigator.pop(context);
         error(context, stripExceptions(e));
       }
     }

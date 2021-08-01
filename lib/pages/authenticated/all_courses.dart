@@ -128,7 +128,7 @@ class AllCoursesPageState extends State<AllCoursesPage> {
         });
       },
       child: Container(
-        // width: screen(context).width * 0.25,
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -138,7 +138,6 @@ class AllCoursesPageState extends State<AllCoursesPage> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: _courseCategory == category ? brown : darkgrey,
-                fontWeight: FontWeight.w600,
               ),
             ),
             Container(
@@ -203,13 +202,15 @@ class AllCoursesPageState extends State<AllCoursesPage> {
       ),
 
       // the category identification
+
       Container(
         width: screen(context).width,
+        height: 50,
         padding: EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+        child: ListView(
+          // This next line does the trick.
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
             categoryIdentification(1, 'Beginners'),
             categoryIdentification(2, 'Amateurs'),
             categoryIdentification(3, 'Intermediates'),
@@ -217,6 +218,21 @@ class AllCoursesPageState extends State<AllCoursesPage> {
           ],
         ),
       ),
+
+      // Container(
+      //   width: screen(context).width,
+      //   padding: EdgeInsets.symmetric(vertical: 5),
+      //   child: Row(
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //     children: [
+      //       categoryIdentification(1, 'Beginners'),
+      //       categoryIdentification(2, 'Amateurs'),
+      //       categoryIdentification(3, 'Intermediates'),
+      //       categoryIdentification(4, 'Advanced')
+      //     ],
+      //   ),
+      // ),
 
       _loadCourses()
     ]));

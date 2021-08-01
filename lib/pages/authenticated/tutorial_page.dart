@@ -26,7 +26,17 @@ class TutorialPageState extends State<TutorialPage> {
   void initState() {
     super.initState();
 
-    if (currentTutorial == null) {
+    if (tutorialLessons.length == 0) {
+      print('No lessons');
+    }
+
+    // if (Courses.currentCourse.status == false) {
+    //   Navigator.pop(context);
+    // }
+
+    if (currentTutorial == null ||
+        Courses.currentCourse.status == false ||
+        tutorialLessons.length == 0) {
       Navigator.pop(context);
     }
 
@@ -496,7 +506,31 @@ class TutorialPageState extends State<TutorialPage> {
                                     textColor: Colors.white,
                                     child: Text('NEXT',
                                         style: TextStyle(fontSize: 16)))
-                                : Container()
+                                : tutorialLessonsIsLoadedFromCourse == true
+                                    ? Courses.currentCourse.completedLessons ==
+                                            Courses.currentCourse.allLessons
+                                        ? MaterialButton(
+                                            onPressed: () {
+                                              // if this course is the last course in the category,
+                                              // show the completed category page
+                                              // else show the completed courses page
+                                              if (studyingCourses.last ==
+                                                  Courses.currentCourse) {
+                                                Navigator.pushReplacementNamed(
+                                                    context,
+                                                    '/completedcategory');
+                                              } else {
+                                                Navigator.pushReplacementNamed(
+                                                    context,
+                                                    '/completedcourses');
+                                              }
+                                            },
+                                            color: brown,
+                                            textColor: Colors.white,
+                                            child: Text('COMPLETE',
+                                                style: TextStyle(fontSize: 16)))
+                                        : Container()
+                                    : Container() // use this if this is not a course
                           ],
                         ),
 
@@ -549,7 +583,7 @@ class TutorialPageState extends State<TutorialPage> {
                     },
                     style: TextStyle(fontSize: 20.0, color: brown),
                     decoration: InputDecoration(
-                        hintText: "Write a comment",
+                        hintText: "Ask question",
                         suffix: IconButton(
                             onPressed: () {
                               _submitComment();

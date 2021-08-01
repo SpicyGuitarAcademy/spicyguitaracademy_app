@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:spicyguitaracademy/models.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsPage extends StatefulWidget {
   @override
@@ -47,8 +48,52 @@ class ContactUsPageState extends State<ContactUsPage> {
                         height: 20.0,
                       ),
                       Text(
-                          'Contact us if you have any inquiry or encounter any issue or send a mail to info@spicyguitaracademy.com',
-                          textAlign: TextAlign.center),
+                        'You can reach us with the form below if you have any inquiry or encounter any issue. Or you can send a mail to',
+                        // textAlign: TextAlign.center,
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: () async {
+                            if (await canLaunch(
+                                'mailto:info@spicyguitaracademy.com')) {
+                              await launch(
+                                'mailto:info@spicyguitaracademy.com',
+                              );
+                            } else {
+                              snackbar(context,
+                                  'Could not open info@spicyguitaracademy.com');
+                            }
+                          },
+                          child: Text(
+                            "info@spicyguitaracademy.com",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(color: brown),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text('Or call: ', textAlign: TextAlign.center),
+                          InkWell(
+                            onTap: () async {
+                              if (await canLaunch('tel:+2347061988174')) {
+                                await launch(
+                                  'tel:+2347061988174',
+                                );
+                              } else {
+                                snackbar(
+                                    context, 'Could not open +2347061988174');
+                              }
+                            },
+                            child: Text(
+                              "+2347061988174",
+                              style: TextStyle(color: brown),
+                            ),
+                          ),
+                        ],
+                      ),
+
                       SizedBox(
                         height: 20.0,
                       ),
@@ -120,7 +165,6 @@ class ContactUsPageState extends State<ContactUsPage> {
         throw Exception(resp['message']);
       }
     } catch (e) {
-      Navigator.pop(context);
       error(context, stripExceptions(e), title: 'Request failed');
     }
   }

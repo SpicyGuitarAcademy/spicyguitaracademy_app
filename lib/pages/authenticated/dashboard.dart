@@ -140,11 +140,6 @@ class DashboardState extends State<Dashboard> {
                 //     () {
                 //   Navigator.pushNamed(context, '/settings');
                 // }),
-                // sideBarItem(
-                //     "assets/imgs/icons/notification_icon.svg", "Notification",
-                //     () {
-                //   Navigator.pushNamed(context, '/notification');
-                // }),
                 sideBarItem(
                     "assets/imgs/icons/contactus_icon.svg", "Contact Us", () {
                   Navigator.pushNamed(context, '/contactus');

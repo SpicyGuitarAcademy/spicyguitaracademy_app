@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:spicyguitaracademy/pages/authenticated/completed_category.dart';
+import 'package:spicyguitaracademy/pages/authenticated/completed_courses.dart';
 import 'package:spicyguitaracademy/pages/authenticated/coursepreview_page.dart';
 import 'package:spicyguitaracademy/pages/authenticated/editpassword_page.dart';
 import 'package:spicyguitaracademy/pages/authenticated/forums_page.dart';
@@ -172,6 +174,8 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/contactus': (BuildContext context) => new ContactUsPage(),
         '/editprofile': (BuildContext context) => new EditProfilePage(),
         '/editpassword': (BuildContext context) => new EditPasswordPage(),
+        '/completedcourses': (BuildContext context) => new CompletedCourses(),
+        '/completedcategory': (BuildContext context) => new CompletedCategory(),
       },
     );
   }

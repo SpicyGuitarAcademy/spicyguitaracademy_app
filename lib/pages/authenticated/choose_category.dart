@@ -10,10 +10,15 @@ class ChooseCategory extends StatefulWidget {
 class ChooseCategoryState extends State<ChooseCategory> {
   // properties
   String _selectedCategory = "";
+  bool canChooseAnotherCategory = false;
 
   @override
   void initState() {
     _selectedCategory = Student.studyingCategoryLabel;
+    if (_selectedCategory != "") {
+      canChooseAnotherCategory = Student.takenCourses == Student.allCourses &&
+          Student.takenLessons == Student.allLessons;
+    }
     super.initState();
   }
 
@@ -53,7 +58,9 @@ class ChooseCategoryState extends State<ChooseCategory> {
                         onPressed: () => Student.studyingCategory == 0 &&
                                 Student.subscription == true
                             ? setState(() => _selectedCategory = "Beginner")
-                            : null,
+                            : canChooseAnotherCategory == true
+                                ? setState(() => _selectedCategory = "Beginner")
+                                : null,
                         color: _selectedCategory == "Beginner"
                             ? brown
                             : Colors.white,
@@ -73,12 +80,16 @@ class ChooseCategoryState extends State<ChooseCategory> {
                     ),
                     Container(
                       child: RaisedButton(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 30,
+                        ),
                         onPressed: () => Student.studyingCategory == 0 &&
                                 Student.subscription == true
                             ? setState(() => _selectedCategory = "Amateur")
-                            : null,
+                            : canChooseAnotherCategory == true
+                                ? setState(() => _selectedCategory = "Amateur")
+                                : null,
                         color: _selectedCategory == "Amateur"
                             ? brown
                             : Colors.white,
@@ -109,7 +120,9 @@ class ChooseCategoryState extends State<ChooseCategory> {
                     onPressed: () => Student.studyingCategory == 0 &&
                             Student.subscription == true
                         ? setState(() => _selectedCategory = "Intermediate")
-                        : null,
+                        : canChooseAnotherCategory == true
+                            ? setState(() => _selectedCategory = "Intermediate")
+                            : null,
                     color: _selectedCategory == "Intermediate"
                         ? brown
                         : Colors.white,
@@ -133,7 +146,9 @@ class ChooseCategoryState extends State<ChooseCategory> {
                     onPressed: () => Student.studyingCategory == 0 &&
                             Student.subscription == true
                         ? setState(() => _selectedCategory = "Advanced")
-                        : null,
+                        : canChooseAnotherCategory == true
+                            ? setState(() => _selectedCategory = "Advanced")
+                            : null,
                     color:
                         _selectedCategory == "Advanced" ? brown : Colors.white,
                     textColor:
@@ -151,14 +166,17 @@ class ChooseCategoryState extends State<ChooseCategory> {
                 )
               ],
             )),
-            Student.studyingCategory == 0 && Student.subscription == true
+            (Student.studyingCategory == 0 ||
+                        canChooseAnotherCategory == true) &&
+                    Student.subscription == true
                 ? Container(
                     margin: const EdgeInsets.only(top: 100.0, bottom: 30.0),
                     width: screen(context).width * 0.8,
                     child: RaisedButton(
                       padding:
                           EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                      onPressed: _selectedCategory == ""
+                      onPressed: _selectedCategory == "" ||
+                              _selectedCategory == Student.studyingCategoryLabel
                           ? null
                           : () async {
                               try {
@@ -181,17 +199,27 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                 }
 
                                 loading(context);
-                                await Student.chooseCategory(category);
+                                if (canChooseAnotherCategory == true) {
+                                  await Student.rechooseCategory(
+                                      context, category);
+                                } else {
+                                  await Student.chooseCategory(category);
+                                }
                                 Navigator.pop(context);
                                 if (Student.studyingCategory == 0) {
                                   Navigator.popAndPushNamed(
                                       context, "/choose_category");
                                 } else {
                                   if (Student.isLoaded == true) {
-                                    Navigator.popUntil(context,
-                                        ModalRoute.withName('/welcome_note'));
-                                    Navigator.pushNamed(
-                                        context, '/ready_to_play');
+                                    if (canChooseAnotherCategory == true) {
+                                      Navigator.popUntil(context,
+                                          ModalRoute.withName('/dashboard'));
+                                    } else {
+                                      Navigator.popUntil(context,
+                                          ModalRoute.withName('/welcome_note'));
+                                      Navigator.pushNamed(
+                                          context, '/ready_to_play');
+                                    }
                                   } else {
                                     Navigator.popAndPushNamed(
                                         context, '/ready_to_play');

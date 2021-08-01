@@ -23,6 +23,7 @@ class LessonsPageState extends State<LessonsPage> {
   List<Widget> _loadLessons() {
     // tutorial lessons
     tutorialLessons = courseLessons;
+    tutorialLessonsIsLoadedFromCourse = true;
     List<Widget> vids = [];
     courseLessons.forEach((lesson) {
       vids.add(renderLesson(lesson, context, () async {

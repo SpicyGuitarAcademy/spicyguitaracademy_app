@@ -165,6 +165,7 @@ class HomePageState extends State<HomePage> {
   List<Widget> _loadFreeLessons() {
     // tutorial lessons
     tutorialLessons = freeLessons;
+    tutorialLessonsIsLoadedFromCourse = false;
     List<Widget> vids = [];
     freeLessons.forEach((lesson) {
       vids.add(renderLesson(lesson, context, () {
