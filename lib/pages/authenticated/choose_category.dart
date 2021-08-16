@@ -199,11 +199,12 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                 }
 
                                 loading(context);
-                                if (canChooseAnotherCategory == true) {
+                                if (Student.takenCourses == 0 &&
+                                    Student.takenLessons == 0) {
+                                  await Student.chooseCategory(category);
+                                } else {
                                   await Student.rechooseCategory(
                                       context, category);
-                                } else {
-                                  await Student.chooseCategory(category);
                                 }
                                 Navigator.pop(context);
                                 if (Student.studyingCategory == 0) {

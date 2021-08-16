@@ -166,9 +166,11 @@ class HomePageState extends State<HomePage> {
     // tutorial lessons
     tutorialLessons = freeLessons;
     tutorialLessonsIsLoadedFromCourse = false;
+    Lessons.source = LessonSource.free;
     List<Widget> vids = [];
     freeLessons.forEach((lesson) {
       vids.add(renderLesson(lesson, context, () {
+        print('Print ${Courses.currentCourse}');
         setCurrentTutorial(lesson);
         Navigator.pushNamed(context, "/tutorial_page");
       }, courseLocked: false));

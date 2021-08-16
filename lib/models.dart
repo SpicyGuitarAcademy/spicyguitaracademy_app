@@ -16,10 +16,12 @@ class Student {
   static bool forgotPassword;
 
   static List<dynamic> notifications;
+  static int unreadNotifications;
 
   static bool subscription;
   static int daysRemaining;
   static String subscriptionPlan;
+  static bool hasUnreadNotifications;
 
   static int studyingCategory;
   static String studyingCategoryLabel;
@@ -28,7 +30,6 @@ class Student {
   static int takenLessons;
   static int allLessons;
 
-  static bool hasUnreadNotifications;
   static String subscriptionPlanLabel;
 
   static bool isLoaded = false;
@@ -152,7 +153,9 @@ class Student {
     allCourses = null;
     takenLessons = null;
     allLessons = null;
-    hasUnreadNotifications = null;
+    notifications = null;
+    unreadNotifications = 0;
+    hasUnreadNotifications = false;
     subscriptionPlanLabel = null;
     isLoaded = false;
 
@@ -230,6 +233,13 @@ class Student {
       });
 
       notifications = resp['data']['notifications'];
+      dynamic unread = resp['data']['notifications']
+          .toList()
+          .takeWhile((value) => value['status'] == 'unread');
+      unreadNotifications = unread.length;
+      if (unreadNotifications > 0) {
+        hasUnreadNotifications = true;
+      }
     } catch (e) {
       throw (e);
     }
@@ -306,7 +316,7 @@ class Student {
 
 class Auth {
   static String token;
-  static bool authenticated;
+  static bool authenticated = false;
 }
 
 class Subscription {
@@ -670,7 +680,7 @@ class Course {
 List<Lesson> courseLessons = [];
 List<Lesson> freeLessons = [];
 
-enum LessonSource { featured, normal }
+enum LessonSource { free, featured, normal }
 
 class Lessons {
   static LessonSource source;

@@ -122,7 +122,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: Text("Hi, Welcome to Spicy Guitar Academy",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.white, fontSize: 20.0))),
-                authenticated == false
+                Auth.authenticated == false
                     ? Column(
                         children: [
                           Container(

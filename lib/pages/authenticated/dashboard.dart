@@ -77,9 +77,6 @@ class DashboardState extends State<Dashboard> {
           width: screen(context).width * 0.6,
           decoration: BoxDecoration(
             color: Colors.white,
-            // borderRadius: BorderRadius.only(
-            //     bottomRight: Radius.circular(100),
-            //     topRight: Radius.circular(100)),
           ),
           child: Drawer(
             semanticLabel: "Side Navigation Bar",
@@ -146,8 +143,8 @@ class DashboardState extends State<Dashboard> {
                 }),
                 sideBarItem("assets/imgs/icons/signout_icon.svg", "Logout", () {
                   Student.signout();
-                  Navigator.popUntil(
-                      context, ModalRoute.withName('/welcome_page'));
+                  Navigator.popUntil(context, ModalRoute.withName('/'));
+                  Navigator.pushNamed(context, '/welcome_page');
                 }),
               ],
             )),

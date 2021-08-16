@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:spicyguitaracademy/models.dart';
+import 'package:soundpool/soundpool.dart';
 
 class CompletedCourses extends StatefulWidget {
   @override
@@ -10,9 +11,30 @@ class CompletedCourses extends StatefulWidget {
 }
 
 class CompletedCoursesState extends State<CompletedCourses> {
+  Soundpool pool = Soundpool(streamType: StreamType.music);
+  int soundId;
+  int streamId;
+
   @override
   void initState() {
     super.initState();
+    loadCongratsMusic();
+  }
+
+  void loadCongratsMusic() async {
+    soundId = await rootBundle
+        .load("assets/audio/congrats_audio.mp3")
+        .then((ByteData soundData) {
+      return pool.load(soundData);
+    });
+    streamId = await pool.play(soundId, repeat: 50);
+    pool.setVolume(soundId: soundId, volume: 20);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pool.dispose();
   }
 
   @override
@@ -38,7 +60,7 @@ class CompletedCoursesState extends State<CompletedCourses> {
                 "Congratulations",
                 style: TextStyle(
                   color: brown,
-                  fontSize: 40.0,
+                  fontSize: 38,
                   fontWeight: FontWeight.w400,
                 ),
                 textAlign: TextAlign.center,
@@ -47,14 +69,13 @@ class CompletedCoursesState extends State<CompletedCourses> {
                   'You have completed all lessons in ${Courses.currentCourse.title}',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20.0)),
-              Text('🎉🎉🎉', style: TextStyle(fontSize: 40.0)),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 50.0),
-                child: SvgPicture.asset(
-                  "assets/imgs/icons/payment_successful_icon.svg",
-                  matchTextDirection: true,
-                ),
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/imgs/pictures/partypopper.gif',
+                width: 100,
+                height: 100,
               ),
+              SizedBox(height: 20),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20.0),
                 width: screen(context).width,

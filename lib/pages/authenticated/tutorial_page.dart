@@ -34,9 +34,12 @@ class TutorialPageState extends State<TutorialPage> {
     //   Navigator.pop(context);
     // }
 
-    if (currentTutorial == null ||
-        Courses.currentCourse.status == false ||
-        tutorialLessons.length == 0) {
+    // this condition was put in place to restrict students from accessing
+    // courses after they've been told to await their assignment review
+    if (tutorialLessonsIsLoadedFromCourse == true &&
+        (currentTutorial == null ||
+            Courses.currentCourse.status == false ||
+            tutorialLessons.length == 0)) {
       Navigator.pop(context);
     }
 
@@ -282,7 +285,8 @@ class TutorialPageState extends State<TutorialPage> {
                               onPressed: currentTutorial.video != null
                                   ? () => setState(
                                       () => _displayscreen = Screen.video)
-                                  : null,
+                                  : () => snackbar(context,
+                                      "There is no video for this lesson, check others."),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -315,7 +319,8 @@ class TutorialPageState extends State<TutorialPage> {
                               onPressed: currentTutorial.audio != null
                                   ? () => setState(
                                       () => _displayscreen = Screen.audio)
-                                  : null,
+                                  : () => snackbar(context,
+                                      "There is no audio for this lesson, check others."),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -348,7 +353,8 @@ class TutorialPageState extends State<TutorialPage> {
                               onPressed: currentTutorial.practice != null
                                   ? () => setState(
                                       () => _displayscreen = Screen.practice)
-                                  : null,
+                                  : () => snackbar(context,
+                                      "There is no practice loop for this lesson, check others."),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -381,7 +387,8 @@ class TutorialPageState extends State<TutorialPage> {
                               onPressed: currentTutorial.tablature != null
                                   ? () => setState(
                                       () => _displayscreen = Screen.tablature)
-                                  : null,
+                                  : () => snackbar(context,
+                                      "There is no tablature for this lesson, check others."),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -506,7 +513,8 @@ class TutorialPageState extends State<TutorialPage> {
                                     textColor: Colors.white,
                                     child: Text('NEXT',
                                         style: TextStyle(fontSize: 16)))
-                                : tutorialLessonsIsLoadedFromCourse == true
+                                : (tutorialLessonsIsLoadedFromCourse == true &&
+                                        Lessons.source == LessonSource.normal)
                                     ? Courses.currentCourse.completedLessons ==
                                             Courses.currentCourse.allLessons
                                         ? MaterialButton(
@@ -516,6 +524,7 @@ class TutorialPageState extends State<TutorialPage> {
                                               // else show the completed courses page
                                               if (studyingCourses.last ==
                                                   Courses.currentCourse) {
+                                                print('True This');
                                                 Navigator.pushReplacementNamed(
                                                     context,
                                                     '/completedcategory');

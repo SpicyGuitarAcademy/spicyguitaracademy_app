@@ -50,34 +50,48 @@ class AssignmentPageState extends State<AssignmentPage> {
       error(context, "Video picker error " + e.toString());
     }
 
-    loading(context, message: 'Uploading');
+    try {
+      loading(context, message: 'Uploading');
 
-    var resp = await upload('/api/student/assignment/answer', 'video', file,
-        method: 'POST',
-        headers: {
-          'JWToken': Auth.token,
-          'cache-control': 'max-age=0, must-revalidate'
-        },
-        body: {
-          'answerId': "${Assignment.answerId}",
-          'assignment': "${Assignment.id}"
+      var resp = await upload('/api/student/assignment/answer', 'video', file,
+          method: 'POST',
+          headers: {
+            'JWToken': Auth.token,
+            'cache-control': 'max-age=0, must-revalidate'
+          },
+          body: {
+            'answerId': "${Assignment.answerId}",
+            'assignment': "${Assignment.id}",
+            'courseId': Courses.currentCourse.id.toString()
+          });
+
+      Navigator.pop(context);
+      if (resp['status'] == true) {
+        success(context, "Assignment submitted successfully.");
+        setState(() {
+          Assignment.answerVideo = resp['data']['path'];
+          shouldUpload = true;
         });
-
-    Navigator.pop(context);
-
-    if (resp['status'] == true) {
-      setState(() => Assignment.answerVideo = resp['data']['path']);
+      } else {
+        error(context, "Assignment submission failed.");
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      error(context, stripExceptions(e));
     }
   }
-  // ---------------------------------------------------
 
   _submitAnswer() async {
     try {
       loading(context, message: 'Submitting');
       await Assignment.submitAnswer(context, _answer.text);
-      setState(() => Assignment.answerNote = _answer.text);
+      setState(() {
+        Assignment.answerNote = _answer.text;
+        shouldUpload = true;
+      });
       _answer.clear();
       Navigator.pop(context);
+      success(context, "Assignment submitted successfully.");
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
@@ -267,7 +281,9 @@ class AssignmentPageState extends State<AssignmentPage> {
                             setState(() => shouldUpload = false);
                         },
                         onSubmitted: (value) {
-                          _submitAnswer();
+                          if (value.trim().isNotEmpty) {
+                            _submitAnswer();
+                          }
                         },
                         style: TextStyle(fontSize: 20.0, color: brown),
                         decoration: InputDecoration(
@@ -276,9 +292,7 @@ class AssignmentPageState extends State<AssignmentPage> {
                               ? IconButton(
                                   // upload answer
                                   onPressed: () {
-                                    // ---------------------------------------------------
                                     _uploadAnswer();
-                                    // ---------------------------------------------------
                                   },
                                   icon: Icon(
                                     Icons.attachment,
