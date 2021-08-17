@@ -294,13 +294,14 @@ class ChoosePlanState extends State<ChoosePlan> {
                       ? Container(
                           // alignment: Alignment.center,
                           // margin: const EdgeInsets.symmetric(vertical: 20.0),
-                          width: 300,
+                          width: screen(context).width * 0.8,
                           child: Text(
                             "Tap Continue to watch free lessons or to buy Special Courses.",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Color.fromRGBO(112, 112, 112, 0.6),
-                                fontSize: 16.0),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
                             strutStyle: StrutStyle(
                               fontSize: 20.0,
                               height: 1.3,

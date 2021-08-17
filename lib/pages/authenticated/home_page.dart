@@ -153,8 +153,18 @@ class HomePageState extends State<HomePage> {
           // last watched lesson
 
           // free lessons
-          Text("Free Lessons",
-              style: TextStyle(color: brown, fontWeight: FontWeight.bold)),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "FREE LESSONS",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: brown,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
 
           Container(
               width: screen(context).width,

@@ -15,11 +15,9 @@ class _WelcomePageState extends State<WelcomePage> {
   bool authenticated = false;
 
 // --------------------------------
-  // AppUpdateInfo _updateInfo;
-
-  bool _flexibleUpdateAvailable = false;
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> checkForUpdate() async {
+  Future<void> checkForNUpdate() async {
+    // action(context, 'There is an update for the app.');
     InAppUpdate.checkForUpdate().then((info) {
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
         // InAppUpdate.startFlexibleUpdate().then((_) {
@@ -38,14 +36,24 @@ class _WelcomePageState extends State<WelcomePage> {
     });
   }
 
+  AppUpdateInfo _updateInfo;
+  bool _flexibleUpdateAvailable = false;
+
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        _updateInfo = info;
+      });
+    }).catchError((e) {
+      snackbar(context, e.toString());
+    });
+  }
+
 // --------------------------------
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      checkForUpdate();
-    }
     checkAuthentication();
     getPaymentKey();
   }
@@ -117,6 +125,52 @@ class _WelcomePageState extends State<WelcomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
+                // =================================================
+                Center(
+                  child: Text('Update info: $_updateInfo'),
+                ),
+                ElevatedButton(
+                  child: Text('Check for Update'),
+                  onPressed: () => checkForUpdate(),
+                ),
+                ElevatedButton(
+                  child: Text('Perform immediate update'),
+                  onPressed: _updateInfo?.updateAvailability ==
+                          UpdateAvailability.updateAvailable
+                      ? () {
+                          InAppUpdate.performImmediateUpdate().catchError(
+                              (e) => snackbar(context, e.toString()));
+                        }
+                      : null,
+                ),
+                ElevatedButton(
+                  child: Text('Start flexible update'),
+                  onPressed: _updateInfo?.updateAvailability ==
+                          UpdateAvailability.updateAvailable
+                      ? () {
+                          InAppUpdate.startFlexibleUpdate().then((_) {
+                            setState(() {
+                              _flexibleUpdateAvailable = true;
+                            });
+                          }).catchError((e) {
+                            snackbar(context, e.toString());
+                          });
+                        }
+                      : null,
+                ),
+                ElevatedButton(
+                  child: Text('Complete flexible update'),
+                  onPressed: !_flexibleUpdateAvailable
+                      ? null
+                      : () {
+                          InAppUpdate.completeFlexibleUpdate().then((_) {
+                            snackbar(context, "Success!");
+                          }).catchError((e) {
+                            snackbar(context, e.toString());
+                          });
+                        },
+                ),
+                // =================================================
                 Container(
                     margin: const EdgeInsets.only(top: 10.0, bottom: 5.0),
                     child: Text("Hi, Welcome to Spicy Guitar Academy",
