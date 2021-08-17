@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -47,13 +49,24 @@ class DashboardState extends State<Dashboard> {
                     width: 24.0,
                     matchTextDirection: true,
                   ),
-                  Icon(
-                    Icons.fiber_manual_record,
-                    size: 14,
-                    color: Student.hasUnreadNotifications == true
-                        ? Colors.green
-                        : Colors.transparent,
-                  )
+                  Student.unreadNotifications > 0
+                      ? Container(
+                          width: 15,
+                          height: 15,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: brown,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Text(
+                            Student.unreadNotifications.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        )
+                      : SizedBox()
                 ])),
             IconButton(
                 onPressed: () => setState(() {

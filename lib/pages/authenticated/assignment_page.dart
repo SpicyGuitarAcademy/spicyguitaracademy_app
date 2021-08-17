@@ -67,13 +67,13 @@ class AssignmentPageState extends State<AssignmentPage> {
 
       Navigator.pop(context);
       if (resp['status'] == true) {
-        success(context, "Assignment submitted successfully.");
+        success(context, "Video assignment uploaded.");
         setState(() {
           Assignment.answerVideo = resp['data']['path'];
           shouldUpload = true;
         });
       } else {
-        error(context, "Assignment submission failed.");
+        error(context, "Video assignment upload failed.");
       }
     } catch (e) {
       Navigator.pop(context);
@@ -91,7 +91,7 @@ class AssignmentPageState extends State<AssignmentPage> {
       });
       _answer.clear();
       Navigator.pop(context);
-      success(context, "Assignment submitted successfully.");
+      success(context, "Text assignment submitted.");
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
@@ -287,13 +287,14 @@ class AssignmentPageState extends State<AssignmentPage> {
                         },
                         style: TextStyle(fontSize: 20.0, color: brown),
                         decoration: InputDecoration(
-                          hintText: "submit your answer",
+                          hintText: "Enter text",
                           suffix: shouldUpload == true
                               ? IconButton(
                                   // upload answer
                                   onPressed: () {
                                     _uploadAnswer();
                                   },
+                                  tooltip: "Upload assignment",
                                   icon: Icon(
                                     Icons.attachment,
                                     color: brown,
@@ -303,6 +304,7 @@ class AssignmentPageState extends State<AssignmentPage> {
                                   onPressed: () {
                                     _submitAnswer();
                                   },
+                                  tooltip: "Submit assignemnt",
                                   icon: Icon(
                                     Icons.send,
                                     color: brown,

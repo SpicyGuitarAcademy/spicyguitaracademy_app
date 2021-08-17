@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spicyguitaracademy/pages/authenticated/featured_courses_page.dart';
 import 'package:spicyguitaracademy/pages/authenticated/videoWidget.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:spicyguitaracademy/models.dart';
@@ -58,10 +59,17 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
       );
 
       if (response.verify == true) {
+        loading(context, message: 'Verifying payment');
         await Subscription.verifyFeatured().then((value) async {
+          Navigator.pop(context);
           if (Subscription.featuredpaystatus == true) {
             // update my featured courses
             await Courses.getMyFeaturedCourses(context);
+            Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
+            success(context, 'Payment verified.');
+          } else {
+            snackbar(context, 'Payment verification failed');
+            Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
           }
         });
       } else {

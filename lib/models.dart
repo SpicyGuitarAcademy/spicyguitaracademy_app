@@ -1,6 +1,7 @@
 // import 'package:sanitize_html/sanitize_html.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spicyguitaracademy/pages/authenticated/dashboard.dart';
 
 Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -539,7 +540,7 @@ class Courses {
       } else {
         Courses.currentCourse.status = false;
         if (resp['message'] != "Course already activated") {
-          snackbar(context, resp['message']);
+          snackbar(context, resp['message'], timeout: 15);
         } else {
           Courses.currentCourse.status = true;
           studyingCourses[studyingCourses.indexOf(Courses.currentCourse)] =

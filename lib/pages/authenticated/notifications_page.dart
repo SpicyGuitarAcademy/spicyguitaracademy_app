@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:spicyguitaracademy/models.dart';
+import 'package:spicyguitaracademy/pages/authenticated/dashboard.dart';
 // import 'package:spicyguitaracademy/models.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -55,12 +56,12 @@ class NotificationPageState extends State<NotificationPage> {
                 height: 5,
               ),
               element['route'] == ''
-                  ? Text(element['message'])
+                  ? Text(parseHtmlString(element['message']))
                   : InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, element['route']);
                       },
-                      child: Text(element['message']),
+                      child: Text(parseHtmlString(element['message'])),
                     ),
               SizedBox(
                 height: 5,

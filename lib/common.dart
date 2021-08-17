@@ -20,8 +20,8 @@ class AuthException {
   }
 }
 
-const String baseUrl = "https://spicyguitaracademy.com";
-// const String baseUrl = "http://10.0.2.2/sga_web";
+// const String baseUrl = "https://spicyguitaracademy.com";
+const String baseUrl = "http://10.0.2.2/sga_web";
 // const String baseUrl = "http://192.168.43.163/sga_web";
 
 const String appName = "Spicy Guitar Academy";
@@ -291,11 +291,11 @@ void error(BuildContext context, String message, {String title: 'Error'}) {
   // );
 }
 
-void snackbar(BuildContext context, String message) {
+void snackbar(BuildContext context, String message, {int timeout = 5}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 10),
+      duration: Duration(seconds: timeout),
       action: SnackBarAction(
           label: 'dismiss', textColor: Colors.white, onPressed: () {}),
     ),
