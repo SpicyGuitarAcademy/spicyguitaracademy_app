@@ -17,18 +17,25 @@ class Dashboard extends StatefulWidget {
 
 class DashboardState extends State<Dashboard> {
   int _pageIndex = 0;
+  dynamic page;
+  bool canrebuild = false;
 
   @override
   void initState() {
     super.initState();
   }
 
-  final _pages = [
-    new HomePage(),
-    new CoursesPage(),
-    new FeaturedCoursesPage(),
-    new UserProfilePage(),
-  ];
+  rebuild(index) {
+    canrebuild = true;
+    setState(() => _pageIndex = index);
+  }
+
+  // final _pages = [
+  //   new HomePage(),
+  //   new CoursesPage(),
+  //   new FeaturedCoursesPage(rebuild),
+  //   new UserProfilePage(),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,8 @@ class DashboardState extends State<Dashboard> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-                onPressed: () => Navigator.pushNamed(context, "/notification"),
+                onPressed: () => Navigator.pushNamed(context, "/notification",
+                    arguments: {'rebuild': rebuild, 'page': _pageIndex}),
                 icon: Stack(alignment: Alignment.topLeft, children: <Widget>[
                   SvgPicture.asset(
                     "assets/imgs/icons/notification_icon.svg",
@@ -84,8 +92,16 @@ class DashboardState extends State<Dashboard> {
           ],
           elevation: 0,
         ),
-        body:
-            SafeArea(minimum: EdgeInsets.all(10.0), child: _pages[_pageIndex]),
+        body: SafeArea(
+          minimum: EdgeInsets.all(10.0),
+          child: [
+            new HomePage(),
+            new CoursesPage(),
+            new FeaturedCoursesPage(),
+            new UserProfilePage(),
+          ][_pageIndex],
+          // child: _pages[_pageIndex],
+        ),
         drawer: Container(
           width: screen(context).width * 0.6,
           decoration: BoxDecoration(

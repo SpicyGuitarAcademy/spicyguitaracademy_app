@@ -9,8 +9,6 @@ import 'package:spicyguitaracademy/pages/authenticated/my_featured_courses.dart'
 import 'package:spicyguitaracademy/pages/authenticated/no_featured_courses.dart';
 
 class FeaturedCoursesPage extends StatefulWidget {
-  FeaturedCoursesPage();
-
   @override
   FeaturedCoursesPageState createState() => new FeaturedCoursesPageState();
 }
@@ -21,13 +19,13 @@ class FeaturedCoursesPageState extends State<FeaturedCoursesPage>
 
   TabController _tabController;
   int tabPageIndex = 0;
-  List<dynamic> tabPageOption = [
-    // Studying Page
-    Student.studyingCategory == 0
-        ? NoFeaturedCoursesPage()
-        : MyFeaturedCoursesPage(),
-    AllFeaturedCoursesPage()
-  ];
+  // List<dynamic> tabPageOption = [
+  //   // Studying Page
+  //   Student.studyingCategory == 0
+  //       ? NoFeaturedCoursesPage()
+  //       : MyFeaturedCoursesPage(),
+  //   AllFeaturedCoursesPage(rebuild)
+  // ];
 
   @override
   void initState() {

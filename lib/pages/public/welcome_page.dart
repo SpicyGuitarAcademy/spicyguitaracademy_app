@@ -126,50 +126,50 @@ class _WelcomePageState extends State<WelcomePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 // =================================================
-                Center(
-                  child: Text('Update info: $_updateInfo'),
-                ),
-                ElevatedButton(
-                  child: Text('Check for Update'),
-                  onPressed: () => checkForUpdate(),
-                ),
-                ElevatedButton(
-                  child: Text('Perform immediate update'),
-                  onPressed: _updateInfo?.updateAvailability ==
-                          UpdateAvailability.updateAvailable
-                      ? () {
-                          InAppUpdate.performImmediateUpdate().catchError(
-                              (e) => snackbar(context, e.toString()));
-                        }
-                      : null,
-                ),
-                ElevatedButton(
-                  child: Text('Start flexible update'),
-                  onPressed: _updateInfo?.updateAvailability ==
-                          UpdateAvailability.updateAvailable
-                      ? () {
-                          InAppUpdate.startFlexibleUpdate().then((_) {
-                            setState(() {
-                              _flexibleUpdateAvailable = true;
-                            });
-                          }).catchError((e) {
-                            snackbar(context, e.toString());
-                          });
-                        }
-                      : null,
-                ),
-                ElevatedButton(
-                  child: Text('Complete flexible update'),
-                  onPressed: !_flexibleUpdateAvailable
-                      ? null
-                      : () {
-                          InAppUpdate.completeFlexibleUpdate().then((_) {
-                            snackbar(context, "Success!");
-                          }).catchError((e) {
-                            snackbar(context, e.toString());
-                          });
-                        },
-                ),
+                // Center(
+                //   child: Text('Update info: $_updateInfo'),
+                // ),
+                // ElevatedButton(
+                //   child: Text('Check for Update'),
+                //   onPressed: () => checkForUpdate(),
+                // ),
+                // ElevatedButton(
+                //   child: Text('Perform immediate update'),
+                //   onPressed: _updateInfo?.updateAvailability ==
+                //           UpdateAvailability.updateAvailable
+                //       ? () {
+                //           InAppUpdate.performImmediateUpdate().catchError(
+                //               (e) => snackbar(context, e.toString()));
+                //         }
+                //       : null,
+                // ),
+                // ElevatedButton(
+                //   child: Text('Start flexible update'),
+                //   onPressed: _updateInfo?.updateAvailability !=
+                //           UpdateAvailability.updateAvailable
+                //       ? () {
+                //           InAppUpdate.startFlexibleUpdate().then((_) {
+                //             setState(() {
+                //               _flexibleUpdateAvailable = true;
+                //             });
+                //           }).catchError((e) {
+                //             snackbar(context, e.toString());
+                //           });
+                //         }
+                //       : null,
+                // ),
+                // ElevatedButton(
+                //   child: Text('Complete flexible update'),
+                //   onPressed: _flexibleUpdateAvailable
+                //       ? null
+                //       : () {
+                //           InAppUpdate.completeFlexibleUpdate().then((_) {
+                //             snackbar(context, "Success!");
+                //           }).catchError((e) {
+                //             snackbar(context, e.toString());
+                //           });
+                //         },
+                // ),
                 // =================================================
                 Container(
                     margin: const EdgeInsets.only(top: 10.0, bottom: 5.0),

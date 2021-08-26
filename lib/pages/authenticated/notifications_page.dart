@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:spicyguitaracademy/common.dart';
 import 'package:spicyguitaracademy/models.dart';
-import 'package:spicyguitaracademy/pages/authenticated/dashboard.dart';
 // import 'package:spicyguitaracademy/models.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -14,7 +13,8 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> {
   // properties
-  // List<dynamic> _notifications = [];
+  dynamic rebuild;
+  dynamic page;
 
   @override
   void initState() {
@@ -28,8 +28,8 @@ class NotificationPageState extends State<NotificationPage> {
       await Student.markNotificationAsRead(context, element['id']);
       await Student.getNotifications(context);
       Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pushNamed(context, '/notification');
+      setState(() {});
+      rebuild(page);
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
@@ -95,6 +95,9 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Map args = ModalRoute.of(context).settings.arguments as Map;
+    rebuild = args['rebuild'];
+    page = args['page'];
     return new Scaffold(
       backgroundColor: grey,
       appBar: AppBar(

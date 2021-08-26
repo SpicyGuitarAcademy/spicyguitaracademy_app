@@ -87,9 +87,8 @@ class AllFeaturedCoursesPageState extends State<AllFeaturedCoursesPage> {
             });
           } else {
             Navigator.pop(context);
-            Navigator.pushNamed(context, '/coursepreview_page', arguments: {
-              'course': course,
-            });
+            Navigator.pushNamed(context, '/coursepreview_page',
+                arguments: {'course': course});
           }
         } catch (e) {
           Navigator.pop(context);

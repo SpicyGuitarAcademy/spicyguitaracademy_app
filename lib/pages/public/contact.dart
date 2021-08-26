@@ -77,17 +77,53 @@ class ContactUsPageState extends State<ContactUsPage> {
                           Text('Or call: ', textAlign: TextAlign.center),
                           InkWell(
                             onTap: () async {
-                              if (await canLaunch('tel:+2347061988174')) {
+                              if (await canLaunch('tel:+2348169000486')) {
                                 await launch(
-                                  'tel:+2347061988174',
+                                  'tel:+2348169000486',
                                 );
                               } else {
                                 snackbar(
-                                    context, 'Could not open +2347061988174');
+                                    context, 'Could not open +2348169000486');
                               }
                             },
                             child: Text(
-                              "+2347061988174",
+                              "+2348169000486, ",
+                              style: TextStyle(color: brown),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              if (await canLaunch('tel:+2347080861654')) {
+                                await launch(
+                                  'tel:+2347080861654',
+                                );
+                              } else {
+                                snackbar(
+                                    context, 'Could not open +2347080861654');
+                              }
+                            },
+                            child: Text(
+                              "+2347080861654, ",
+                              style: TextStyle(color: brown),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              if (await canLaunch('tel:+2348076159020')) {
+                                await launch(
+                                  'tel:+2348076159020',
+                                );
+                              } else {
+                                snackbar(
+                                    context, 'Could not open +2348076159020');
+                              }
+                            },
+                            child: Text(
+                              "+2348076159020",
                               style: TextStyle(color: brown),
                             ),
                           ),

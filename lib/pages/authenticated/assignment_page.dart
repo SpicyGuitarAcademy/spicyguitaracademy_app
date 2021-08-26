@@ -40,9 +40,9 @@ class AssignmentPageState extends State<AssignmentPage> {
 
   // ---------------------------------------------------
   _uploadAnswer() async {
+    FilePickerResult result;
     try {
-      FilePickerResult result =
-          await FilePicker.platform.pickFiles(type: FileType.video);
+      result = await FilePicker.platform.pickFiles(type: FileType.video);
       if (result != null) {
         file = File(result.files.single.path);
       }
@@ -51,29 +51,31 @@ class AssignmentPageState extends State<AssignmentPage> {
     }
 
     try {
-      loading(context, message: 'Uploading');
+      if (result != null) {
+        loading(context, message: 'Uploading');
 
-      var resp = await upload('/api/student/assignment/answer', 'video', file,
-          method: 'POST',
-          headers: {
-            'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
-          },
-          body: {
-            'answerId': "${Assignment.answerId}",
-            'assignment': "${Assignment.id}",
-            'courseId': Courses.currentCourse.id.toString()
+        var resp = await upload('/api/student/assignment/answer', 'video', file,
+            method: 'POST',
+            headers: {
+              'JWToken': Auth.token,
+              'cache-control': 'max-age=0, must-revalidate'
+            },
+            body: {
+              'answerId': "${Assignment.answerId}",
+              'assignment': "${Assignment.id}",
+              'courseId': Courses.currentCourse.id.toString()
+            });
+
+        Navigator.pop(context);
+        if (resp['status'] == true) {
+          success(context, "Video assignment uploaded.");
+          setState(() {
+            Assignment.answerVideo = resp['data']['path'];
+            shouldUpload = true;
           });
-
-      Navigator.pop(context);
-      if (resp['status'] == true) {
-        success(context, "Video assignment uploaded.");
-        setState(() {
-          Assignment.answerVideo = resp['data']['path'];
-          shouldUpload = true;
-        });
-      } else {
-        error(context, "Video assignment upload failed.");
+        } else {
+          error(context, "Video assignment upload failed.");
+        }
       }
     } catch (e) {
       Navigator.pop(context);

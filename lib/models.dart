@@ -238,6 +238,7 @@ class Student {
           .toList()
           .takeWhile((value) => value['status'] == 'unread');
       unreadNotifications = unread.length;
+      print(unreadNotifications);
       if (unreadNotifications > 0) {
         hasUnreadNotifications = true;
       }
@@ -456,12 +457,11 @@ class Courses {
 
   static getAllCourses(context) async {
     try {
-      var resp = await request('/api/student/courses/all',
-          method: 'GET',
-          headers: {
-            'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
-          });
+      var resp =
+          await request('/api/student/courses/all', method: 'GET', headers: {
+        'JWToken': Auth.token,
+        'cache-control': 'public, max-age=604800, must-revalidate'
+      });
 
       // beginners
       beginnersCourses = [];
@@ -503,7 +503,7 @@ class Courses {
           method: 'GET',
           headers: {
             'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
+            'cache-control': 'private, max-age=2592000, must-revalidate'
           });
       List<dynamic> courses = resp['data'] ?? [];
       studyingCourses = [];
@@ -563,7 +563,7 @@ class Courses {
           method: 'GET',
           headers: {
             'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
+            'cache-control': 'public, max-age=604800, must-revalidate'
           });
 
       List<dynamic> courses = resp['data'] ?? [];
@@ -587,7 +587,7 @@ class Courses {
           method: 'GET',
           headers: {
             'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
+            'cache-control': 'private, max-age=86400, must-revalidate'
           });
       List<dynamic> courses = resp['data'] ?? [];
       myFeaturedCourses = [];
@@ -688,12 +688,11 @@ class Lessons {
 
   static getFreeLessons(context) async {
     try {
-      var resp = await request('/api/student/freelessons',
-          method: 'GET',
-          headers: {
-            'JWToken': Auth.token,
-            'cache-control': 'max-age=0, must-revalidate'
-          });
+      var resp =
+          await request('/api/student/freelessons', method: 'GET', headers: {
+        'JWToken': Auth.token,
+        'cache-control': 'public, max-age=2592000, must-revalidate'
+      });
       List<dynamic> lessons = resp['data'] ?? [];
       freeLessons = [];
       lessons.forEach((lesson) {

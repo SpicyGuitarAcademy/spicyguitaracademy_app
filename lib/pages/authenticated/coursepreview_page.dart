@@ -65,7 +65,11 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
           if (Subscription.featuredpaystatus == true) {
             // update my featured courses
             await Courses.getMyFeaturedCourses(context);
-            Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
+            featuredCourses
+                .firstWhere((element) => element.id == course.id)
+                .status = true;
+            Navigator.popUntil(context, ModalRoute.withName('/ready_to_play'));
+            Navigator.pushReplacementNamed(context, '/dashboard');
             success(context, 'Payment verified.');
           } else {
             snackbar(context, 'Payment verification failed');
@@ -174,7 +178,7 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
                           ],
                         ),
 
-                        SizedBox(height: 5),
+                        SizedBox(height: 100),
                       ],
                     )),
               ])),

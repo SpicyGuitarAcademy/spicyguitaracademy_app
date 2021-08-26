@@ -331,7 +331,7 @@ class UserProfilePageState extends State<UserProfilePage> {
                           padding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 25),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/contactus');
+                            Navigator.pushNamed(context, '/help');
                           },
                           color: Colors.white,
                           textColor: brown,
@@ -362,10 +362,7 @@ class UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
 
-        // Make-do spacer
-        Container(
-          margin: EdgeInsets.only(bottom: 30),
-        ),
+        SizedBox(height: 30),
       ])),
     );
   }

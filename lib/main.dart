@@ -5,6 +5,8 @@ import 'package:spicyguitaracademy/pages/authenticated/completed_courses.dart';
 import 'package:spicyguitaracademy/pages/authenticated/coursepreview_page.dart';
 import 'package:spicyguitaracademy/pages/authenticated/editpassword_page.dart';
 import 'package:spicyguitaracademy/pages/authenticated/forums_page.dart';
+import 'package:spicyguitaracademy/pages/authenticated/helpdetails_page.dart';
+import 'package:spicyguitaracademy/pages/authenticated/userprofile_page.dart';
 import 'package:spicyguitaracademy/pages/public/contact.dart';
 import 'package:spicyguitaracademy/pages/authenticated/editprofile_page.dart';
 import 'package:spicyguitaracademy/pages/public/forgot_password.dart';
@@ -49,6 +51,8 @@ class SpicyGuitarAcademy extends StatelessWidget {
     // precacheImage(AssetImage("assets/imgs/icons/spicy_guitar_logo.png"), context);
     // width: DeviceUtil.getScreenWidth(context),
     // height: DeviceUtil.getScreenHeight(context),
+
+    // dynamic dashboard = new DashboardState();
 
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -168,6 +172,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
             new CoursePreviewPage(),
         '/notification': (BuildContext context) => new NotificationPage(),
         '/help': (BuildContext context) => new HelpPage(),
+        '/helpdetail': (BuildContext context) => new HelpDetailsPage(),
         '/settings': (BuildContext context) => new SettingsPage(),
         '/forums': (BuildContext context) => new ForumsPage(),
         '/assignment_page': (BuildContext context) => new AssignmentPage(),

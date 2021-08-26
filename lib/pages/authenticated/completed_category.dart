@@ -27,7 +27,7 @@ class CompletedCategoryState extends State<CompletedCategory> {
         .then((ByteData soundData) {
       return pool.load(soundData);
     });
-    streamId = await pool.play(soundId, repeat: 50);
+    streamId = await pool.play(soundId, repeat: 5);
     pool.setVolume(soundId: soundId, volume: 20);
   }
 

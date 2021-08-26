@@ -80,7 +80,7 @@ class ForumsPageState extends State<ForumsPage> {
   sendMessage() async {
     try {
       loading(context);
-      // print(replyId);
+      print(replyId);
       await Forum.submitMessage(context, _message.text, replyId.toString());
       await loadForumMessages();
       _message.clear();
