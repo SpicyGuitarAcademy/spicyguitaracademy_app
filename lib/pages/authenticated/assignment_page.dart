@@ -74,7 +74,8 @@ class AssignmentPageState extends State<AssignmentPage> {
             shouldUpload = true;
           });
         } else {
-          error(context, "Video assignment upload failed.");
+          error(context, resp['message']);
+          // error(context, "Video assignment upload failed.");
         }
       }
     } catch (e) {
