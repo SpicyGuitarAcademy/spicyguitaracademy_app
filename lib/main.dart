@@ -1,113 +1,196 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/models/StudentModel.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/completed_category.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/completed_courses.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/coursepreview_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/editpassword_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/forums_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/helpdetails_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/userprofile_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/contact.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/editprofile_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/forgot_password.dart';
+import 'package:spicyguitaracademy_app/pages/public/reset_password.dart';
+
+import 'package:spicyguitaracademy_app/pages/public/terms_and_condition.dart';
+import 'package:spicyguitaracademy_app/pages/public/landing_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/verify_email.dart';
+import 'package:spicyguitaracademy_app/pages/public/welcome_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/register_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/login_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/welcome_note.dart';
+
+import 'package:spicyguitaracademy_app/pages/authenticated/choose_plan.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/successful_transaction.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/failed_transaction.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/ready_to_play.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/start_loading.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/choose_category.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/dashboard.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/search_page.dart';
+// import 'package:spicyguitaracademy_app/pages/authenticated/rechoose_plan.dart';
+// import 'package:spicyguitaracademy_app/pages/authenticated/rechoose_category.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/invite_friend.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/lessons_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/notifications_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/tutorial_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/settings_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/help_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/assignment_page.dart';
 
 void main() {
-  runApp(MyApp());
+  // runApp(
+  //   MultiProvider(
+  //     providers: [
+  //       ChangeNotifierProvider(create: (context) => StudentModel()),
+  //     ],
+  //     child: SpicyGuitarAcademy(),
+  //   ),
+  // );
+
+  runApp(SpicyGuitarAcademy());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class SpicyGuitarAcademy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    // cache
+    // precacheImage(AssetImage("assets/imgs/icons/spicy_guitar_logo.png"), context);
+    // width: DeviceUtil.getScreenWidth(context),
+    // height: DeviceUtil.getScreenHeight(context),
+
+    // dynamic dashboard = new DashboardState();
+
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+        // colors
+        primaryColor: Color(0xFF6B2B14),
+        accentColor: Color(0xFF471D0E),
+        // buttonColor: Color(0xFF6B2B14),
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+        inputDecorationTheme: InputDecorationTheme(
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+          contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+          errorMaxLines: 3,
 
-  final String title;
+          fillColor: Color(0xFF707070),
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+          hintStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
           //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          labelStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
+
+          // normal
+          border: UnderlineInputBorder(
+            borderSide: const BorderSide(color: Color(0xFF707070)),
+          ),
+
+          // focused
+          focusedBorder: UnderlineInputBorder(
+            borderSide: const BorderSide(color: Color(0xFF471D0E)),
+          ),
+
+          // errors
+          errorBorder: UnderlineInputBorder(
+            borderSide: const BorderSide(color: Colors.red),
+          ),
         ),
+
+        // textButtonTheme: TextButtonThemeData(
+        //   style: ButtonStyle(
+        //     foregroundColor: brown,
+        //   )
+        // ),
+
+        primaryColorDark: Color(0xFF471D0E),
+
+        scaffoldBackgroundColor: Color(0xFFF3F3F3),
+
+        buttonTheme: ButtonThemeData(
+          buttonColor: Color(0xFF6B2B14),
+          focusColor: Color(0xFF471D0E),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          layoutBehavior: ButtonBarLayoutBehavior.padded,
+          splashColor: Color(0xFF471D0E),
+          shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(5.0),
+              side: BorderSide(color: Color(0xFF6B2B14))),
+        ),
+
+        // brightness
+        brightness: Brightness.light,
+
+        // cursorColor: Color(0xFF6B2B14),
+
+        focusColor: Color(0xFF6B2B14),
+
+        fontFamily: "Poppins",
+
+        // text themes
+        textTheme: TextTheme(
+
+            // headline6: TextStyle(
+            //   color: Color(0xFF6B2B14),
+            //   fontSize: 20.0
+            // ),
+
+            // overline: TextStyle(
+            //   color: Color(0xFF6B2B14),
+            //   fontSize: 40.0
+            // ),
+
+            bodyText2: TextStyle(
+                color: Color(0xFF707070),
+                fontSize: 16.0,
+                fontFamily: 'Poppins')),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => new LandingPage(), // landing_page
+        '/welcome_page': (BuildContext context) => new WelcomePage(),
+        '/register': (BuildContext context) => new RegisterPage(),
+        '/terms_and_condition': (BuildContext context) =>
+            new TermsAndCondition(),
+        // '/privacy': (BuildContext context) => new PrivacyPolicy(),
+        '/login': (BuildContext context) => new LoginPage(),
+        '/forgot_password': (BuildContext context) => new ForgotPasswordPage(),
+        '/verify': (BuildContext context) => new VerifyPage(),
+        '/resetpassword': (BuildContext context) => new ResetPasswordPage(),
+        '/welcome_note': (BuildContext context) => new WelcomeNotePage(),
+        '/choose_plan': (BuildContext context) => new ChoosePlan(),
+        '/successful_transaction': (BuildContext context) =>
+            new SuccessfulTransaction(),
+        '/failed_transaction': (BuildContext context) =>
+            new FailedTransaction(),
+        '/ready_to_play': (BuildContext context) =>
+            new ReadyToPlayTransaction(),
+        '/start_loading': (BuildContext context) => new StartLoading(),
+        '/choose_category': (BuildContext context) => new ChooseCategory(),
+        '/dashboard': (BuildContext context) => new Dashboard(),
+        '/search_page': (BuildContext context) => new SearchPage(),
+        // '/rechoose_plan': (BuildContext context) => new ReChoosePlan(),
+        // '/rechoose_category': (BuildContext context) => new ReChooseCategory(),
+        '/invite_friend': (BuildContext context) => new InviteFriend(),
+        '/lessons_page': (BuildContext context) => new LessonsPage(),
+        '/tutorial_page': (BuildContext context) => new TutorialPage(),
+        '/coursepreview_page': (BuildContext context) =>
+            new CoursePreviewPage(),
+        '/notification': (BuildContext context) => new NotificationPage(),
+        '/help': (BuildContext context) => new HelpPage(),
+        '/helpdetail': (BuildContext context) => new HelpDetailsPage(),
+        '/settings': (BuildContext context) => new SettingsPage(),
+        '/forums': (BuildContext context) => new ForumsPage(),
+        '/assignment_page': (BuildContext context) => new AssignmentPage(),
+        '/contactus': (BuildContext context) => new ContactUsPage(),
+        '/editprofile': (BuildContext context) => new EditProfilePage(),
+        '/editpassword': (BuildContext context) => new EditPasswordPage(),
+        '/completedcourses': (BuildContext context) => new CompletedCourses(),
+        '/completedcategory': (BuildContext context) => new CompletedCategory(),
+      },
     );
   }
 }

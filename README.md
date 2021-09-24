@@ -1,6 +1,6 @@
 # spicyguitaracademy_app
 
-A new Flutter project.
+Mobile App for Spicy Guitar Academy.
 
 ## Getting Started
 
