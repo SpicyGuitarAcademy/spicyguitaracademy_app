@@ -2,13 +2,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/providers/StudentNotifications.dart';
+import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
+import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 
-import 'package:spicyguitaracademy_app/common.dart';
-import 'package:spicyguitaracademy_app/models.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/home_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/courses_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/featured_courses_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/userprofile_page.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/widgets/back_button.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -17,8 +23,9 @@ class Dashboard extends StatefulWidget {
 
 class DashboardState extends State<Dashboard> {
   int _pageIndex = 0;
-  dynamic page;
-  bool canrebuild = false;
+
+  bool? hasFetchedNotifications = false;
+  bool? hasFetchedStudentStats = false;
 
   @override
   void initState() {
@@ -26,177 +33,210 @@ class DashboardState extends State<Dashboard> {
   }
 
   rebuild(index) {
-    canrebuild = true;
     setState(() => _pageIndex = index);
   }
 
-  // final _pages = [
-  //   new HomePage(),
-  //   new CoursesPage(),
-  //   new FeaturedCoursesPage(rebuild),
-  //   new UserProfilePage(),
-  // ];
-
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        // key: dashboardScaffoldKey,
-        backgroundColor: grey,
-        appBar: AppBar(
-          toolbarHeight: 60,
-          iconTheme: IconThemeData(color: brown),
-          backgroundColor: grey,
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-                onPressed: () => Navigator.pushNamed(context, "/notification",
-                    arguments: {'rebuild': rebuild, 'page': _pageIndex}),
-                icon: Stack(alignment: Alignment.topLeft, children: <Widget>[
-                  SvgPicture.asset(
-                    "assets/imgs/icons/notification_icon.svg",
-                    width: 24.0,
-                    matchTextDirection: true,
-                  ),
-                  Student.unreadNotifications! > 0
-                      ? Container(
-                          width: 15,
-                          height: 15,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: brown,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Text(
-                            Student.unreadNotifications.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        )
-                      : SizedBox()
-                ])),
-            IconButton(
-                onPressed: () => setState(() {
-                      _pageIndex = 3;
-                    }),
-                icon: Center(
-                    child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: brown,
-                        backgroundImage: NetworkImage(
-                            '$baseUrl/${Student.avatar}',
+    return Consumer<Student>(builder: (BuildContext context, student, child) {
+      return Consumer<StudentSubscription>(
+          builder: (BuildContext context, studentSubscription, child) {
+        return Consumer<StudentStudyStatistics>(
+            builder: (BuildContext context, studentStats, child) {
+          return Consumer<StudentNotifications>(
+              builder: (BuildContext context, studentNotifications, child) {
+            if (!hasFetchedNotifications!) {
+              studentNotifications.getNotifications();
+              hasFetchedNotifications = true;
+            }
+
+            if (!hasFetchedStudentStats!) {
+              studentStats.getStudentCategoryAndStats(studentSubscription);
+              hasFetchedStudentStats = true;
+            }
+
+            return new Scaffold(
+                // key: dashboardScaffoldKey,
+                backgroundColor: grey,
+                appBar: AppBar(
+                  toolbarHeight: 60,
+                  iconTheme: IconThemeData(color: brown),
+                  backgroundColor: grey,
+                  centerTitle: true,
+                  actions: <Widget>[
+                    IconButton(
+                        onPressed: () => Navigator.pushNamed(
+                                context, "/notification", arguments: {
+                              'rebuild': rebuild,
+                              'page': _pageIndex
+                            }),
+                        icon: Stack(
+                            alignment: Alignment.topLeft,
+                            children: <Widget>[
+                              SvgPicture.asset(
+                                "assets/imgs/icons/notification_icon.svg",
+                                width: 24.0,
+                                matchTextDirection: true,
+                              ),
+                              studentNotifications.unreadNotifications! > 0
+                                  ? Container(
+                                      width: 15,
+                                      height: 15,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: brown,
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Text(
+                                        studentNotifications.unreadNotifications
+                                            .toString(),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox()
+                            ])),
+                    IconButton(
+                        onPressed: () => setState(() {
+                              _pageIndex = 3;
+                            }),
+                        icon: Center(
+                            child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: brown,
+                          backgroundImage: NetworkImage(
+                            '$baseUrl/${student.avatar}',
                             headers: {
                               'cache-control': 'max-age=0, must-revalidate'
-                            }))))
-          ],
-          elevation: 0,
-        ),
-        body: SafeArea(
-          minimum: EdgeInsets.all(10.0),
-          child: [
-            new HomePage(),
-            new CoursesPage(),
-            new FeaturedCoursesPage(),
-            new UserProfilePage(),
-          ][_pageIndex],
-          // child: _pages[_pageIndex],
-        ),
-        drawer: Container(
-          width: screen(context).width * 0.6,
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-          child: Drawer(
-            semanticLabel: "Side Navigation Bar",
-            child: SingleChildScrollView(
-                child: Column(
-              children: <Widget>[
-                SizedBox(height: 40),
-                Container(
-                  alignment: Alignment.topRight,
-                  margin: EdgeInsets.only(right: 10.0),
-                  child: backButton(
-                    context,
-                    padding: 10,
-                    radius: 12.0,
+                            },
+                          ),
+                        )))
+                  ],
+                  elevation: 0,
+                ),
+                body: SafeArea(
+                  minimum: EdgeInsets.all(10.0),
+                  child: [
+                    new HomePage(),
+                    new CoursesPage(),
+                    new FeaturedCoursesPage(),
+                    new UserProfilePage(),
+                  ][_pageIndex],
+                ),
+                drawer: Container(
+                  width: screen(context).width * 0.6,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Drawer(
+                    semanticLabel: "Side Navigation Bar",
+                    child: SingleChildScrollView(
+                        child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 40),
+                        Container(
+                          alignment: Alignment.topRight,
+                          margin: EdgeInsets.only(right: 10.0),
+                          child: backButton(
+                            context,
+                            padding: 10,
+                            radius: 12.0,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: brown,
+                          backgroundImage: NetworkImage(
+                            '$baseUrl/${student.avatar}',
+                            headers: {
+                              'cache-control': 'max-age=0, must-revalidate'
+                            },
+                          ),
+                        ),
+                        Text("${student.firstname} ${student.lastname}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18.0,
+                                color: darkgrey)),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 1.5, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                              color: brown),
+                          child: Text(
+                            "${studentStats.takenCourses} of ${studentStats.allCourses}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        sideBarItem(
+                            "assets/imgs/icons/sidebar_home_icon.svg", "Home",
+                            () {
+                          setState(() {
+                            _pageIndex = 0;
+                          });
+                        }),
+                        sideBarItem("assets/imgs/icons/sidebar_video_icon.svg",
+                            "Tutorial", () {
+                          Navigator.pushNamed(context, '/tutorial_page');
+                        }),
+                        sideBarItem(
+                            "assets/imgs/icons/message_icon.svg", "Forum", () {
+                          Navigator.pushNamed(context, '/forums');
+                        }, width: 20),
+                        // sideBarItem("assets/imgs/icons/settings_icon.svg", "Settings",
+                        //     () {
+                        //   Navigator.pushNamed(context, '/settings');
+                        // }),
+                        sideBarItem("assets/imgs/icons/contactus_icon.svg",
+                            "Contact Us", () {
+                          Navigator.pushNamed(context, '/contactus');
+                        }),
+                        sideBarItem(
+                            "assets/imgs/icons/signout_icon.svg", "Logout", () {
+                          student.signout();
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                          Navigator.pushNamed(context, '/welcome_page');
+                        }),
+                      ],
+                    )),
                   ),
                 ),
-                SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: brown,
-                  backgroundImage: NetworkImage('$baseUrl/${Student.avatar}',
-                      headers: {'cache-control': 'max-age=0, must-revalidate'}),
-                ),
-                Text("${Student.firstname} ${Student.lastname}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 18.0,
-                        color: darkgrey)),
-                Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 1.5, horizontal: 15),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: brown),
-                    child: Text(
-                      "${Student.takenCourses} of ${Student.allCourses}",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-                SizedBox(height: 20),
-                sideBarItem("assets/imgs/icons/sidebar_home_icon.svg", "Home",
-                    () {
-                  setState(() {
-                    _pageIndex = 0;
-                  });
-                }),
-                sideBarItem(
-                    "assets/imgs/icons/sidebar_video_icon.svg", "Tutorial", () {
-                  Navigator.pushNamed(context, '/tutorial_page');
-                }),
-                sideBarItem("assets/imgs/icons/message_icon.svg", "Forum", () {
-                  Navigator.pushNamed(context, '/forums');
-                }, width: 20),
-                // sideBarItem("assets/imgs/icons/settings_icon.svg", "Settings",
-                //     () {
-                //   Navigator.pushNamed(context, '/settings');
-                // }),
-                sideBarItem(
-                    "assets/imgs/icons/contactus_icon.svg", "Contact Us", () {
-                  Navigator.pushNamed(context, '/contactus');
-                }),
-                sideBarItem("assets/imgs/icons/signout_icon.svg", "Logout", () {
-                  Student.signout();
-                  Navigator.popUntil(context, ModalRoute.withName('/'));
-                  Navigator.pushNamed(context, '/welcome_page');
-                }),
-              ],
-            )),
-          ),
-        ),
 
-        // bottom navigation bar
-        bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.white,
-          currentIndex: _pageIndex,
-          iconSize: 20.0,
-          onTap: (int index) {
-            setState(() {
-              _pageIndex = index;
-            });
-          },
-          items: [
-            bottomNavBarItem('Home', 'assets/imgs/icons/home_icon.svg'),
-            bottomNavBarItem('Courses', 'assets/imgs/icons/courses_icon.svg'),
-            bottomNavBarItem('Featured', 'assets/imgs/icons/video_icon.svg'),
-            bottomNavBarItem('Profile', 'assets/imgs/icons/user_icon.svg'),
-          ],
-        ));
+                // bottom navigation bar
+                bottomNavigationBar: BottomNavigationBar(
+                  selectedItemColor: Colors.white,
+                  currentIndex: _pageIndex,
+                  iconSize: 20.0,
+                  onTap: (int index) {
+                    setState(() {
+                      _pageIndex = index;
+                    });
+                  },
+                  items: [
+                    bottomNavBarItem('Home', 'assets/imgs/icons/home_icon.svg'),
+                    bottomNavBarItem(
+                        'Courses', 'assets/imgs/icons/courses_icon.svg'),
+                    bottomNavBarItem(
+                        'Featured', 'assets/imgs/icons/video_icon.svg'),
+                    bottomNavBarItem(
+                        'Profile', 'assets/imgs/icons/user_icon.svg'),
+                  ],
+                ));
+          });
+        });
+      });
+    });
   }
 
   ListTile sideBarItem(String asset, String title, Function callback,

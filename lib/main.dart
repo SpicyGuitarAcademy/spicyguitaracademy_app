@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:spicyguitaracademy_app/models/StudentModel.dart';
+import 'package:spicyguitaracademy_app/providers/Assignment.dart';
+import 'package:spicyguitaracademy_app/providers/Courses.dart';
+import 'package:spicyguitaracademy_app/providers/Lessons.dart';
+import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/providers/StudentAssignments.dart';
+import 'package:spicyguitaracademy_app/providers/StudentNotifications.dart';
+import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
+import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
+import 'package:spicyguitaracademy_app/providers/Subscription.dart';
+import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
+
+// pages
 import 'package:spicyguitaracademy_app/pages/authenticated/completed_category.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/completed_courses.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/coursepreview_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/editpassword_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/forums_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/helpdetails_page.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/userprofile_page.dart';
+// import 'package:spicyguitaracademy_app/pages/authenticated/userprofile_page.dart';
 import 'package:spicyguitaracademy_app/pages/public/contact.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/editprofile_page.dart';
 import 'package:spicyguitaracademy_app/pages/public/forgot_password.dart';
@@ -41,23 +52,32 @@ import 'package:spicyguitaracademy_app/pages/authenticated/help_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/assignment_page.dart';
 
 void main() {
-  // runApp(
-  //   MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(create: (context) => StudentModel()),
-  //     ],
-  //     child: SpicyGuitarAcademy(),
-  //   ),
-  // );
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => Student()),
+        ChangeNotifierProvider(create: (context) => StudentSubscription()),
+        ChangeNotifierProvider(create: (context) => StudentStudyStatistics()),
+        ChangeNotifierProvider(create: (context) => StudentNotifications()),
+        ChangeNotifierProvider(create: (context) => Subscription()),
+        ChangeNotifierProvider(create: (context) => Courses()),
+        ChangeNotifierProvider(create: (context) => StudentAssignments()),
+        ChangeNotifierProvider(create: (context) => Lessons()),
+        ChangeNotifierProvider(create: (context) => Tutorial()),
+      ],
+      child: SpicyGuitarAcademy(),
+    ),
+  );
 
-  runApp(SpicyGuitarAcademy());
+  // runApp(SpicyGuitarAcademy());
 }
 
 class SpicyGuitarAcademy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // cache
-    // precacheImage(AssetImage("assets/imgs/icons/spicy_guitar_logo.png"), context);
+    precacheImage(
+        AssetImage("assets/imgs/icons/spicy_guitar_logo.png"), context);
     // width: DeviceUtil.getScreenWidth(context),
     // height: DeviceUtil.getScreenHeight(context),
 
@@ -82,7 +102,6 @@ class SpicyGuitarAcademy extends StatelessWidget {
 
           hintStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
 
-          //
           labelStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
 
           // normal
@@ -172,8 +191,6 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/choose_category': (BuildContext context) => new ChooseCategory(),
         '/dashboard': (BuildContext context) => new Dashboard(),
         '/search_page': (BuildContext context) => new SearchPage(),
-        // '/rechoose_plan': (BuildContext context) => new ReChoosePlan(),
-        // '/rechoose_category': (BuildContext context) => new ReChooseCategory(),
         '/invite_friend': (BuildContext context) => new InviteFriend(),
         '/lessons_page': (BuildContext context) => new LessonsPage(),
         '/tutorial_page': (BuildContext context) => new TutorialPage(),

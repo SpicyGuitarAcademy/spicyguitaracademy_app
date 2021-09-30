@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy_app/common.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
+import 'package:chewie_audio/chewie_audio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 
-class VideoWidget extends StatefulWidget {
+class AudioWidget extends StatefulWidget {
   final bool? play;
   final String? url;
 
-  const VideoWidget({Key? key, @required this.url, @required this.play})
+  const AudioWidget({Key? key, @required this.url, @required this.play})
       : super(key: key);
 
   @override
-  _VideoWidgetState createState() => _VideoWidgetState();
+  _AudioWidgetState createState() => _AudioWidgetState();
 }
 
-class _VideoWidgetState extends State<VideoWidget> {
+class _AudioWidgetState extends State<AudioWidget> {
   VideoPlayerController? videoPlayerController;
   Future<void>? _initializeVideoPlayerFuture;
 
@@ -24,6 +23,8 @@ class _VideoWidgetState extends State<VideoWidget> {
   void initState() {
     super.initState();
     videoPlayerController = new VideoPlayerController.network(widget.url!);
+
+    // videoPlayerController.
 
     _initializeVideoPlayerFuture =
         videoPlayerController!.initialize().then((_) {
@@ -45,24 +46,18 @@ class _VideoWidgetState extends State<VideoWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return new Container(
-              child: Chewie(
+              child: ChewieAudio(
             key: new PageStorageKey(widget.url),
-            controller: ChewieController(
+            controller: ChewieAudioController(
               videoPlayerController: videoPlayerController!,
-              aspectRatio: 3 / 2,
               // Prepare the video to be played and display the first frame
               autoInitialize: true,
               looping: false,
               autoPlay: false,
-              allowFullScreen: true,
               allowMuting: true,
               showControls: true,
+              allowPlaybackSpeedChanging: true,
               playbackSpeeds: [0.25, 0.5, 0.75, 1, 1.25],
-              deviceOrientationsOnEnterFullScreen: [
-                DeviceOrientation.landscapeLeft,
-                DeviceOrientation.landscapeRight
-              ],
-              deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
               cupertinoProgressColors: ChewieProgressColors(
                 playedColor: brown,
                 handleColor: brown,
@@ -75,15 +70,12 @@ class _VideoWidgetState extends State<VideoWidget> {
                 backgroundColor: grey,
                 bufferedColor: darkgrey,
               ),
-              placeholder: Container(
-                color: Colors.black,
-              ),
               // Errors can occur for example when trying to play a video
               // from a non-existent URL
               errorBuilder: (context, errorMessage) {
                 return Center(
                   child: Text(
-                    errorMessage,
+                    errorMessage!,
                     style: TextStyle(color: Colors.white),
                   ),
                 );
@@ -92,11 +84,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           ));
         } else {
           return Center(
-            child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(
-                  // Colors.white
-                  darkgrey),
-            ),
+            child: CircularProgressIndicator(),
           );
         }
       },

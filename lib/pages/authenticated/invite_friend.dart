@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spicyguitaracademy_app/common.dart';
-import 'package:spicyguitaracademy_app/models.dart';
+import 'package:spicyguitaracademy_app/providers/Auth.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/exceptions.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/utils/request.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class InviteFriend extends StatefulWidget {
   @override
@@ -92,7 +96,7 @@ class InviteFriendState extends State<InviteFriend> {
                                 '/api/student/invite-a-friend',
                                 method: 'POST',
                                 headers: {
-                                  'JWToken': Auth.token,
+                                  'JWToken': Auth.token!,
                                   'cache-control': 'max-age=0, must-revalidate'
                                 },
                                 body: {
@@ -107,7 +111,7 @@ class InviteFriendState extends State<InviteFriend> {
                             }
                           } on AuthException catch (e) {
                             error(context, stripExceptions(e));
-                            reAuthenticate(context);
+                            // reAuthenticate(context);
                           } catch (e) {
                             error(context, stripExceptions(e));
                           }

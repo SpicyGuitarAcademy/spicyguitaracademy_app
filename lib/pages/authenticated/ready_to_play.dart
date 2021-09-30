@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy_app/common.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
 
 class ReadyToPlayTransaction extends StatelessWidget {
   @override

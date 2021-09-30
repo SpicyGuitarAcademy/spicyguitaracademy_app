@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spicyguitaracademy_app/common.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
 
 class FailedTransaction extends StatefulWidget {
   @override
