@@ -31,6 +31,9 @@ dependencies:
   # For Http
   http: ^0.13.3
 
+  # For device info
+  device_info_plus: ^3.0.1
+
   # For state management
   provider: ^5.0.0
 

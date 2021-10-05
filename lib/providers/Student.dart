@@ -83,6 +83,39 @@ class Student extends ChangeNotifier {
     }
   }
 
+  Future verifyDevice() async {
+    try {
+      dynamic deviceInfo;
+      var resp = await request('/api/verify-device', method: 'POST', body: {
+        'device': deviceInfo
+      }, headers: {
+        'JWToken': Auth.token!,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+
+      return resp;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future resetDevice(String _token) async {
+    try {
+      dynamic deviceInfo;
+      var resp = await request('/api/reset-device', method: 'POST', body: {
+        'token': _token,
+        'device': deviceInfo
+      }, headers: {
+        'JWToken': Auth.token!,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+
+      return resp['status'];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future resetPassword(String _pass, String _cpass) async {
     var resp = await request(
       '/api/resetpassword',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/pages/public/verify_device.dart';
 import 'package:spicyguitaracademy_app/providers/Assignment.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
@@ -176,6 +177,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
             new TermsAndCondition(),
         // '/privacy': (BuildContext context) => new PrivacyPolicy(),
         '/login': (BuildContext context) => new LoginPage(),
+        '/verify-device': (BuildContext context) => new VerifyDevicePage(),
         '/forgot_password': (BuildContext context) => new ForgotPasswordPage(),
         '/verify': (BuildContext context) => new VerifyPage(),
         '/resetpassword': (BuildContext context) => new ResetPasswordPage(),

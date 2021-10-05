@@ -138,6 +138,12 @@ class LoginPageState extends State<LoginPage> {
       await student.signin(_email.text, _pass.text);
       _pass.text = "";
 
+      dynamic resp = await student.verifyDevice();
+      if (resp['status'] == false) {
+        error(context, resp['message']);
+        Navigator.pushNamed(context, '/verify-device');
+      }
+
       Navigator.pop(context);
 
       if (student.status != 'active') {
