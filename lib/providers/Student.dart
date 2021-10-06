@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spicyguitaracademy_app/providers/Auth.dart';
+import 'package:spicyguitaracademy_app/services/device_info.dart';
 import 'package:spicyguitaracademy_app/utils/request.dart';
 
 Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -85,8 +86,8 @@ class Student extends ChangeNotifier {
 
   Future verifyDevice() async {
     try {
-      dynamic deviceInfo;
-      var resp = await request('/api/verify-device', method: 'POST', body: {
+      dynamic deviceInfo = await getDeviceInfo();
+      var resp = await request('/api/device/verify', method: 'POST', body: {
         'device': deviceInfo
       }, headers: {
         'JWToken': Auth.token!,
@@ -101,8 +102,8 @@ class Student extends ChangeNotifier {
 
   Future resetDevice(String _token) async {
     try {
-      dynamic deviceInfo;
-      var resp = await request('/api/reset-device', method: 'POST', body: {
+      dynamic deviceInfo = await getDeviceInfo();
+      var resp = await request('/api/device/reset', method: 'POST', body: {
         'token': _token,
         'device': deviceInfo
       }, headers: {
@@ -110,7 +111,7 @@ class Student extends ChangeNotifier {
         'cache-control': 'max-age=0, must-revalidate'
       });
 
-      return resp['status'];
+      return resp;
     } catch (e) {
       throw (e);
     }

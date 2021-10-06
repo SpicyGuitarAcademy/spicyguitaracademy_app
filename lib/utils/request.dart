@@ -37,6 +37,7 @@ Future request(String uri,
         break;
     }
 
+    print("\n\n" + "Base Url " + baseUrl);
     print("\n\n" + "Body " + body.toString());
     print("\n\n" + method! + " " + uri + " => " + response.body + "\n\n");
 

@@ -47,7 +47,7 @@ class VerifyDevicePageState extends State<VerifyDevicePage> {
                     SizedBox(height: 40.0),
 
                     Text(
-                        'A 6 digit verification token has been sent to your email.'),
+                        'You can only use Spicy Guitar Academy on one device. A verification token has been sent to your email to continue with this device.'),
                     SizedBox(height: 20.0),
 
                     // Email field
@@ -87,16 +87,9 @@ class VerifyDevicePageState extends State<VerifyDevicePage> {
 
       var resp = await student.resetDevice(_token.text);
 
-      if (resp == true) {
+      if (resp['status'] == true) {
         Navigator.pop(context);
-
-        // if (student.hasForgottenPassword == true) {
-        //   Navigator.popAndPushNamed(context, "/resetpassword");
-        // } else if (student.isNewStudent == true) {
-        //   Navigator.popAndPushNamed(context, "/login");
-        // } else {
-        //   Navigator.popAndPushNamed(context, "/welcome_note");
-        // }
+        Navigator.pop(context);
       } else {
         Map<String, dynamic> data = {};
         String msg = "";

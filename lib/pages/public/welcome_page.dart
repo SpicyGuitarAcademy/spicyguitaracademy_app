@@ -126,17 +126,18 @@ class _WelcomePageState extends State<WelcomePage> {
 
                                   dynamic resp = await student.verifyDevice();
                                   if (resp['status'] == false) {
-                                    error(context, resp['message']);
+                                    Navigator.pop(context);
                                     Navigator.pushNamed(
                                         context, '/verify-device');
-                                  }
-
-                                  Navigator.pop(context);
-                                  if (student.status != 'active') {
-                                    Navigator.pushNamed(context, "/verify");
+                                    error(context, resp['message']);
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, "/welcome_note");
+                                    Navigator.pop(context);
+                                    if (student.status != 'active') {
+                                      Navigator.pushNamed(context, "/verify");
+                                    } else {
+                                      Navigator.pushNamed(
+                                          context, "/welcome_note");
+                                    }
                                   }
                                 } catch (e) {
                                   Navigator.pop(context);
