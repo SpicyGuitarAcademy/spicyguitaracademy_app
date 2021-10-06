@@ -142,18 +142,18 @@ class LoginPageState extends State<LoginPage> {
       if (resp['status'] == false) {
         error(context, resp['message']);
         Navigator.pushNamed(context, '/verify-device');
-      }
-
-      Navigator.pop(context);
-
-      if (student.status != 'active') {
-        Navigator.pushNamed(context, "/verify");
       } else {
-        if (Auth.reAuthenticate == true) {
-          Auth.reAuthenticate = false;
-          Navigator.pop(context);
+        Navigator.pop(context);
+
+        if (student.status != 'active') {
+          Navigator.pushNamed(context, "/verify");
         } else {
-          Navigator.pushNamed(context, "/welcome_note");
+          if (Auth.reAuthenticate == true) {
+            Auth.reAuthenticate = false;
+            Navigator.pop(context);
+          } else {
+            Navigator.pushNamed(context, "/welcome_note");
+          }
         }
       }
     } catch (e) {
