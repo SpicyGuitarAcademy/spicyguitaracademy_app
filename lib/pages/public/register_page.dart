@@ -19,6 +19,7 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController _tel = TextEditingController();
   TextEditingController _pass = TextEditingController();
   TextEditingController _cpass = TextEditingController();
+  TextEditingController _refCode = TextEditingController();
 
   // properties
   bool _agreeToTermsAndCondition = false;
@@ -143,6 +144,18 @@ class RegisterPageState extends State<RegisterPage> {
                 SizedBox(
                   height: 20.0,
                 ),
+                // Referral Code
+                TextField(
+                  controller: _refCode,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(fontSize: 20.0, color: brown),
+                  decoration: InputDecoration(
+                      labelText: "Referral Code (optional)",
+                      hintText: "Enter your referral code"),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
                 Row(mainAxisAlignment: MainAxisAlignment.start, children: <
                     Widget>[
                   Checkbox(
@@ -217,22 +230,13 @@ class RegisterPageState extends State<RegisterPage> {
         throw Exception('Please agree to the Terms and Condition.');
       }
 
-      var resp = await request('/api/register_student', method: 'POST', body: {
-        'firstname': _fname.text,
-        'lastname': _lname.text,
-        'email': _email.text,
-        'telephone': _tel.text,
-        'password': _pass.text,
-        'cpassword': _cpass.text
-      });
+      var resp = await student.signup(_fname.text, _lname.text, _email.text,
+          _tel.text, _pass.text, _cpass.text, _refCode.text);
 
       if (resp['status'] == true) {
         Navigator.pop(context);
-        // success(context, 'Registeration Successful');
-        student.email = _email.text;
-        student.isNewStudent = true;
         Navigator.popAndPushNamed(context, "/verify");
-        // Navigator.pushNamed(context, "/login");
+        success(context, 'Registeration Successful');
       } else {
         Map<String, dynamic> data = {};
         String msg = "";

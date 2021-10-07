@@ -23,13 +23,6 @@ class VerifyPageState extends State<VerifyPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Student>(builder: (BuildContext context, student, child) {
-      // if (student.hasForgottenPassword == true) {
-      //   Map args = getRouteArgs(context);
-      //   _email = args['email'];
-      // } else {
-      //   _email = student.email!;
-      // }
-
       return Scaffold(
           appBar: AppBar(
             toolbarHeight: 70,

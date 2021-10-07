@@ -16,17 +16,21 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    try {
+      Student student = context.read<Student>();
+      student.canAuthWithCachedData();
+    } catch (e) {
+      error(context, stripExceptions(e));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<Student>(builder: (context, student, child) {
-      try {
-        student.signinWithCachedData();
-      } catch (e) {
-        error(context, stripExceptions(e));
-      }
-
       return new Scaffold(
           backgroundColor: Color.fromRGBO(107, 43, 20, 0.5),
           body: Stack(children: <Widget>[
@@ -121,24 +125,23 @@ class _WelcomePageState extends State<WelcomePage> {
                               onPressed: () async {
                                 try {
                                   loading(context);
-                                  await student.signinWithCachedData(
-                                      handleClick: true);
+                                  await student.signinWithCachedData();
 
-                                  dynamic resp = await student.verifyDevice();
-                                  if (resp['status'] == false) {
-                                    Navigator.pop(context);
-                                    Navigator.pushNamed(
-                                        context, '/verify-device');
-                                    error(context, resp['message']);
+                                  // dynamic resp = await student.verifyDevice();
+                                  // if (resp['status'] == false) {
+                                  //   Navigator.pop(context);
+                                  //   Navigator.pushNamed(
+                                  //       context, '/verify-device');
+                                  //   error(context, resp['message']);
+                                  // } else {
+                                  Navigator.pop(context);
+                                  if (student.status != 'active') {
+                                    Navigator.pushNamed(context, "/verify");
                                   } else {
-                                    Navigator.pop(context);
-                                    if (student.status != 'active') {
-                                      Navigator.pushNamed(context, "/verify");
-                                    } else {
-                                      Navigator.pushNamed(
-                                          context, "/welcome_note");
-                                    }
+                                    Navigator.pushNamed(
+                                        context, "/welcome_note");
                                   }
+                                  // }
                                 } catch (e) {
                                   Navigator.pop(context);
                                   error(context, stripExceptions(e));
