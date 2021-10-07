@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spicyguitaracademy_app/services/cache_manager.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
@@ -23,12 +24,14 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void initState() {
     super.initState();
-    videoPlayerController = new VideoPlayerController.network(widget.url!);
 
-    _initializeVideoPlayerFuture =
-        videoPlayerController!.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
+    cacheManager(widget.url!).then((value) {
+      videoPlayerController = new VideoPlayerController.file(value);
+      _initializeVideoPlayerFuture =
+          videoPlayerController!.initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
     });
   }
 
@@ -95,7 +98,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             child: CircularProgressIndicator(
               valueColor: new AlwaysStoppedAnimation<Color>(
                   // Colors.white
-                  darkgrey),
+                  darkbrown),
             ),
           );
         }

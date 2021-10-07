@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spicyguitaracademy_app/services/cache_manager.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie_audio/chewie_audio.dart';
@@ -7,8 +8,10 @@ import 'package:flutter/cupertino.dart';
 class AudioWidget extends StatefulWidget {
   final bool? play;
   final String? url;
+  final bool? loop;
 
-  const AudioWidget({Key? key, @required this.url, @required this.play})
+  const AudioWidget(
+      {Key? key, @required this.url, @required this.play, @required this.loop})
       : super(key: key);
 
   @override
@@ -22,14 +25,14 @@ class _AudioWidgetState extends State<AudioWidget> {
   @override
   void initState() {
     super.initState();
-    videoPlayerController = new VideoPlayerController.network(widget.url!);
 
-    // videoPlayerController.
-
-    _initializeVideoPlayerFuture =
-        videoPlayerController!.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-      setState(() {});
+    cacheManager(widget.url!).then((value) {
+      videoPlayerController = new VideoPlayerController.file(value);
+      _initializeVideoPlayerFuture =
+          videoPlayerController!.initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
     });
   }
 
@@ -52,7 +55,7 @@ class _AudioWidgetState extends State<AudioWidget> {
               videoPlayerController: videoPlayerController!,
               // Prepare the video to be played and display the first frame
               autoInitialize: true,
-              looping: false,
+              looping: widget.loop!,
               autoPlay: false,
               allowMuting: true,
               showControls: true,
@@ -84,7 +87,9 @@ class _AudioWidgetState extends State<AudioWidget> {
           ));
         } else {
           return Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(darkbrown),
+            ),
           );
         }
       },
