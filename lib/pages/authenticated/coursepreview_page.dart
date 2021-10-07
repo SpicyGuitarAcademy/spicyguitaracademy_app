@@ -210,6 +210,9 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
                       child: Container(
                           width: screen(context).width,
                           child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.all(Radius.zero),
+                              ),
                               onPressed: () async {
                                 try {
                                   loading(context);
@@ -228,7 +231,7 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
                                 }
                               },
                               textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 10),
+                              padding: EdgeInsets.symmetric(vertical: 20),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

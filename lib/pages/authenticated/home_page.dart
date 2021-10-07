@@ -18,8 +18,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  bool? hasFetchedFreeLessons = false;
-
   @override
   void initState() {
     super.initState();
@@ -38,11 +36,6 @@ class HomePageState extends State<HomePage> {
                 builder: (BuildContext context, lessons, child) {
               return Consumer<Tutorial>(
                   builder: (BuildContext context, tutorial, child) {
-                // if (!hasFetchedFreeLessons!) {
-                //   lessons.getFreeLessons();
-                //   hasFetchedFreeLessons = true;
-                // }
-
                 return SingleChildScrollView(
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,11 +217,7 @@ class HomePageState extends State<HomePage> {
 
     freeLessons.forEach((lesson) {
       vids.add(renderLesson(lesson, context, () {
-        print('Print ${courses.currentCourse}');
-
-        // TODO: set this to the current tutorial
-        // setCurrentTutorial(lesson);
-
+        tutorial.setCurrentTutorial(lesson);
         Navigator.pushNamed(context, "/tutorial_page");
       }, courseLocked: false));
     });

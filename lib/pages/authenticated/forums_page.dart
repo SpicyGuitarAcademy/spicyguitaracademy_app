@@ -43,11 +43,25 @@ class ForumsPageState extends State<ForumsPage> {
   double? end;
   dynamic replyViewed;
 
-  bool? initPage = false;
-
   @override
   void initState() {
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    Student student = context.read<Student>();
+    StudentStudyStatistics studentStats =
+        context.read<StudentStudyStatistics>();
+    StudentSubscription studentSubscription =
+        context.read<StudentSubscription>();
+    Forum forum = context.read<Forum>();
+
+    if (studentSubscription.subscriptionPlan != "0" &&
+        studentStats.studyingCategory! > 0) {
+      canMessage = true;
+      await loadForumMessages(student, forum, studentStats);
+    }
   }
 
   String forumSubtitle(StudentSubscription studentSubscription,
@@ -309,15 +323,6 @@ class ForumsPageState extends State<ForumsPage> {
         return Consumer<StudentStudyStatistics>(
             builder: (BuildContext context, studentStats, child) {
           return Consumer<Forum>(builder: (BuildContext context, forum, child) {
-            if (!initPage!) {
-              initPage = true;
-              if (studentSubscription.subscriptionPlan != "0" &&
-                  studentStats.studyingCategory! > 0) {
-                canMessage = true;
-                loadForumMessages(student, forum, studentStats);
-              }
-            }
-
             return new Scaffold(
                 backgroundColor: grey,
                 appBar: AppBar(

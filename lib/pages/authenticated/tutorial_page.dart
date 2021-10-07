@@ -8,7 +8,8 @@ import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
-// import 'package:pdf_flutter/pdf_flutter.dart';
+// import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+import 'package:spicyguitaracademy_app/widgets/custom_pdf_viewer.dart';
 import 'package:spicyguitaracademy_app/widgets/custom_video_player.dart';
 import 'package:spicyguitaracademy_app/widgets/custom_audio_player.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
@@ -28,41 +29,45 @@ class TutorialPageState extends State<TutorialPage> {
   bool _showComment = false;
   TextEditingController _comment = new TextEditingController();
   List<Widget> _commentWidgets = [];
-
-  bool? hasInit = false;
+  // PDFDocument? _pdfDocument;
 
   @override
   void initState() {
     super.initState();
+    initiateTutorial();
+  }
 
-    // if (tutorial.tutorialLessons.length == 0) {
-    //   print('No lessons');
-    // }
+  Future initiateTutorial() async {
+    Student student = context.read<Student>();
+    Courses courses = context.read<Courses>();
+    Lessons lessons = context.read<Lessons>();
+    Tutorial tutorial = context.read<Tutorial>();
 
-    // // if (Courses.currentCourse.status == false) {
-    // //   Navigator.pop(context);
-    // // }
+    if (tutorial.tutorialLessons?.length == 0) {
+      print('No lessons');
+    }
 
-    // // this condition was put in place to restrict students from accessing
-    // // courses after they've been told to await their assignment review
-    // if (Lessons.source == LessonSource.normal &&
-    //     (tutorial.currentTutorial == null ||
-    //         Courses.currentCourse!.status == false ||
-    //         tutorialLessons.length == 0)) {
-    //   Navigator.pop(context);
-    // }
+    // this condition was put in place to restrict students from accessing
+    // courses after they've been told to await their assignment review
+    if (lessons.source == LessonSource.normal &&
+        (tutorial.currentTutorial == null ||
+            courses.currentCourse?.status == false ||
+            tutorial.tutorialLessons?.length == 0)) {
+      Navigator.pop(context);
+    }
 
-    // if (tutorial.currentTutorial?.video != null) {
-    //   _displayscreen = Screen.video;
-    // } else if (tutorial.currentTutorial?.audio != null) {
-    //   _displayscreen = Screen.audio;
-    // } else if (tutorial.currentTutorial?.tablature != null) {
-    //   _displayscreen = Screen.tablature;
-    // } else if (tutorial.currentTutorial?.practice != null) {
-    //   _displayscreen = Screen.practice;
-    // }
+    if (tutorial.currentTutorial?.video != null) {
+      _displayscreen = Screen.video;
+    } else if (tutorial.currentTutorial?.audio != null) {
+      _displayscreen = Screen.audio;
+    } else if (tutorial.currentTutorial?.tablature != null) {
+      _displayscreen = Screen.tablature;
+    } else if (tutorial.currentTutorial?.practice != null) {
+      _displayscreen = Screen.practice;
+    }
 
-    // loadUserCommentsOnThisLesson(student, tutorial);
+    // await loadPdf(tutorial);
+    await loadUserCommentsOnThisLesson(student, tutorial);
   }
 
   _submitComment(Student student, Tutorial tutorial) async {
@@ -161,6 +166,13 @@ class TutorialPageState extends State<TutorialPage> {
     }
   }
 
+  // Future loadPdf(Tutorial tutorial) async {
+  //   if (tutorial.currentTutorial!.tablature != null) {
+  //     _pdfDocument = await PDFDocument.fromURL(
+  //         "$baseUrl/${tutorial.currentTutorial!.tablature!}");
+  //   }
+  // }
+
   Widget renderDisplayScreen(Tutorial tutorial) {
     if (_displayscreen == Screen.video) {
       return Container(
@@ -192,7 +204,9 @@ class TutorialPageState extends State<TutorialPage> {
               ),
             ),
             AudioWidget(
-                play: true, url: "$baseUrl/${tutorial.currentTutorial!.audio}")
+                play: true,
+                url: "$baseUrl/${tutorial.currentTutorial!.audio}",
+                loop: false)
           ]));
     } else if (_displayscreen == Screen.practice) {
       return Container(
@@ -208,15 +222,16 @@ class TutorialPageState extends State<TutorialPage> {
             ),
             AudioWidget(
                 play: true,
-                url: "$baseUrl/${tutorial.currentTutorial!.practice}")
+                url: "$baseUrl/${tutorial.currentTutorial!.practice}",
+                loop: true)
           ]));
     } else if (_displayscreen == Screen.tablature) {
       return Container(
-          // height: screen(context).height * 0.6,
-          // child: PDF.network("$baseUrl/${tutorial.currentTutorial.tablature}")
-          );
+          height: screen(context).height * 0.6,
+          child: PdfWidget(
+              url: "$baseUrl/${tutorial.currentTutorial!.tablature}"));
     }
-    // No Audio/Video
+    // No Audio/Video/Practie/Tablature
     return Center(
         child: Icon(Icons.cancel_presentation_rounded, size: 200, color: grey));
   }
@@ -234,9 +249,9 @@ class TutorialPageState extends State<TutorialPage> {
         tutorial.setCurrentTutorial(
             tutorial.tutorialLessons!.elementAt(currentIndex + 1));
         if (lessons.source == LessonSource.normal)
-          await lessons.activateLesson(studentStats, courses);
+          await lessons.activateLesson(studentStats, courses, tutorial);
         else if (lessons.source == LessonSource.featured)
-          await lessons.activateFeaturedLesson(courses);
+          await lessons.activateFeaturedLesson(courses, tutorial);
         // then route to the lesson
         Navigator.pop(context);
         Navigator.pushReplacementNamed(context, '/tutorial_page');
@@ -261,9 +276,9 @@ class TutorialPageState extends State<TutorialPage> {
             tutorial.tutorialLessons!.elementAt(currentIndex - 1));
 
         if (lessons.source == LessonSource.normal)
-          await lessons.activateLesson(studentStats, courses);
+          await lessons.activateLesson(studentStats, courses, tutorial);
         else if (lessons.source == LessonSource.featured)
-          await lessons.activateFeaturedLesson(courses);
+          await lessons.activateFeaturedLesson(courses, tutorial);
         // then route to the lesson
         Navigator.pop(context);
         Navigator.pushReplacementNamed(context, '/tutorial_page');
@@ -285,39 +300,6 @@ class TutorialPageState extends State<TutorialPage> {
               builder: (BuildContext context, lessons, child) {
             return Consumer<Tutorial>(
                 builder: (BuildContext context, tutorial, child) {
-              if (!hasInit!) {
-                if (tutorial.tutorialLessons?.length == 0) {
-                  print('No lessons');
-                }
-
-                // if (Courses.currentCourse.status == false) {
-                //   Navigator.pop(context);
-                // }
-
-                // this condition was put in place to restrict students from accessing
-                // courses after they've been told to await their assignment review
-                if (lessons.source == LessonSource.normal &&
-                    (tutorial.currentTutorial == null ||
-                        courses.currentCourse?.status == false ||
-                        tutorial.tutorialLessons?.length == 0)) {
-                  Navigator.pop(context);
-                }
-
-                if (tutorial.currentTutorial?.video != null) {
-                  _displayscreen = Screen.video;
-                } else if (tutorial.currentTutorial?.audio != null) {
-                  _displayscreen = Screen.audio;
-                } else if (tutorial.currentTutorial?.tablature != null) {
-                  _displayscreen = Screen.tablature;
-                } else if (tutorial.currentTutorial?.practice != null) {
-                  _displayscreen = Screen.practice;
-                }
-
-                loadUserCommentsOnThisLesson(student, tutorial);
-
-                hasInit = true;
-              }
-
               return SafeArea(
                   top: true,
                   child: Scaffold(

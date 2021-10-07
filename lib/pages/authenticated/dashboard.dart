@@ -45,16 +45,6 @@ class DashboardState extends State<Dashboard> {
             builder: (BuildContext context, studentStats, child) {
           return Consumer<StudentNotifications>(
               builder: (BuildContext context, studentNotifications, child) {
-            if (!hasFetchedNotifications!) {
-              studentNotifications.getNotifications();
-              hasFetchedNotifications = true;
-            }
-
-            if (!hasFetchedStudentStats!) {
-              studentStats.getStudentCategoryAndStats(studentSubscription);
-              hasFetchedStudentStats = true;
-            }
-
             return new Scaffold(
                 // key: dashboardScaffoldKey,
                 backgroundColor: grey,
@@ -65,11 +55,8 @@ class DashboardState extends State<Dashboard> {
                   centerTitle: true,
                   actions: <Widget>[
                     IconButton(
-                        onPressed: () => Navigator.pushNamed(
-                                context, "/notification", arguments: {
-                              'rebuild': rebuild,
-                              'page': _pageIndex
-                            }),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, "/notification"),
                         icon: Stack(
                             alignment: Alignment.topLeft,
                             children: <Widget>[
@@ -203,7 +190,8 @@ class DashboardState extends State<Dashboard> {
                           Navigator.pushNamed(context, '/contactus');
                         }),
                         sideBarItem(
-                            "assets/imgs/icons/signout_icon.svg", "Logout", () {
+                            "assets/imgs/icons/signout_icon.svg", "Sign Out",
+                            () {
                           student.signout();
                           Navigator.popUntil(context, ModalRoute.withName('/'));
                           Navigator.pushNamed(context, '/welcome_page');

@@ -22,14 +22,14 @@ class NotificationPageState extends State<NotificationPage> {
   }
 
   markAsRead(
-      context, element, StudentNotifications studentNotifications) async {
+      context, notification, StudentNotifications studentNotifications) async {
     try {
       loading(context);
-      await studentNotifications.markNotificationAsRead(element['id']);
-      await studentNotifications.getNotifications();
+      await studentNotifications.markNotificationAsRead(notification['id']);
+      // await studentNotifications.getNotifications();
       Navigator.pop(context);
-      setState(() {});
-      rebuild(page);
+      // setState(() {});
+      // rebuild(page);
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
@@ -39,7 +39,7 @@ class NotificationPageState extends State<NotificationPage> {
   List<Widget> loadNotifications(StudentNotifications studentNotifications) {
     List<Widget> notifications = [];
 
-    studentNotifications.notifications!.forEach((element) {
+    studentNotifications.notifications!.forEach((notification) {
       notifications.add(
         Container(
           padding: EdgeInsets.all(5),
@@ -49,29 +49,30 @@ class NotificationPageState extends State<NotificationPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                element['created_at'],
+                notification['created_at'],
                 style: TextStyle(color: brown),
               ),
               SizedBox(
                 height: 5,
               ),
-              element['route'] == ''
-                  ? Text(parseHtmlString(element['message']))
+              notification['route'] == ''
+                  ? Text(parseHtmlString(notification['message']))
                   : InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, element['route']);
+                        Navigator.pushNamed(context, notification['route']);
                       },
-                      child: Text(parseHtmlString(element['message'])),
+                      child: Text(parseHtmlString(notification['message'])),
                     ),
               SizedBox(
                 height: 5,
               ),
-              element['status'] == 'unread'
+              notification['status'] == 'unread'
                   ? Align(
                       alignment: Alignment.centerRight,
                       child: RaisedButton(
                         onPressed: () async {
-                          markAsRead(context, element, studentNotifications);
+                          await markAsRead(
+                              context, notification, studentNotifications);
                         },
                         child: Text(
                           'Mark as read',
@@ -95,10 +96,6 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Map args = getRouteArgs(context);
-    rebuild = args['rebuild'];
-    page = args['page'];
-
     return Consumer<StudentNotifications>(
         builder: (context, studentnotifications, child) {
       return new Scaffold(

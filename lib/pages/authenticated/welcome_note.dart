@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
+import 'package:spicyguitaracademy_app/providers/Subscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 
 class WelcomeNotePage extends StatefulWidget {
@@ -13,6 +15,19 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
   @override
   void initState() {
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    StudentSubscription studentSubscription =
+        context.read<StudentSubscription>();
+    StudentStudyStatistics studentStudyingStats =
+        context.read<StudentStudyStatistics>();
+    Subscription subscription = context.read<Subscription>();
+
+    await studentSubscription.getStudentSubscriptionStatus();
+    await studentStudyingStats.getStudentCategoryAndStats(studentSubscription);
+    await subscription.getSubscriptionPlans();
   }
 
   @override
@@ -20,10 +35,6 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
     return Consumer<Student>(builder: (BuildContext context, student, child) {
       return Consumer<StudentSubscription>(
           builder: (BuildContext context, studentSubscription, child) {
-        if (!studentSubscription.hasStudentSubscriptionStatus!) {
-          studentSubscription.getStudentSubscriptionStatus();
-        }
-
         return new Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(

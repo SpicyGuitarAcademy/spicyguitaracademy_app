@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
-import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/providers/StudentNotifications.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
@@ -18,19 +18,55 @@ class StartLoadingState extends State<StartLoading> {
   @override
   void initState() {
     super.initState();
-    // _initializeTimer();
+    _initializeCoursesAndLessons();
   }
 
-  bool? hasInit = false;
+  void _initializeCoursesAndLessons() async {
+    try {
+      // initialize
+      Courses courses = context.read<Courses>();
+      StudentSubscription studentSubscription =
+          context.read<StudentSubscription>();
+      StudentStudyStatistics studentStats =
+          context.read<StudentStudyStatistics>();
+      Lessons lessons = context.read<Lessons>();
+      StudentNotifications studentNotifications =
+          context.read<StudentNotifications>();
 
-  // void _initializeTimer() {
-  //   Timer(const Duration(seconds: 3),
-  //       () => Navigator.pushReplacementNamed(context, "/dashboard"));
-  // }
+      // get all courses
+      await courses.getAllCourses();
+      if (studentSubscription.isSubscribed == true &&
+          studentStats.studyingCategory != 0) {
+        await courses.getStudyingCourses();
+      } else {
+        // get the courses studied by this student in the past
+        // get the lessons studied by this student in the past
+      }
+
+      // get featured and bought courses
+      await courses.getBoughtCourses();
+      await courses.getFeaturedCourses();
+
+      // get free lessons
+      await lessons.getFreeLessons();
+
+      // get notifications
+      await studentNotifications.getNotifications();
+
+      // Student.isLoaded = true;
+
+      // route to dashboard
+      Navigator.pushReplacementNamed(context, "/dashboard");
+    } catch (e) {
+      Navigator.pop(context);
+      error(context, stripExceptions(e));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Student>(builder: (BuildContext context, student, child) {
+    return Consumer<StudentNotifications>(
+        builder: (BuildContext context, studentNotifications, child) {
       return Consumer<StudentSubscription>(
           builder: (BuildContext context, studentSubscription, child) {
         return Consumer<StudentStudyStatistics>(
@@ -39,20 +75,6 @@ class StartLoadingState extends State<StartLoading> {
               builder: (BuildContext context, courses, child) {
             return Consumer<Lessons>(
                 builder: (BuildContext context, lessons, child) {
-              if (!hasInit!) {
-                try {
-                  hasInit = true;
-                  courses.getStudyingCourses();
-                  courses.getAllCourses();
-                  courses.getBoughtCourses();
-                  courses.getFeaturedCourses();
-                  lessons.getFreeLessons();
-                  Navigator.pushReplacementNamed(context, "/dashboard");
-                } catch (e) {
-                  error(context, stripExceptions(e));
-                }
-              }
-
               return Scaffold(
                 backgroundColor: grey,
                 body: Center(

@@ -41,9 +41,9 @@ class LessonsPageState extends State<LessonsPage> {
           loading(context);
           tutorial.setCurrentTutorial(lesson);
           if (lessons.source == LessonSource.normal)
-            await lessons.activateLesson(studentStats, courses);
+            await lessons.activateLesson(studentStats, courses, tutorial);
           else if (lessons.source == LessonSource.featured)
-            await lessons.activateFeaturedLesson(courses);
+            await lessons.activateFeaturedLesson(courses, tutorial);
           Navigator.pop(context);
           Navigator.pushNamed(context, "/tutorial_page");
         } catch (e) {

@@ -79,7 +79,6 @@ class BoughtCoursesPageState extends State<BoughtCoursesPage> {
             // get the lessons on this course
             // and the assignments for the course
             loading(context);
-            // await Lessons.getLessons(context, course.id);
             await lessons.getFeaturedLessons(context, course.id);
             await studentAssignments.getAssigment(course.id);
             lessons.source = LessonSource.featured;

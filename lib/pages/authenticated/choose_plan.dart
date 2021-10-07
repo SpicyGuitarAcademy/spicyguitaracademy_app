@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
-
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/providers/Subscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
@@ -27,14 +26,23 @@ class ChoosePlanState extends State<ChoosePlan> {
   @override
   void initState() {
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    Subscription subscription = context.read<Subscription>();
+    StudentSubscription studentSubscription =
+        context.read<StudentSubscription>();
+
+    _selectedPlan = studentSubscription.subscriptionPlan;
+    await subscription.getPaymentKey();
+    _paystackPlugin!.initialize(publicKey: subscription.paystackPublicKey!);
   }
 
   @override
   Widget build(BuildContext context) {
     // final Map args = ModalRoute.of(context).settings.arguments as Map;
     // _selectedPlan = args['selectedplan'];
-
-    bool? hasLoadedSubscriptionPlans = false;
 
     PaymentCard _getCardFromUI() {
       return PaymentCard(
@@ -94,14 +102,6 @@ class ChoosePlanState extends State<ChoosePlan> {
           builder: (BuildContext context, subscription, child) {
         return Consumer<StudentSubscription>(
             builder: (BuildContext context, studentSubscription, child) {
-          if (!hasLoadedSubscriptionPlans!) {
-            subscription.getPaymentKey();
-            subscription.getSubscriptionPlans();
-            _selectedPlan = studentSubscription.subscriptionPlan;
-            _paystackPlugin!
-                .initialize(publicKey: subscription.paystackPublicKey!);
-            hasLoadedSubscriptionPlans = true;
-          }
           return new Scaffold(
               appBar: AppBar(
                 toolbarHeight: 70,

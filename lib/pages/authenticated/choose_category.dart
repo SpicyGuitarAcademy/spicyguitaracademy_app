@@ -19,12 +19,23 @@ class ChooseCategoryState extends State<ChooseCategory> {
 
   @override
   void initState() {
-    // _selectedCategory = Student.studyingCategoryLabel;
-    // if (_selectedCategory != "") {
-    //   canChooseAnotherCategory = Student.takenCourses == Student.allCourses &&
-    //       Student.takenLessons == Student.allLessons;
-    // }
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    StudentStudyStatistics studentStats =
+        context.read<StudentStudyStatistics>();
+    StudentSubscription studentSubscription =
+        context.read<StudentSubscription>();
+
+    _selectedCategory = studentStats.studyingCategoryLabel;
+    if (_selectedCategory != "" && studentSubscription.isSubscribed == true) {
+      canChooseAnotherCategory =
+          (studentStats.takenCourses! > 0 && studentStats.takenLessons! > 0) &&
+              (studentStats.takenCourses == studentStats.allCourses &&
+                  studentStats.takenLessons == studentStats.allLessons);
+    }
   }
 
   @override
@@ -34,13 +45,6 @@ class ChooseCategoryState extends State<ChooseCategory> {
           builder: (BuildContext context, studentSubscription, child) {
         return Consumer<StudentStudyStatistics>(
             builder: (BuildContext context, studentStats, child) {
-          _selectedCategory = studentStats.studyingCategoryLabel;
-          if (_selectedCategory != "") {
-            canChooseAnotherCategory =
-                studentStats.takenCourses == studentStats.allCourses &&
-                    studentStats.takenLessons == studentStats.allLessons;
-          }
-
           return Scaffold(
             appBar: AppBar(
               toolbarHeight: 70,

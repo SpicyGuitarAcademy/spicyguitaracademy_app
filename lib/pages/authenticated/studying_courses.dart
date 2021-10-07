@@ -24,6 +24,15 @@ class StudyingCoursesPageState extends State<StudyingCoursesPage> {
   @override
   void initState() {
     super.initState();
+    initiatePage();
+  }
+
+  Future initiatePage() async {
+    Courses courses = context.read<Courses>();
+
+    if (courses.studyingCourses.length > 0) {
+      _courseCategory = courses.studyingCourses[0].category ?? 1;
+    }
   }
 
   void _sortCourses(Courses courses) {
@@ -114,14 +123,6 @@ class StudyingCoursesPageState extends State<StudyingCoursesPage> {
             builder: (BuildContext context, lessons, child) {
           return Consumer<StudentAssignments>(
               builder: (BuildContext context, studentAssignments, child) {
-            if (!initPage!) {
-              initPage = true;
-              if (courses.studyingCourses.length > 0) {
-                _courseCategory = courses.studyingCourses[0].category ?? 1;
-                // courses = studyingCourses;
-              }
-            }
-
             return SingleChildScrollView(
                 child: Column(children: <Widget>[
               // The top text
