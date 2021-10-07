@@ -37,15 +37,16 @@ dependencies:
   # For state management
   provider: ^5.0.0
 
-  # For PDF?
-  # pdf_flutter: ^1.1.4
-  native_pdf_view: ^4.2.0
+  # For PDF
+  advance_pdf_viewer: ^2.0.0
 
   # For rendering SVG Images
   flutter_svg: ^0.22.0
   
   # For Payments with Paystack
   flutter_paystack: ^1.0.5+1
+
+  # For Payments with PayPal
   
   # For selecting file
   file_picker: ^4.1.1
@@ -63,8 +64,13 @@ dependencies:
   # For sanitizing possible html string
   sanitize_html: ^2.0.0
   
-  # for temporary memory
+  # For temporary memory
   shared_preferences: ^2.0.7
+
+  # For caching
+  # asset_cache: ^1.0.0+1
+  # cached_network_image: ^3.1.0
+  flutter_cache_manager: ^3.1.2
   
   # for in app update
   in_app_update: ^2.0.0
