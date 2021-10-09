@@ -6,6 +6,7 @@ const String baseUrl = "http://10.0.2.2/sga_web";
 
 const String appName = "Spicy Guitar Academy";
 
+const Color white = Color(0xFFFFFFFF);
 const Color brown = Color(0xFF6B2B14);
 const Color darkbrown = Color(0xFF471D0E);
 const Color grey = Color(0xFFF3F3F3);

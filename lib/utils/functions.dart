@@ -38,5 +38,6 @@ String getStudentCategoryThumbnail(StudentStudyStatistics studentStats,
 }
 
 String stripExceptions(errmsg) {
+  print(errmsg);
   return errmsg.toString().replaceAll("Exception: ", "");
 }

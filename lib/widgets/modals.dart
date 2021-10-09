@@ -86,7 +86,8 @@ void success(BuildContext context, String message, {String title: 'Message'}) {
   );
 }
 
-void error(BuildContext context, String message, {String title: 'Error'}) {
+void error(BuildContext context, String message,
+    {String title: 'Unknown Error'}) {
   showDialog(
     context: context,
     // barrierDismissible: false,
