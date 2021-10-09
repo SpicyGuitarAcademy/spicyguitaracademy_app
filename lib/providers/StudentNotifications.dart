@@ -20,9 +20,7 @@ class StudentNotifications extends ChangeNotifier {
           .toList()
           .takeWhile((value) => value['status'] == 'unread');
       unreadNotifications = unread.length;
-      if (unreadNotifications! > 0) {
-        hasUnreadNotifications = true;
-      }
+      hasUnreadNotifications = unreadNotifications! > 0;
 
       notifyListeners();
     } catch (e) {
@@ -42,7 +40,14 @@ class StudentNotifications extends ChangeNotifier {
             'cache-control': 'max-age=0, must-revalidate'
           });
 
-      print(resp);
+      if (resp['status'] == true) {
+        notifications?.firstWhere((notification) =>
+            notification['id'] == notificationId)['status'] = 'read';
+        unreadNotifications = unreadNotifications! - 1;
+        hasUnreadNotifications = unreadNotifications! > 0;
+
+        notifyListeners();
+      }
     } catch (e) {
       throw (e);
     }

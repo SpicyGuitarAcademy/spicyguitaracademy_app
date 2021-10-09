@@ -3,6 +3,7 @@ import 'package:spicyguitaracademy_app/providers/Auth.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lesson.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
+import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
 import 'package:spicyguitaracademy_app/utils/exceptions.dart';
 import 'package:spicyguitaracademy_app/utils/request.dart';
 
@@ -17,7 +18,7 @@ class Lessons extends ChangeNotifier {
     try {
       var resp =
           await request('/api/student/freelessons', method: 'GET', headers: {
-        'JWToken': Auth.token!,
+        // 'JWToken': Auth.token!,
         'cache-control': 'public, max-age=2592000, must-revalidate'
       });
       List<dynamic> lessons = resp['data'] ?? [];
@@ -78,16 +79,18 @@ class Lessons extends ChangeNotifier {
     }
   }
 
-  Future activateLesson(
-      StudentStudyStatistics studentStats, Courses courses) async {
+  Future activateLesson(StudentStudyStatistics studentStats, Courses courses,
+      Tutorial tutorial) async {
     try {
-      var resp =
-          await request('/api/student/lesson/activate', method: 'POST', body: {
-        // 'lesson': currentTutorial!.id.toString()
-      }, headers: {
-        'JWToken': Auth.token!,
-        'cache-control': 'max-age=0, must-revalidate'
-      });
+      var resp = await request('/api/student/lesson/activate',
+          method: 'POST',
+          body: {
+            'lesson': tutorial.currentTutorial!.id.toString()
+          },
+          headers: {
+            'JWToken': Auth.token!,
+            'cache-control': 'max-age=0, must-revalidate'
+          });
 
       if (resp['status'] == true) {
         // update the number of lessons taken in the stats
@@ -112,12 +115,12 @@ class Lessons extends ChangeNotifier {
     }
   }
 
-  Future activateFeaturedLesson(Courses courses) async {
+  Future activateFeaturedLesson(Courses courses, Tutorial tutorial) async {
     try {
       var resp = await request('/api/student/lesson/activate-featured',
           method: 'POST',
           body: {
-            // 'lesson': currentTutorial!.id.toString()
+            'lesson': tutorial.currentTutorial!.id.toString()
           },
           headers: {
             'JWToken': Auth.token!,

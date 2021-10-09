@@ -13,10 +13,54 @@ class Student extends ChangeNotifier {
   String? email;
   String? telephone;
   String? avatar;
+  String? referralCode;
+  int? referralUnits;
   String? status;
   bool? isNewStudent; // to indicate if the student is a new student
   bool?
       hasForgottenPassword; // to indicate if the student forgot his/her password
+
+  Future signup(
+      String _firstname,
+      String _lastname,
+      String _email,
+      String _telephone,
+      String _password,
+      String _cpassword,
+      String _referralCode) async {
+    try {
+      var resp = await request(
+        '/api/register_student',
+        method: 'POST',
+        body: {
+          'firstname': _firstname,
+          'lastname': _lastname,
+          'email': _email,
+          'telephone': _telephone,
+          'password': _password,
+          'cpassword': _cpassword,
+          'referral_code': _referralCode
+        },
+      );
+
+      id = '';
+      firstname = _firstname;
+      lastname = _lastname;
+      email = _email;
+      telephone = _telephone;
+      avatar = '';
+      referralCode = '';
+      referralUnits = 0;
+      status = 'inactive';
+      isNewStudent = true;
+
+      notifyListeners();
+
+      return resp;
+    } catch (e) {
+      throw (e);
+    }
+  }
 
   Future signin(String _email, String _password) async {
     try {
@@ -38,21 +82,14 @@ class Student extends ChangeNotifier {
         email = student['email'];
         telephone = student['telephone'];
         avatar = student['avatar'];
+        referralCode = student['referral_code'] ?? '';
+        referralUnits = int.parse(student['referral_units']);
         status = student['status'];
 
         isNewStudent = false;
         hasForgottenPassword = false;
 
         await cacheSigninData();
-
-        // // load subscription plans
-        // await Subscription.getSubscriptionPlans();
-
-        // // get student subscription status, days remaining and subscription plan
-        // await getSubscriptionStatus();
-
-        // // get the current category and stats
-        // await getStudentCategoryAndStats();
 
         notifyListeners();
       } else {
@@ -73,7 +110,8 @@ class Student extends ChangeNotifier {
 
       if (resp['status'] == true) {
         status = 'active';
-        await cacheSigninData();
+        final SharedPreferences prefs = await _prefs;
+        prefs.setString('status', status!);
       }
 
       notifyListeners();
@@ -166,7 +204,23 @@ class Student extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future signinWithCachedData({bool? handleClick = false}) async {
+  Future canAuthWithCachedData() async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      Auth.authenticated = prefs.getBool('authenticated') ?? false;
+      // Auth.token = prefs.getString('token');
+
+      if (Auth.authenticated == true) {
+        firstname = prefs.getString('firstname');
+      }
+
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future signinWithCachedData() async {
     try {
       final SharedPreferences prefs = await _prefs;
 
@@ -179,6 +233,8 @@ class Student extends ChangeNotifier {
         email = prefs.getString('email');
         telephone = prefs.getString('telephone');
         avatar = prefs.getString('avatar');
+        referralCode = prefs.getString('referralCode');
+        referralUnits = prefs.getInt('referralUnits');
         status = prefs.getString('status');
 
         Auth.token = prefs.getString('token');
@@ -202,6 +258,8 @@ class Student extends ChangeNotifier {
     prefs.setString('email', email!);
     prefs.setString('telephone', telephone!);
     prefs.setString('avatar', avatar!);
+    prefs.setString('referralCode', referralCode!);
+    prefs.setInt('referralUnits', referralUnits!);
     prefs.setString('status', status!);
     prefs.setString('token', Auth.token!);
     prefs.setBool('authenticated', Auth.authenticated!);
@@ -215,6 +273,8 @@ class Student extends ChangeNotifier {
     prefs.remove('email');
     prefs.remove('telephone');
     prefs.remove('avatar');
+    prefs.remove('referralCode');
+    prefs.remove('referralUnits');
     prefs.remove('status');
     prefs.remove('token');
     prefs.setBool('authenticated', false);

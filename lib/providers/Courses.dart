@@ -88,7 +88,7 @@ class Courses extends ChangeNotifier {
       var resp = await request('/api/student/featuredcourses/all',
           method: 'GET',
           headers: {
-            'JWToken': Auth.token!,
+            // 'JWToken': Auth.token!,
             'cache-control': 'public, max-age=604800, must-revalidate'
           });
 

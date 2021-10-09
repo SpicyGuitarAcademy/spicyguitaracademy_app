@@ -10,6 +10,7 @@ class Subscription extends ChangeNotifier {
   String? paystackPublicKey;
   String? reference;
   String? accessCode;
+  String? authorizationUrl;
   int? price;
 
   bool? subscriptionPaymentStatus;
@@ -59,11 +60,11 @@ class Subscription extends ChangeNotifier {
         },
       );
 
-      // Navigator.pushNamedAndRemoveUntil(context,'/login', (route) => false);
       if (resp['status'] == true) {
         reference = resp['data']['reference'];
         accessCode = resp['data']['access_code'];
         price = resp['data']['price'];
+        authorizationUrl = resp['data']['authorization_url'];
       } else {
         throw Exception(resp['message']);
       }
@@ -91,6 +92,7 @@ class Subscription extends ChangeNotifier {
         reference = resp['data']['reference'];
         accessCode = resp['data']['access_code'];
         price = resp['data']['price'];
+        authorizationUrl = resp['data']['authorization_url'];
       } else {
         throw Exception(resp['message']);
       }
@@ -102,17 +104,16 @@ class Subscription extends ChangeNotifier {
   }
 
   Future verifySubscriptionPayment(
-      Student student, StudentSubscription studentSubscription) async {
+      StudentSubscription studentSubscription) async {
     try {
-      var resp = await request('/api/subscription/verify/$reference',
-          method: 'POST',
-          headers: {
-            'JWToken': Auth.token!,
-            'cache-control': 'max-age=0, must-revalidate'
-          },
-          body: {
-            'email': student.email
-          });
+      var resp = await request(
+        '/api/subscription/verify/$reference',
+        method: 'POST',
+        headers: {
+          'JWToken': Auth.token!,
+          'cache-control': 'max-age=0, must-revalidate'
+        },
+      );
 
       if (resp['status'] == true) {
         subscriptionPaymentStatus = true;
@@ -129,17 +130,16 @@ class Subscription extends ChangeNotifier {
     }
   }
 
-  Future verifyFeaturedPayment(Student student, Courses courses) async {
+  Future verifyFeaturedPayment(Courses courses) async {
     try {
-      var resp = await request('/api/subscription/verify-featured/$reference',
-          method: 'POST',
-          headers: {
-            'JWToken': Auth.token!,
-            'cache-control': 'max-age=0, must-revalidate'
-          },
-          body: {
-            'email': student.email
-          });
+      var resp = await request(
+        '/api/subscription/verify-featured/$reference',
+        method: 'POST',
+        headers: {
+          'JWToken': Auth.token!,
+          'cache-control': 'max-age=0, must-revalidate'
+        },
+      );
 
       if (resp['status'] == true) {
         featuredPaymentStatus = true;
