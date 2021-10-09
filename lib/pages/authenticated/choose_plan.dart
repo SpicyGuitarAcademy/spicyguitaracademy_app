@@ -17,7 +17,6 @@ class ChoosePlan extends StatefulWidget {
 
 class ChoosePlanState extends State<ChoosePlan> {
   CheckoutMethod _method = CheckoutMethod.selectable;
-  // bool _inProgress = false;
 
   // properties
   String? _selectedPlan;
@@ -39,63 +38,62 @@ class ChoosePlanState extends State<ChoosePlan> {
     _paystackPlugin!.initialize(publicKey: subscription.paystackPublicKey!);
   }
 
+  PaymentCard _getCardFromUI() {
+    return PaymentCard(
+      number: '',
+      cvc: '',
+      expiryMonth: 0,
+      expiryYear: 0,
+    );
+  }
+
+  _handleCheckout(
+      BuildContext context,
+      Student student,
+      Subscription subscription,
+      StudentSubscription studentSubscription) async {
+    Charge charge = Charge()
+      ..amount = subscription.price! // In base currency
+      ..email = student.email
+      ..card = _getCardFromUI();
+
+    charge.accessCode = subscription.accessCode;
+
+    try {
+      CheckoutResponse response = await _paystackPlugin!.checkout(
+        context,
+        method: _method,
+        charge: charge,
+        fullscreen: true,
+        logo: SvgPicture.asset(
+          "assets/imgs/icons/spicy_guitar_logo.svg",
+          width: 40.0,
+          matchTextDirection: true,
+        ),
+      );
+
+      if (response.verify == true) {
+        await subscription.verifySubscriptionPayment(studentSubscription);
+        Navigator.pop(context);
+        if (subscription.subscriptionPaymentStatus == true) {
+          Navigator.popAndPushNamed(context, "/successful_transaction");
+        } else {
+          Navigator.pushNamed(context, "/failed_transaction");
+        }
+      } else {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, "/failed_transaction");
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      error(context, stripExceptions(e));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // final Map args = ModalRoute.of(context).settings.arguments as Map;
     // _selectedPlan = args['selectedplan'];
-
-    PaymentCard _getCardFromUI() {
-      return PaymentCard(
-        number: '',
-        cvc: '',
-        expiryMonth: 0,
-        expiryYear: 0,
-      );
-    }
-
-    _handleCheckout(
-        BuildContext context,
-        Student student,
-        Subscription subscription,
-        StudentSubscription studentSubscription) async {
-      Charge charge = Charge()
-        ..amount = subscription.price! // In base currency
-        ..email = student.email
-        ..card = _getCardFromUI();
-
-      charge.accessCode = subscription.accessCode;
-
-      try {
-        CheckoutResponse response = await _paystackPlugin!.checkout(
-          context,
-          method: _method,
-          charge: charge,
-          fullscreen: true,
-          logo: SvgPicture.asset(
-            "assets/imgs/icons/spicy_guitar_logo.svg",
-            width: 40.0,
-            matchTextDirection: true,
-          ),
-        );
-
-        if (response.verify == true) {
-          await subscription.verifySubscriptionPayment(
-              student, studentSubscription);
-          Navigator.pop(context);
-          if (subscription.subscriptionPaymentStatus == true) {
-            Navigator.popAndPushNamed(context, "/successful_transaction");
-          } else {
-            Navigator.pushNamed(context, "/failed_transaction");
-          }
-        } else {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, "/failed_transaction");
-        }
-      } catch (e) {
-        Navigator.pop(context);
-        error(context, stripExceptions(e));
-      }
-    }
 
     return Consumer<Student>(builder: (BuildContext context, student, child) {
       return Consumer<Subscription>(
@@ -372,11 +370,16 @@ class ChoosePlanState extends State<ChoosePlan> {
                                               await subscription
                                                   .initiateSubscriptionPayment(
                                                       _selectedPlan!, student);
-                                              _handleCheckout(
-                                                  context,
-                                                  student,
-                                                  subscription,
-                                                  studentSubscription);
+                                              Navigator.pop(context);
+
+                                              // complete payment with paystack
+                                              Navigator.pushNamed(
+                                                  context, '/pay_with_paypal');
+                                              // Navigator.pushNamed(
+                                              //     context, '/pay_with_paystack',
+                                              //     arguments: {
+                                              //       'type': 'subscription'
+                                              //     });
                                             } catch (e) {
                                               Navigator.pop(context);
                                               error(

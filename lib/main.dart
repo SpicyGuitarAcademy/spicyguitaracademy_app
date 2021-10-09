@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/pages/public/verify_device.dart';
-import 'package:spicyguitaracademy_app/providers/Assignment.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
@@ -51,6 +50,9 @@ import 'package:spicyguitaracademy_app/pages/authenticated/tutorial_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/settings_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/help_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/assignment_page.dart';
+import 'package:spicyguitaracademy_app/services/pay_with_paypal.dart';
+import 'package:spicyguitaracademy_app/services/pay_with_paystack.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
 
 void main() {
   runApp(
@@ -65,6 +67,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => StudentAssignments()),
         ChangeNotifierProvider(create: (context) => Lessons()),
         ChangeNotifierProvider(create: (context) => Tutorial()),
+        ChangeNotifierProvider(create: (context) => StudentAssignments()),
       ],
       child: SpicyGuitarAcademy(),
     ),
@@ -79,10 +82,6 @@ class SpicyGuitarAcademy extends StatelessWidget {
     // cache
     precacheImage(
         AssetImage("assets/imgs/icons/spicy_guitar_logo.png"), context);
-    // width: DeviceUtil.getScreenWidth(context),
-    // height: DeviceUtil.getScreenHeight(context),
-
-    // dynamic dashboard = new DashboardState();
 
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -90,31 +89,59 @@ class SpicyGuitarAcademy extends StatelessWidget {
         // colors
         primaryColor: Color(0xFF6B2B14),
         accentColor: Color(0xFF471D0E),
-        // buttonColor: Color(0xFF6B2B14),
+        buttonColor: Color(0xFF6B2B14),
+        primaryColorDark: Color(0xFF471D0E),
+        scaffoldBackgroundColor: Color(0xFFF3F3F3),
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(
+                vertical: 10,
+              ),
+            ),
+            // side: MaterialStateProperty.all(
+            //   BorderSide(
+            //     color: brown,
+            //     width: 2,
+            //     style: BorderStyle.solid,
+            //   ),
+            // ),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+            ),
+            textStyle: MaterialStateProperty.all(
+              TextStyle(
+                fontSize: 20,
+                fontFamily: "Poppins",
+              ),
+            ),
+            tapTargetSize: MaterialTapTargetSize.padded,
+            backgroundColor: MaterialStateProperty.all(brown),
+            foregroundColor: MaterialStateProperty.all(white),
+            alignment: Alignment.center,
+          ),
+        ),
 
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.auto,
-
           contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-
           errorMaxLines: 3,
-
           fillColor: Color(0xFF707070),
-
           hintStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
-
           labelStyle: TextStyle(color: Color(0xFF707070), fontSize: 20.0),
-
           // normal
           border: UnderlineInputBorder(
             borderSide: const BorderSide(color: Color(0xFF707070)),
           ),
-
           // focused
           focusedBorder: UnderlineInputBorder(
             borderSide: const BorderSide(color: Color(0xFF471D0E)),
           ),
-
           // errors
           errorBorder: UnderlineInputBorder(
             borderSide: const BorderSide(color: Colors.red),
@@ -126,10 +153,6 @@ class SpicyGuitarAcademy extends StatelessWidget {
         //     foregroundColor: brown,
         //   )
         // ),
-
-        primaryColorDark: Color(0xFF471D0E),
-
-        scaffoldBackgroundColor: Color(0xFFF3F3F3),
 
         buttonTheme: ButtonThemeData(
           buttonColor: Color(0xFF6B2B14),
@@ -209,6 +232,8 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/editpassword': (BuildContext context) => new EditPasswordPage(),
         '/completedcourses': (BuildContext context) => new CompletedCourses(),
         '/completedcategory': (BuildContext context) => new CompletedCategory(),
+        '/pay_with_paystack': (BuildContext context) => new PayWithPaystack(),
+        '/pay_with_paypal': (BuildContext context) => new PayWithPayPal(),
       },
     );
   }

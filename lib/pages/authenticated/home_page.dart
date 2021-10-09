@@ -37,9 +37,9 @@ class HomePageState extends State<HomePage> {
               return Consumer<Tutorial>(
                   builder: (BuildContext context, tutorial, child) {
                 return SingleChildScrollView(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
                       // welcome & search
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,21 +85,20 @@ class HomePageState extends State<HomePage> {
 
                       // subscription plan
                       studentSubscription.subscriptionPlan == '0'
-                          ? MaterialButton(
+                          ? ElevatedButton(
                               onPressed: () =>
                                   Navigator.pushNamed(context, '/choose_plan'),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Choose Subscription Plan",
-                                      style: TextStyle(color: brown)),
-                                  SizedBox(
-                                    width: 10.0,
+                                  Text(
+                                    "Choose Subscription Plan",
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                  Icon(Icons.arrow_forward, color: brown),
+                                  SizedBox(width: 10.0),
+                                  Icon(Icons.arrow_forward),
                                 ],
                               ),
-                              height: 50,
                             )
                           : Column(
                               children: [
@@ -139,21 +138,20 @@ class HomePageState extends State<HomePage> {
 
                       // current category details
                       studentStats.studyingCategory == 0
-                          ? MaterialButton(
+                          ? ElevatedButton(
                               onPressed: () => Navigator.pushNamed(
                                   context, '/choose_category'),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Choose a Category",
-                                      style: TextStyle(color: brown)),
-                                  SizedBox(
-                                    width: 10.0,
+                                  Text(
+                                    "Choose a Category",
+                                    style: TextStyle(fontSize: 16),
                                   ),
-                                  Icon(Icons.arrow_forward, color: brown),
+                                  SizedBox(width: 10.0),
+                                  Icon(Icons.arrow_forward),
                                 ],
                               ),
-                              height: 50,
                             )
                           : Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -171,7 +169,8 @@ class HomePageState extends State<HomePage> {
                                   Text(
                                       "${((studentStats.takenLessons! / studentStats.allLessons!) * 100).floor()}% Completed"),
                                 ],
-                              )),
+                              ),
+                            ),
 
                       SizedBox(height: 20),
 
@@ -191,12 +190,16 @@ class HomePageState extends State<HomePage> {
                         ),
                       ),
 
-                      Container(
-                          width: screen(context).width,
-                          child: Column(
-                              children: _loadFreeLessons(
-                                  courses, lessons, tutorial))),
-                    ]));
+                      SizedBox(
+                        width: screen(context).width,
+                        child: Column(
+                          children:
+                              _loadFreeLessons(courses, lessons, tutorial),
+                        ),
+                      )
+                    ],
+                  ),
+                );
               });
             });
           });
@@ -216,10 +219,15 @@ class HomePageState extends State<HomePage> {
     List<Widget> vids = [];
 
     freeLessons.forEach((lesson) {
-      vids.add(renderLesson(lesson, context, () {
-        tutorial.setCurrentTutorial(lesson);
-        Navigator.pushNamed(context, "/tutorial_page");
-      }, courseLocked: false));
+      vids.add(renderLesson(
+        lesson,
+        context,
+        () {
+          tutorial.setCurrentTutorial(lesson);
+          Navigator.pushNamed(context, "/tutorial_page");
+        },
+        courseLocked: false,
+      ));
     });
 
     return vids;

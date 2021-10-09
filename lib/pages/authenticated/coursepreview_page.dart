@@ -34,6 +34,13 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
     super.initState();
   }
 
+  Future initiatePage() async {
+    Subscription subscription = context.read<Subscription>();
+
+    await subscription.getPaymentKey();
+    _paystackPlugin.initialize(publicKey: subscription.paystackPublicKey!);
+  }
+
   PaymentCard _getCardFromUI() {
     return PaymentCard(
       number: '',
@@ -71,9 +78,7 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
 
       if (response.verify == true) {
         loading(context, message: 'Verifying payment');
-        await subscription
-            .verifyFeaturedPayment(student, courses)
-            .then((value) async {
+        await subscription.verifyFeaturedPayment(courses).then((value) async {
           Navigator.pop(context);
           if (subscription.featuredPaymentStatus == true) {
             // update my featured courses
@@ -127,127 +132,132 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
           return Consumer<StudentSubscription>(
               builder: (BuildContext context, studentSubscription, child) {
             return SafeArea(
-                top: true,
-                child: Scaffold(
-                  backgroundColor: Colors.white,
-                  appBar: PreferredSize(
-                    preferredSize:
-                        Size.fromHeight((screen(context).width * 2) / 3),
-                    child: renderDisplayScreen(),
-                  ),
-                  body: Column(children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                          child: Column(children: <Widget>[
-                        Container(
-                            width: screen(context).width,
-                            padding: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // The text contents
-                                Text(
-                                  course!.title!,
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 3,
-                                  style: TextStyle(
-                                    color: brown,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  course!.tutor!,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: darkgrey,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  "${course!.description}",
-                                  overflow: TextOverflow.visible,
-                                  style: TextStyle(
-                                    color: darkgrey,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "N${course!.featuredprice}",
-                                      overflow: TextOverflow.visible,
-                                      style: TextStyle(
-                                        color: darkgrey,
-                                        fontSize: 25,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${course!.allLessons} lessons",
-                                      overflow: TextOverflow.visible,
-                                      style: TextStyle(
-                                        color: darkgrey,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                SizedBox(height: 100),
-                              ],
-                            )),
-                      ])),
-                    ),
-                  ]),
-                  bottomSheet: BottomAppBar(
-                      child: Container(
+              top: true,
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                appBar: PreferredSize(
+                  preferredSize:
+                      Size.fromHeight((screen(context).width * 2) / 3),
+                  child: renderDisplayScreen(),
+                ),
+                body: Column(children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                        child: Column(children: <Widget>[
+                      Container(
                           width: screen(context).width,
-                          child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.all(Radius.zero),
+                          padding: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // The text contents
+                              Text(
+                                course!.title!,
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.clip,
+                                maxLines: 3,
+                                style: TextStyle(
+                                  color: brown,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              onPressed: () async {
-                                try {
-                                  loading(context);
-                                  await subscription.initiateFeaturedPayment(
-                                      course!, student);
-                                  Navigator.pop(context);
-                                  await _handleCheckout(
-                                      context,
-                                      student,
-                                      courses,
-                                      subscription,
-                                      studentSubscription);
-                                } catch (e) {
-                                  Navigator.pop(context);
-                                  error(context, stripExceptions(e));
-                                }
-                              },
-                              textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              SizedBox(height: 2),
+                              Text(
+                                course!.tutor!,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: darkgrey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                "${course!.description}",
+                                overflow: TextOverflow.visible,
+                                style: TextStyle(
+                                  color: darkgrey,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'BUY COURSE',
+                                    "N${course!.featuredprice}",
+                                    overflow: TextOverflow.visible,
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      color: darkgrey,
+                                      fontSize: 25,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 15,
+                                  Text(
+                                    "${course!.allLessons} lessons",
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                      color: darkgrey,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                  Icon(Icons.arrow_forward)
                                 ],
-                              )))),
-                ));
+                              ),
+
+                              SizedBox(height: 100),
+                            ],
+                          )),
+                    ])),
+                  ),
+                ]),
+                bottomSheet: BottomAppBar(
+                  child: Container(
+                    width: screen(context).width,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.all(Radius.zero),
+                          ),
+                        ),
+                      ),
+                      onPressed: () async {
+                        try {
+                          loading(context);
+                          await subscription.initiateFeaturedPayment(
+                              course!, student);
+                          Navigator.pop(context);
+
+                          // complete payment with paystack
+                          Navigator.pushNamed(
+                            context,
+                            '/pay_with_paystack',
+                            arguments: {
+                              'type': 'featured-course',
+                              'course': course
+                            },
+                          );
+                        } catch (e) {
+                          Navigator.pop(context);
+                          error(context, stripExceptions(e));
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('BUY COURSE'),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(Icons.arrow_forward)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
           });
         });
       });
