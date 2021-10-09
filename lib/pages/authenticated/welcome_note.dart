@@ -19,14 +19,7 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
   }
 
   Future initiatePage() async {
-    StudentSubscription studentSubscription =
-        context.read<StudentSubscription>();
-    StudentStudyStatistics studentStudyingStats =
-        context.read<StudentStudyStatistics>();
     Subscription subscription = context.read<Subscription>();
-
-    await studentSubscription.getStudentSubscriptionStatus();
-    await studentStudyingStats.getStudentCategoryAndStats(studentSubscription);
     await subscription.getSubscriptionPlans();
   }
 
