@@ -42,6 +42,9 @@ dependencies:
 
   # For rendering SVG Images
   flutter_svg: ^0.22.0
+
+  # Weview
+  webview_flutter: 2.0.13
   
   # For Payments with Paystack
   flutter_paystack: ^1.0.5+1
