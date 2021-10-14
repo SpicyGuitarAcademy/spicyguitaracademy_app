@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Course.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
@@ -23,84 +21,14 @@ class CoursePreviewPage extends StatefulWidget {
 // enum Screen { video, audio, practice, tablature, none }
 
 class CoursePreviewPageState extends State<CoursePreviewPage> {
-  CheckoutMethod _method = CheckoutMethod.selectable;
   Course? course;
-
-  PaystackPlugin _paystackPlugin = new PaystackPlugin();
 
   @override
   void initState() {
-    // _paystackPlugin.initialize(publicKey: paystackPublicKey!);
     super.initState();
   }
 
-  Future initiatePage() async {
-    Subscription subscription = context.read<Subscription>();
-
-    await subscription.getPaymentKey();
-    _paystackPlugin.initialize(publicKey: subscription.paystackPublicKey!);
-  }
-
-  PaymentCard _getCardFromUI() {
-    return PaymentCard(
-      number: '',
-      cvc: '',
-      expiryMonth: 0,
-      expiryYear: 0,
-    );
-  }
-
-  _handleCheckout(
-      BuildContext context,
-      Student student,
-      Courses courses,
-      Subscription subscription,
-      StudentSubscription studentSubscription) async {
-    Charge charge = Charge()
-      ..amount = subscription.price! // In base currency
-      ..email = student.email
-      ..card = _getCardFromUI();
-
-    charge.accessCode = subscription.accessCode;
-
-    try {
-      CheckoutResponse response = await _paystackPlugin.checkout(
-        context,
-        method: _method,
-        charge: charge,
-        fullscreen: true,
-        logo: SvgPicture.asset(
-          "assets/imgs/icons/spicy_guitar_logo.svg",
-          width: 40.0,
-          matchTextDirection: true,
-        ),
-      );
-
-      if (response.verify == true) {
-        loading(context, message: 'Verifying payment');
-        await subscription.verifyFeaturedPayment(courses).then((value) async {
-          Navigator.pop(context);
-          if (subscription.featuredPaymentStatus == true) {
-            // update my featured courses
-            await courses.getBoughtCourses();
-            courses.featuredCourses
-                .firstWhere((element) => element.id == course!.id)
-                .status = true;
-            Navigator.popUntil(context, ModalRoute.withName('/ready_to_play'));
-            Navigator.pushReplacementNamed(context, '/dashboard');
-            success(context, 'Payment verified.');
-          } else {
-            snackbar(context, 'Payment verification failed');
-            Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
-          }
-        });
-      } else {
-        throw Exception('Cancelled Transaction');
-      }
-    } catch (e) {
-      error(context, stripExceptions(e));
-    }
-  }
+  Future initiatePage() async {}
 
   Widget renderDisplayScreen() {
     return Container(
@@ -205,57 +133,92 @@ class CoursePreviewPageState extends State<CoursePreviewPage> {
                                 ],
                               ),
 
-                              SizedBox(height: 100),
+                              SizedBox(height: 20),
+
+                              ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    loading(context);
+                                    await subscription.initiateFeaturedPayment(
+                                        course!, student, 'paystack');
+                                    Navigator.pop(context);
+
+                                    // complete payment with paystack
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/pay_with_paystack',
+                                      arguments: {
+                                        'type': 'featured-course',
+                                        'course': course
+                                      },
+                                    );
+                                  } catch (e) {
+                                    Navigator.pop(context);
+                                    error(context, stripExceptions(e));
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.credit_card),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Buy with Paystack'),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: 15),
+
+                              ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    loading(context);
+                                    await subscription.initiateFeaturedPayment(
+                                        course!, student, 'paypal');
+                                    Navigator.pop(context);
+
+                                    // complete payment with paystack
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/pay_with_paypal',
+                                      arguments: {
+                                        'type': 'featured-course',
+                                        'course': course
+                                      },
+                                    );
+                                  } catch (e) {
+                                    Navigator.pop(context);
+                                    error(context, stripExceptions(e));
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(CupertinoIcons.money_dollar),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Buy with PayPal')
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: 20),
                             ],
                           )),
                     ])),
                   ),
                 ]),
-                bottomSheet: BottomAppBar(
-                  child: Container(
-                    width: screen(context).width,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.all(Radius.zero),
-                          ),
-                        ),
-                      ),
-                      onPressed: () async {
-                        try {
-                          loading(context);
-                          await subscription.initiateFeaturedPayment(
-                              course!, student);
-                          Navigator.pop(context);
-
-                          // complete payment with paystack
-                          Navigator.pushNamed(
-                            context,
-                            '/pay_with_paystack',
-                            arguments: {
-                              'type': 'featured-course',
-                              'course': course
-                            },
-                          );
-                        } catch (e) {
-                          Navigator.pop(context);
-                          error(context, stripExceptions(e));
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('BUY COURSE'),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Icon(Icons.arrow_forward)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // bottomSheet: BottomAppBar(
+                //   child: Container(
+                //       width: screen(context).width,
+                //       child: Row(
+                //         children: [
+                //           ],
+                //       )),
+                // ),
               ),
             );
           });
