@@ -16,7 +16,7 @@ class LandingPageState extends State<LandingPage> {
   }
 
   void _initializeTimer() {
-    Timer(const Duration(seconds: 5),
+    Timer(const Duration(seconds: 3),
         () => Navigator.pushReplacementNamed(context, "/welcome_page"));
   }
 
