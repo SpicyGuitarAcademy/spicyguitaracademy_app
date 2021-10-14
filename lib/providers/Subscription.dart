@@ -7,29 +7,14 @@ import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/utils/request.dart';
 
 class Subscription extends ChangeNotifier {
-  String? paystackPublicKey;
   String? reference;
-  String? accessCode;
+  String? paypalPaymentID;
   String? authorizationUrl;
-  int? price;
 
   bool? subscriptionPaymentStatus;
   bool? featuredPaymentStatus;
 
   List<dynamic>? plans;
-
-  getPaymentKey() async {
-    try {
-      dynamic resp = await request('/api/paystack/key');
-      if (resp['status'] == true) {
-        paystackPublicKey = resp['data']['key'];
-      }
-
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
-  }
 
   Future getSubscriptionPlans() async {
     try {
@@ -47,10 +32,11 @@ class Subscription extends ChangeNotifier {
     }
   }
 
-  Future initiateFeaturedPayment(Course course, Student student) async {
+  Future initiateFeaturedPayment(
+      Course course, Student student, String medium) async {
     try {
       var resp = await request(
-        '/api/subscription/initiate-featured',
+        '/api/subscription/$medium/initiate-featured',
         method: 'POST',
         body: {'email': student.email, 'course': course.id.toString()},
         // continue with the server side and
@@ -62,9 +48,8 @@ class Subscription extends ChangeNotifier {
 
       if (resp['status'] == true) {
         reference = resp['data']['reference'];
-        accessCode = resp['data']['access_code'];
-        price = resp['data']['price'];
         authorizationUrl = resp['data']['authorization_url'];
+        if (medium == 'paypal') paypalPaymentID = resp['data']['id'];
       } else {
         throw Exception(resp['message']);
       }
@@ -76,10 +61,10 @@ class Subscription extends ChangeNotifier {
   }
 
   Future initiateSubscriptionPayment(
-      String selectedPlan, Student student) async {
+      String selectedPlan, Student student, String medium) async {
     try {
       var resp = await request(
-        '/api/subscription/initiate',
+        '/api/subscription/$medium/initiate',
         method: 'POST',
         body: {'email': student.email, 'plan': selectedPlan},
         headers: {
@@ -90,9 +75,8 @@ class Subscription extends ChangeNotifier {
 
       if (resp['status'] == true) {
         reference = resp['data']['reference'];
-        accessCode = resp['data']['access_code'];
-        price = resp['data']['price'];
         authorizationUrl = resp['data']['authorization_url'];
+        if (medium == 'paypal') paypalPaymentID = resp['data']['id'];
       } else {
         throw Exception(resp['message']);
       }
@@ -104,10 +88,13 @@ class Subscription extends ChangeNotifier {
   }
 
   Future verifySubscriptionPayment(
-      StudentSubscription studentSubscription) async {
+      StudentSubscription studentSubscription, String medium) async {
     try {
+      var endpoint = medium == 'paypal'
+          ? '/api/subscription/$medium/verify/$reference?paymentID=$paypalPaymentID'
+          : '/api/subscription/$medium/verify/$reference';
       var resp = await request(
-        '/api/subscription/verify/$reference',
+        endpoint,
         method: 'POST',
         headers: {
           'JWToken': Auth.token!,
@@ -130,10 +117,13 @@ class Subscription extends ChangeNotifier {
     }
   }
 
-  Future verifyFeaturedPayment(Courses courses) async {
+  Future verifyFeaturedPayment(Courses courses, String medium) async {
     try {
+      var endpoint = medium == 'paypal'
+          ? '/api/subscription/$medium/verify-featured/$reference?paymentID=$paypalPaymentID'
+          : '/api/subscription/$medium/verify-featured/$reference';
       var resp = await request(
-        '/api/subscription/verify-featured/$reference',
+        endpoint,
         method: 'POST',
         headers: {
           'JWToken': Auth.token!,
