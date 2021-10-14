@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:spicyguitaracademy_app/pages/public/verify_device.dart';
+
+// providers
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
@@ -13,36 +14,32 @@ import 'package:spicyguitaracademy_app/providers/Subscription.dart';
 import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
 
 // pages
+import 'package:spicyguitaracademy_app/pages/public/contact.dart';
+import 'package:spicyguitaracademy_app/pages/public/forgot_password.dart';
+import 'package:spicyguitaracademy_app/pages/public/reset_password.dart';
+import 'package:spicyguitaracademy_app/pages/public/terms_and_condition.dart';
+import 'package:spicyguitaracademy_app/pages/public/landing_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/verify_device.dart';
+import 'package:spicyguitaracademy_app/pages/public/verify_email.dart';
+import 'package:spicyguitaracademy_app/pages/public/welcome_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/register_page.dart';
+import 'package:spicyguitaracademy_app/pages/public/login_page.dart';
+
+import 'package:spicyguitaracademy_app/pages/authenticated/welcome_note.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/choose_plan.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/successful_transaction.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/failed_transaction.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/ready_to_play.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/completed_category.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/completed_courses.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/coursepreview_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/editpassword_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/forums_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/helpdetails_page.dart';
-// import 'package:spicyguitaracademy_app/pages/authenticated/userprofile_page.dart';
-import 'package:spicyguitaracademy_app/pages/public/contact.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/editprofile_page.dart';
-import 'package:spicyguitaracademy_app/pages/public/forgot_password.dart';
-import 'package:spicyguitaracademy_app/pages/public/reset_password.dart';
-
-import 'package:spicyguitaracademy_app/pages/public/terms_and_condition.dart';
-import 'package:spicyguitaracademy_app/pages/public/landing_page.dart';
-import 'package:spicyguitaracademy_app/pages/public/verify_email.dart';
-import 'package:spicyguitaracademy_app/pages/public/welcome_page.dart';
-import 'package:spicyguitaracademy_app/pages/public/register_page.dart';
-import 'package:spicyguitaracademy_app/pages/public/login_page.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/welcome_note.dart';
-
-import 'package:spicyguitaracademy_app/pages/authenticated/choose_plan.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/successful_transaction.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/failed_transaction.dart';
-import 'package:spicyguitaracademy_app/pages/authenticated/ready_to_play.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/start_loading.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/choose_category.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/dashboard.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/search_page.dart';
-// import 'package:spicyguitaracademy_app/pages/authenticated/rechoose_plan.dart';
-// import 'package:spicyguitaracademy_app/pages/authenticated/rechoose_category.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/invite_friend.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/lessons_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/notifications_page.dart';
@@ -50,8 +47,11 @@ import 'package:spicyguitaracademy_app/pages/authenticated/tutorial_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/settings_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/help_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/assignment_page.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/editprofile_page.dart';
+
 import 'package:spicyguitaracademy_app/services/pay_with_paypal.dart';
 import 'package:spicyguitaracademy_app/services/pay_with_paystack.dart';
+
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 
 void main() {
@@ -72,8 +72,6 @@ void main() {
       child: SpicyGuitarAcademy(),
     ),
   );
-
-  // runApp(SpicyGuitarAcademy());
 }
 
 class SpicyGuitarAcademy extends StatelessWidget {
