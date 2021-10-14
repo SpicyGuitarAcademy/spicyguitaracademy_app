@@ -12,14 +12,14 @@ import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class PayWithPaystack extends StatefulWidget {
-  const PayWithPaystack({Key? key}) : super(key: key);
+class PayWithPayPal extends StatefulWidget {
+  const PayWithPayPal({Key? key}) : super(key: key);
 
   @override
-  _PayWithPaystackState createState() => _PayWithPaystackState();
+  _PayWithPayPalState createState() => _PayWithPayPalState();
 }
 
-class _PayWithPaystackState extends State<PayWithPaystack> {
+class _PayWithPayPalState extends State<PayWithPayPal> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
@@ -34,7 +34,7 @@ class _PayWithPaystackState extends State<PayWithPaystack> {
     try {
       loading(context, message: 'Verifying payment');
       await subscription.verifySubscriptionPayment(
-          studentSubscription, 'paystack');
+          studentSubscription, 'paypal');
       Navigator.pop(context);
       if (subscription.subscriptionPaymentStatus == true) {
         Navigator.popAndPushNamed(context, "/successful_transaction");
@@ -53,7 +53,7 @@ class _PayWithPaystackState extends State<PayWithPaystack> {
     try {
       loading(context, message: 'Verifying payment');
       await subscription
-          .verifyFeaturedPayment(courses, 'paystack')
+          .verifyFeaturedPayment(courses, 'paypal')
           .then((value) async {
         Navigator.pop(context);
         if (subscription.featuredPaymentStatus == true) {
@@ -107,8 +107,8 @@ class _PayWithPaystackState extends State<PayWithPaystack> {
                 _toasterJavascriptChannel(context),
               },
               navigationDelegate: (NavigationRequest request) async {
-                if (request.url.startsWith(
-                    baseUrl + '/api/subscription/paystack/verify')) {
+                if (request.url
+                    .startsWith(baseUrl + '/api/subscription/paypal/verify')) {
                   print('verifying payment...');
 
                   if (type == 'subscription') {
