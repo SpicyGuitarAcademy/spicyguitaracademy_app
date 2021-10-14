@@ -122,6 +122,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
             ),
             tapTargetSize: MaterialTapTargetSize.padded,
             backgroundColor: MaterialStateProperty.all(brown),
+            overlayColor: MaterialStateProperty.all(darkbrown),
             foregroundColor: MaterialStateProperty.all(white),
             alignment: Alignment.center,
           ),
