@@ -18,8 +18,6 @@ class CoursesPage extends StatefulWidget {
 
 class CoursesPageState extends State<CoursesPage>
     with SingleTickerProviderStateMixin {
-  CoursesPageState();
-
   TabController? _tabController;
   int tabPageIndex = 0;
 

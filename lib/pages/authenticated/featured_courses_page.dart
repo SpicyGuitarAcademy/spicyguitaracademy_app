@@ -20,13 +20,6 @@ class FeaturedCoursesPageState extends State<FeaturedCoursesPage>
 
   TabController? _tabController;
   int tabPageIndex = 0;
-  // List<dynamic> tabPageOption = [
-  //   // Studying Page
-  //   Student.studyingCategory == 0
-  //       ? NoFeaturedCoursesPage()
-  //       : MyFeaturedCoursesPage(),
-  //   AllFeaturedCoursesPage(rebuild)
-  // ];
 
   @override
   void initState() {

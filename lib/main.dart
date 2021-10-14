@@ -48,6 +48,7 @@ import 'package:spicyguitaracademy_app/pages/authenticated/settings_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/help_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/assignment_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/editprofile_page.dart';
+import 'package:spicyguitaracademy_app/providers/Ui.dart';
 
 import 'package:spicyguitaracademy_app/services/pay_with_paypal.dart';
 import 'package:spicyguitaracademy_app/services/pay_with_paystack.dart';
@@ -58,6 +59,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => Ui()),
         ChangeNotifierProvider(create: (context) => Student()),
         ChangeNotifierProvider(create: (context) => StudentSubscription()),
         ChangeNotifierProvider(create: (context) => StudentStudyStatistics()),
