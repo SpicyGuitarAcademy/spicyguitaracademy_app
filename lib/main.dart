@@ -98,6 +98,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
             padding: MaterialStateProperty.all(
               EdgeInsets.symmetric(
                 vertical: 10,
+                horizontal: 25,
               ),
             ),
             // side: MaterialStateProperty.all(

@@ -93,9 +93,30 @@ class CompletedCategoryState extends State<CompletedCategory> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 20.0),
                     width: screen(context).width,
-                    child: RaisedButton(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                          EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 25,
+                          ),
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.symmetric(horizontal: 50),
+                        child: Text(
+                          "Continue",
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                      ),
                       onPressed: () async {
                         try {
                           loading(context);
@@ -130,17 +151,6 @@ class CompletedCategoryState extends State<CompletedCategory> {
                           error(context, stripExceptions(e));
                         }
                       },
-                      color: brown,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0),
-                          side: BorderSide(color: brown, width: 2.0)),
-                      child: Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 50),
-                        child:
-                            Text("Continue", style: TextStyle(fontSize: 20.0)),
-                      ),
                     ),
                   ),
                 ]),

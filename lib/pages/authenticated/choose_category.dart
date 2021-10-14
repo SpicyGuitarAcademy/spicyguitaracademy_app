@@ -73,9 +73,46 @@ class ChooseCategoryState extends State<ChooseCategory> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Container(
-                            child: RaisedButton(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 30),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                    vertical: 20,
+                                    horizontal: 30,
+                                  ),
+                                ),
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                                side: MaterialStateProperty.all(
+                                  BorderSide(
+                                    color: brown,
+                                    width: 2,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                                backgroundColor: MaterialStateProperty.all(
+                                  _selectedCategory == "Beginner"
+                                      ? brown
+                                      : Colors.white,
+                                ),
+                                foregroundColor: MaterialStateProperty.all(
+                                  _selectedCategory == "Beginner"
+                                      ? Colors.white
+                                      : brown,
+                                ),
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 30.0),
+                                child: Text("Beginner",
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600)),
+                              ),
                               onPressed: () => studentStats.studyingCategory ==
                                           0 &&
                                       studentSubscription.isSubscribed == true
@@ -85,29 +122,48 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                       ? setState(
                                           () => _selectedCategory = "Beginner")
                                       : null,
-                              color: _selectedCategory == "Beginner"
-                                  ? brown
-                                  : Colors.white,
-                              textColor: _selectedCategory == "Beginner"
-                                  ? Colors.white
-                                  : brown,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(20.0),
-                                  side: BorderSide(color: brown, width: 2.0)),
-                              child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 30.0),
-                                child: Text("Beginner",
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600)),
-                              ),
                             ),
                           ),
                           Container(
-                            child: RaisedButton(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 20,
-                                horizontal: 30,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                    vertical: 20,
+                                    horizontal: 30,
+                                  ),
+                                ),
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                                side: MaterialStateProperty.all(
+                                  BorderSide(
+                                    color: brown,
+                                    width: 2,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                                backgroundColor: MaterialStateProperty.all(
+                                  _selectedCategory == "Amateur"
+                                      ? brown
+                                      : Colors.white,
+                                ),
+                                foregroundColor: MaterialStateProperty.all(
+                                  _selectedCategory == "Amateur"
+                                      ? Colors.white
+                                      : brown,
+                                ),
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 30.0),
+                                child: Text("Amateur",
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w600)),
                               ),
                               onPressed: () => studentStats.studyingCategory ==
                                           0 &&
@@ -118,22 +174,6 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                       ? setState(
                                           () => _selectedCategory = "Amateur")
                                       : null,
-                              color: _selectedCategory == "Amateur"
-                                  ? brown
-                                  : Colors.white,
-                              textColor: _selectedCategory == "Amateur"
-                                  ? Colors.white
-                                  : brown,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(20.0),
-                                  side: BorderSide(color: brown, width: 2.0)),
-                              child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 30.0),
-                                child: Text("Amateur",
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w600)),
-                              ),
                             ),
                           )
                         ],
@@ -144,9 +184,46 @@ class ChooseCategoryState extends State<ChooseCategory> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Container(
-                        child: RaisedButton(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 16),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 16,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(
+                                color: brown,
+                                width: 2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all(
+                              _selectedCategory == "Intermediate"
+                                  ? brown
+                                  : Colors.white,
+                            ),
+                            foregroundColor: MaterialStateProperty.all(
+                              _selectedCategory == "Intermediate"
+                                  ? Colors.white
+                                  : brown,
+                            ),
+                          ),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 30.0),
+                            child: Text("Intermediate",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600)),
+                          ),
                           onPressed: () => studentStats.studyingCategory == 0 &&
                                   studentSubscription.isSubscribed == true
                               ? setState(
@@ -155,44 +232,42 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                   ? setState(
                                       () => _selectedCategory = "Intermediate")
                                   : null,
-                          color: _selectedCategory == "Intermediate"
-                              ? brown
-                              : Colors.white,
-                          textColor: _selectedCategory == "Intermediate"
-                              ? Colors.white
-                              : brown,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(20.0),
-                              side: BorderSide(color: brown, width: 2.0)),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 30.0),
-                            child: Text("Intermediate",
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w600)),
-                          ),
                         ),
                       ),
                       Container(
-                        child: RaisedButton(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 25),
-                          onPressed: () => studentStats.studyingCategory == 0 &&
-                                  studentSubscription.isSubscribed == true
-                              ? setState(() => _selectedCategory = "Advanced")
-                              : canChooseAnotherCategory == true
-                                  ? setState(
-                                      () => _selectedCategory = "Advanced")
-                                  : null,
-                          color: _selectedCategory == "Advanced"
-                              ? brown
-                              : Colors.white,
-                          textColor: _selectedCategory == "Advanced"
-                              ? Colors.white
-                              : brown,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(20.0),
-                              side: BorderSide(color: brown, width: 2.0)),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 25,
+                              ),
+                            ),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(
+                                color: brown,
+                                width: 2,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all(
+                              _selectedCategory == "Advanced"
+                                  ? brown
+                                  : Colors.white,
+                            ),
+                            foregroundColor: MaterialStateProperty.all(
+                              _selectedCategory == "Advanced"
+                                  ? Colors.white
+                                  : brown,
+                            ),
+                          ),
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 30.0),
                             child: Text("Advanced",
@@ -200,6 +275,13 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.w600)),
                           ),
+                          onPressed: () => studentStats.studyingCategory == 0 &&
+                                  studentSubscription.isSubscribed == true
+                              ? setState(() => _selectedCategory = "Advanced")
+                              : canChooseAnotherCategory == true
+                                  ? setState(
+                                      () => _selectedCategory = "Advanced")
+                                  : null,
                         ),
                       )
                     ],
@@ -211,9 +293,29 @@ class ChooseCategoryState extends State<ChooseCategory> {
                           margin:
                               const EdgeInsets.only(top: 100.0, bottom: 30.0),
                           width: screen(context).width * 0.8,
-                          child: RaisedButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 18, horizontal: 20),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(30),
+                                  ),
+                                ),
+                              ),
+                              side: MaterialStateProperty.all(
+                                BorderSide(
+                                  color: brown,
+                                  width: 2,
+                                  style: BorderStyle.solid,
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all(
+                                _selectedCategory == "" ? Colors.white : brown,
+                              ),
+                              foregroundColor: MaterialStateProperty.all(
+                                _selectedCategory == "" ? brown : Colors.white,
+                              ),
+                            ),
                             onPressed: _selectedCategory == "" ||
                                     _selectedCategory ==
                                         studentStats.studyingCategoryLabel
@@ -276,15 +378,6 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                       error(context, stripExceptions(e));
                                     }
                                   },
-                            color:
-                                _selectedCategory == "" ? Colors.white : brown,
-                            disabledColor: Colors.white,
-                            disabledTextColor: brown,
-                            textColor:
-                                _selectedCategory == "" ? brown : Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                                side: BorderSide(color: brown, width: 2.0)),
                             child: Container(
                               alignment: Alignment.center,
                               margin: EdgeInsets.symmetric(horizontal: 50),

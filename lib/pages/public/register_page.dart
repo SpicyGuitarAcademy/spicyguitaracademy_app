@@ -201,16 +201,11 @@ class RegisterPageState extends State<RegisterPage> {
                 ),
                 Container(
                   width: MediaQuery.of(context).copyWith().size.width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       register(student);
                     },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(5.0),
-                        side: BorderSide(color: brown)),
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text("Signup", style: TextStyle(fontSize: 20.0)),
+                    child: Text("Signup"),
                   ),
                 ),
                 SizedBox(

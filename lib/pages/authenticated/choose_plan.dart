@@ -72,100 +72,148 @@ class ChoosePlanState extends State<ChoosePlan> {
                               children: <Widget>[
                                 Container(
                                   width: screen(context).width * 0.4,
-                                  child: RaisedButton(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 30),
-                                    onPressed: () => studentSubscription
-                                                .isSubscribed ==
-                                            false
-                                        ? setState(() => _selectedPlan =
-                                            subscription.plans![0]['plan_id'])
-                                        : null,
-                                    color: _selectedPlan ==
-                                            subscription.plans![0]['plan_id']
-                                        ? brown
-                                        : Colors.white,
-                                    textColor: _selectedPlan ==
-                                            subscription.plans![0]['plan_id']
-                                        ? Colors.white
-                                        : brown,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(20.0),
-                                        side: BorderSide(
-                                            color: brown, width: 2.0)),
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Text(
-                                              "NGN ${subscription.plans![0]['price']}",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: SvgPicture.asset(
-                                              "assets/imgs/icons/1MS_icon.svg",
-                                              matchTextDirection: true,
-                                            ),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                          vertical: 20,
+                                          horizontal: 30,
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![0]
+                                                    ['plan_id']
+                                            ? brown
+                                            : white,
+                                      ),
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![0]
+                                                    ['plan_id']
+                                            ? white
+                                            : brown,
+                                      ),
+                                      side: MaterialStateProperty.all(
+                                        BorderSide(
+                                          color: brown,
+                                          width: 2,
+                                          style: BorderStyle.solid,
+                                        ),
+                                      ),
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
                                           ),
-                                          Text(subscription.plans![0]['plan'],
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                        ]),
-                                  ),
-                                ),
-                                Container(
-                                  width: screen(context).width * 0.4,
-                                  child: RaisedButton(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 30),
+                                        ),
+                                      ),
+                                    ),
                                     onPressed: () => studentSubscription
                                                 .isSubscribed ==
                                             false
                                         ? setState(() => _selectedPlan =
                                             subscription.plans![1]['plan_id'])
                                         : null,
-                                    color: _selectedPlan ==
-                                            subscription.plans![1]['plan_id']
-                                        ? brown
-                                        : Colors.white,
-                                    textColor: _selectedPlan ==
-                                            subscription.plans![1]['plan_id']
-                                        ? Colors.white
-                                        : brown,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(20.0),
-                                        side: BorderSide(
-                                            color: brown, width: 2.0)),
                                     child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Text(
-                                              "NGN ${subscription.plans![1]['price']}",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: SvgPicture.asset(
-                                              "assets/imgs/icons/3MS_icon.svg",
-                                              matchTextDirection: true,
-                                            ),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Text(
+                                            "NGN ${subscription.plans![1]['price']}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: SvgPicture.asset(
+                                            "assets/imgs/icons/1MS_icon.svg",
+                                            matchTextDirection: true,
                                           ),
-                                          Text(subscription.plans![1]['plan'],
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                        ]),
+                                        ),
+                                        Text(subscription.plans![0]['plan'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: screen(context).width * 0.4,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                          vertical: 20,
+                                          horizontal: 30,
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![1]
+                                                    ['plan_id']
+                                            ? brown
+                                            : white,
+                                      ),
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![1]
+                                                    ['plan_id']
+                                            ? white
+                                            : brown,
+                                      ),
+                                      side: MaterialStateProperty.all(
+                                        BorderSide(
+                                          color: brown,
+                                          width: 2,
+                                          style: BorderStyle.solid,
+                                        ),
+                                      ),
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () => studentSubscription
+                                                .isSubscribed ==
+                                            false
+                                        ? setState(() => _selectedPlan =
+                                            subscription.plans![1]['plan_id'])
+                                        : null,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Text(
+                                            "NGN ${subscription.plans![1]['price']}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: SvgPicture.asset(
+                                            "assets/imgs/icons/3MS_icon.svg",
+                                            matchTextDirection: true,
+                                          ),
+                                        ),
+                                        Text(subscription.plans![1]['plan'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
@@ -178,100 +226,148 @@ class ChoosePlanState extends State<ChoosePlan> {
                               children: <Widget>[
                                 Container(
                                   width: screen(context).width * 0.4,
-                                  child: RaisedButton(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 30),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                          vertical: 20,
+                                          horizontal: 30,
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![2]
+                                                    ['plan_id']
+                                            ? brown
+                                            : white,
+                                      ),
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![2]
+                                                    ['plan_id']
+                                            ? white
+                                            : brown,
+                                      ),
+                                      side: MaterialStateProperty.all(
+                                        BorderSide(
+                                          color: brown,
+                                          width: 2,
+                                          style: BorderStyle.solid,
+                                        ),
+                                      ),
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     onPressed: () => studentSubscription
                                                 .isSubscribed ==
                                             false
                                         ? setState(() => _selectedPlan =
                                             subscription.plans![2]['plan_id'])
                                         : null,
-                                    color: _selectedPlan ==
-                                            subscription.plans![2]['plan_id']
-                                        ? brown
-                                        : Colors.white,
-                                    textColor: _selectedPlan ==
-                                            subscription.plans![2]['plan_id']
-                                        ? Colors.white
-                                        : brown,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(20.0),
-                                        side: BorderSide(
-                                            color: brown, width: 2.0)),
                                     child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Text(
-                                              "NGN ${subscription.plans![2]['price']}",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: SvgPicture.asset(
-                                              "assets/imgs/icons/6MS_icon.svg",
-                                              matchTextDirection: true,
-                                            ),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Text(
+                                            "NGN ${subscription.plans![2]['price']}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: SvgPicture.asset(
+                                            "assets/imgs/icons/6MS_icon.svg",
+                                            matchTextDirection: true,
                                           ),
-                                          Text(subscription.plans![2]['plan'],
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                        ]),
+                                        ),
+                                        Text(subscription.plans![2]['plan'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Container(
                                   width: screen(context).width * 0.4,
-                                  child: RaisedButton(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 30),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                          vertical: 20,
+                                          horizontal: 30,
+                                        ),
+                                      ),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![3]
+                                                    ['plan_id']
+                                            ? brown
+                                            : white,
+                                      ),
+                                      foregroundColor:
+                                          MaterialStateProperty.all(
+                                        _selectedPlan ==
+                                                subscription.plans![3]
+                                                    ['plan_id']
+                                            ? white
+                                            : brown,
+                                      ),
+                                      side: MaterialStateProperty.all(
+                                        BorderSide(
+                                          color: brown,
+                                          width: 2,
+                                          style: BorderStyle.solid,
+                                        ),
+                                      ),
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     onPressed: () => studentSubscription
                                                 .isSubscribed ==
                                             false
                                         ? setState(() => _selectedPlan =
                                             subscription.plans![3]['plan_id'])
                                         : null,
-                                    color: _selectedPlan ==
-                                            subscription.plans![3]['plan_id']
-                                        ? brown
-                                        : Colors.white,
-                                    textColor: _selectedPlan ==
-                                            subscription.plans![3]['plan_id']
-                                        ? Colors.white
-                                        : brown,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(20.0),
-                                        side: BorderSide(
-                                            color: brown, width: 2.0)),
                                     child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Text(
-                                              "NGN ${subscription.plans![3]['price']}",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                          Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: SvgPicture.asset(
-                                              "assets/imgs/icons/1YS_icon.svg",
-                                              matchTextDirection: true,
-                                            ),
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Text(
+                                            "NGN ${subscription.plans![3]['price']}",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: SvgPicture.asset(
+                                            "assets/imgs/icons/1YS_icon.svg",
+                                            matchTextDirection: true,
                                           ),
-                                          Text(subscription.plans![3]['plan'],
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600)),
-                                        ]),
+                                        ),
+                                        Text(subscription.plans![3]['plan'],
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.w600)),
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
@@ -401,10 +497,7 @@ class ChoosePlanState extends State<ChoosePlan> {
                                 // && Student.isLoaded == false
                                 ? Container(
                                     width: screen(context).width - 40,
-                                    child: RaisedButton(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 18, horizontal: 20),
-                                      textColor: Colors.white,
+                                    child: ElevatedButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, "/ready_to_play");

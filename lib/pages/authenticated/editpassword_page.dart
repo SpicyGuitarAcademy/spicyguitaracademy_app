@@ -112,15 +112,10 @@ class EditPasswordPageState extends State<EditPasswordPage> {
                 ),
                 Container(
                   width: MediaQuery.of(context).copyWith().size.width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       updatepassword();
                     },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(5.0),
-                        side: BorderSide(color: brown)),
-                    padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text("Update", style: TextStyle(fontSize: 20.0)),
                   ),
                 ),

@@ -41,12 +41,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 20),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 0});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                         'Questions about learning the Guitar at Spicy Guitar Academy',
                         textAlign: TextAlign.left,
@@ -55,12 +54,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 10),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 1});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                         'Questions about Spicy Guitar Academy Mobile Application',
                         textAlign: TextAlign.left,
@@ -69,12 +67,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 10),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 2});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text('Questions about playing the Guitar',
                         textAlign: TextAlign.left,
                         style: TextStyle(color: Colors.white)),

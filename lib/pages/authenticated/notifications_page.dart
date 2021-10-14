@@ -69,14 +69,14 @@ class NotificationPageState extends State<NotificationPage> {
               notification['status'] == 'unread'
                   ? Align(
                       alignment: Alignment.centerRight,
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () async {
                           await markAsRead(
                               context, notification, studentNotifications);
                         },
                         child: Text(
                           'Mark as read',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ),
                     )

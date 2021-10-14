@@ -54,21 +54,30 @@ class FailedTransactionState extends State<FailedTransaction> {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20.0),
                 width: screen(context).width,
-                child: RaisedButton(
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  color: brown,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0),
-                      side: BorderSide(color: brown, width: 2.0)),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 25,
+                      ),
+                    ),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
                   child: Container(
                     alignment: Alignment.center,
                     margin: EdgeInsets.symmetric(horizontal: 50),
                     child: Text("Go Back", style: TextStyle(fontSize: 20.0)),
                   ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
             ]),

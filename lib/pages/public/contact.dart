@@ -163,16 +163,11 @@ class ContactUsPageState extends State<ContactUsPage> {
                 SizedBox(height: 20.0),
                 Container(
                   width: MediaQuery.of(context).copyWith().size.width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       contactUs(student);
                     },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(5.0),
-                        side: BorderSide(color: brown)),
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text("Submit", style: TextStyle(fontSize: 20.0)),
+                    child: Text("Submit"),
                   ),
                 ),
 

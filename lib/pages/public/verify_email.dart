@@ -66,16 +66,11 @@ class VerifyPageState extends State<VerifyPage> {
 
                     Container(
                       width: MediaQuery.of(context).copyWith().size.width,
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           verify(student);
                         },
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(5.0),
-                            side: BorderSide(color: brown)),
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text("Verify", style: TextStyle(fontSize: 20.0)),
+                        child: Text("Verify"),
                       ),
                     ),
                   ]))));

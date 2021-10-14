@@ -31,10 +31,10 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
         return new Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(
-                minimum: EdgeInsets.all(5.0),
+                minimum: EdgeInsets.only(top: 5.0),
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,26 +79,17 @@ class WelcomeNotePageState extends State<WelcomeNotePage> {
                           SizedBox(height: 60),
                           Container(
                             alignment: Alignment.centerRight,
-                            child: RaisedButton(
-                                onPressed: () {
-                                  if (studentSubscription.isSubscribed ==
-                                      true) {
-                                    Navigator.pushNamed(
-                                        context, '/ready_to_play');
-                                  } else {
-                                    Navigator.pushNamed(
-                                        context, '/choose_plan');
-                                  }
-                                },
-                                color: brown,
-                                textColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(15.0),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                child: Text("Continue",
-                                    style: TextStyle(fontSize: 20.0))),
+                            child: ElevatedButton(
+                              child: Text("Continue"),
+                              onPressed: () {
+                                if (studentSubscription.isSubscribed == true) {
+                                  Navigator.pushNamed(
+                                      context, '/ready_to_play');
+                                } else {
+                                  Navigator.pushNamed(context, '/choose_plan');
+                                }
+                              },
+                            ),
                           ),
                           SizedBox(height: 50.0)
                         ]),

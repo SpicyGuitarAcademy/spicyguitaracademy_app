@@ -94,16 +94,11 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
                 SizedBox(height: 20.0),
                 Container(
                   width: MediaQuery.of(context).copyWith().size.width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       resetpassword(student);
                     },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(5.0),
-                        side: BorderSide(color: brown)),
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text("Reset", style: TextStyle(fontSize: 20.0)),
+                    child: Text("Reset"),
                   ),
                 ),
                 SizedBox(
