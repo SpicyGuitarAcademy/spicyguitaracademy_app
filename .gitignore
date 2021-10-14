@@ -31,6 +31,10 @@
 .pub/
 /build/
 
+# Do not track web/ and linux/
+web/
+linux/
+
 # Web related
 lib/generated_plugin_registrant.dart
 
