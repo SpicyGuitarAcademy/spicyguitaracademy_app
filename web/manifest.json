@@ -1,11 +1,11 @@
 {
-    "name": "spicyguitaracademy",
-    "short_name": "spicyguitaracademy",
+    "name": "spicyguitaracademy_app",
+    "short_name": "spicyguitaracademy_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter application.",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

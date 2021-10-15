@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy/common.dart';
 import 'package:accordion/accordion.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
 
 class HelpDetailsPage extends StatefulWidget {
   @override
@@ -14,8 +14,8 @@ class HelpDetailsPageState extends State<HelpDetailsPage> {
     super.initState();
   }
 
-  int index;
-  String title;
+  int? index;
+  String? title;
 
   List<String> titles = [
     "Questions about learning the Guitar at Spicy Guitar Academy",
@@ -194,7 +194,7 @@ Guitar tablature is a visual representation of music played on the guitar. It in
 
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments as Map;
+    final Map args = getRouteArgs(context);
     index = args['index'];
 
     return new Scaffold(
@@ -218,7 +218,7 @@ Guitar tablature is a visual representation of music played on the guitar. It in
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                titles[index],
+                titles[index!],
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     fontSize: 18,

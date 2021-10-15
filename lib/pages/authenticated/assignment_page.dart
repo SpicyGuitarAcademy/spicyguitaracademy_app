@@ -1,12 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:spicyguitaracademy/pages/authenticated/videoWidget.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
-import 'dart:io';
-// ---------------------------------------------------
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Assignment.dart';
+import 'package:spicyguitaracademy_app/providers/Auth.dart';
+import 'package:spicyguitaracademy_app/providers/Courses.dart';
+import 'package:spicyguitaracademy_app/providers/StudentAssignments.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/utils/upload.dart';
+import 'package:spicyguitaracademy_app/widgets/custom_video_player.dart';
 import 'package:file_picker/file_picker.dart';
-// ---------------------------------------------------
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class AssignmentPage extends StatefulWidget {
   AssignmentPage();
@@ -20,7 +25,7 @@ enum Screen { video, none }
 class AssignmentPageState extends State<AssignmentPage> {
   Screen _displayscreen = Screen.none;
   bool shouldUpload = true;
-  File file;
+  File? file;
   TextEditingController _answer = new TextEditingController();
 
   @override
@@ -29,22 +34,23 @@ class AssignmentPageState extends State<AssignmentPage> {
 
     print(Assignment.questionVideo);
 
+    // ignore: unnecessary_null_comparison
     if (Assignment == null) {
       Navigator.pop(context);
     }
     if (Assignment.questionVideo != null &&
-        Assignment.questionVideo.isNotEmpty) {
+        Assignment.questionVideo!.isNotEmpty) {
       _displayscreen = Screen.video;
     }
   }
 
   // ---------------------------------------------------
-  _uploadAnswer() async {
-    FilePickerResult result;
+  _uploadAnswer(Courses courses) async {
+    FilePickerResult? result;
     try {
       result = await FilePicker.platform.pickFiles(type: FileType.video);
       if (result != null) {
-        file = File(result.files.single.path);
+        file = File(result.files.single.path!);
       }
     } catch (e) {
       error(context, "Video picker error " + e.toString());
@@ -57,13 +63,13 @@ class AssignmentPageState extends State<AssignmentPage> {
         var resp = await upload('/api/student/assignment/answer', 'video', file,
             method: 'POST',
             headers: {
-              'JWToken': Auth.token,
+              'JWToken': Auth.token!,
               'cache-control': 'max-age=0, must-revalidate'
             },
             body: {
               'answerId': "${Assignment.answerId}",
               'assignment': "${Assignment.id}",
-              'courseId': Courses.currentCourse.id.toString()
+              'courseId': courses.currentCourse!.id.toString()
             });
 
         Navigator.pop(context);
@@ -75,7 +81,6 @@ class AssignmentPageState extends State<AssignmentPage> {
           });
         } else {
           error(context, resp['message']);
-          // error(context, "Video assignment upload failed.");
         }
       }
     } catch (e) {
@@ -84,10 +89,10 @@ class AssignmentPageState extends State<AssignmentPage> {
     }
   }
 
-  _submitAnswer() async {
+  _submitAnswer(Courses courses, StudentAssignments studentAssignments) async {
     try {
       loading(context, message: 'Submitting');
-      await Assignment.submitAnswer(context, _answer.text);
+      await studentAssignments.submitAnswer(courses, _answer.text);
       setState(() {
         Assignment.answerNote = _answer.text;
         shouldUpload = true;
@@ -118,203 +123,209 @@ class AssignmentPageState extends State<AssignmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: true,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight((screen(context).width * 2) / 3),
-            child: renderDisplayScreen(),
-          ),
-          body: Column(children: [
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Column(children: <Widget>[
-                Container(
-                    width: screen(context).width,
-                    padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // The text contents
-                        Text(
-                          "Course Assignment",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          maxLines: 3,
-                          style: TextStyle(
-                            color: brown,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          Assignment.tutor,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: darkgrey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "${Assignment.questionNote}",
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(
-                            color: darkgrey,
-                            fontSize: 15.0,
-                          ),
-                        ),
-
-                        SizedBox(height: 20),
-
-                        Text(
-                          "Review & Rating",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          maxLines: 3,
-                          style: TextStyle(
-                            color: brown,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Row(
+    return Consumer<Courses>(builder: (BuildContext context, courses, child) {
+      return Consumer<StudentAssignments>(
+          builder: (BuildContext context, studentAssignments, child) {
+        return SafeArea(
+            top: true,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight((screen(context).width * 2) / 3),
+                child: renderDisplayScreen(),
+              ),
+              body: Column(children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(children: <Widget>[
+                    Container(
+                        width: screen(context).width,
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                                Assignment.answerRating > 0
-                                    ? Icons.star
-                                    : Icons.star_border_outlined,
-                                color: brown),
-                            Icon(
-                                Assignment.answerRating > 1
-                                    ? Icons.star
-                                    : Icons.star_border_outlined,
-                                color: brown),
-                            Icon(
-                                Assignment.answerRating > 2
-                                    ? Icons.star
-                                    : Icons.star_border_outlined,
-                                color: brown),
-                            Icon(
-                                Assignment.answerRating > 3
-                                    ? Icons.star
-                                    : Icons.star_border_outlined,
-                                color: brown),
-                            Icon(
-                                Assignment.answerRating > 4
-                                    ? Icons.star
-                                    : Icons.star_border_outlined,
-                                color: brown),
+                            // The text contents
+                            Text(
+                              "Course Assignment",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(
+                                color: brown,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Text(
+                              Assignment.tutor!,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: darkgrey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              "${Assignment.questionNote}",
+                              overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                color: darkgrey,
+                                fontSize: 15.0,
+                              ),
+                            ),
+
+                            SizedBox(height: 20),
+
+                            Text(
+                              "Review & Rating",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(
+                                color: brown,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 2),
+                            Row(
+                              children: [
+                                Icon(
+                                    Assignment.answerRating! > 0
+                                        ? Icons.star
+                                        : Icons.star_border_outlined,
+                                    color: brown),
+                                Icon(
+                                    Assignment.answerRating! > 1
+                                        ? Icons.star
+                                        : Icons.star_border_outlined,
+                                    color: brown),
+                                Icon(
+                                    Assignment.answerRating! > 2
+                                        ? Icons.star
+                                        : Icons.star_border_outlined,
+                                    color: brown),
+                                Icon(
+                                    Assignment.answerRating! > 3
+                                        ? Icons.star
+                                        : Icons.star_border_outlined,
+                                    color: brown),
+                                Icon(
+                                    Assignment.answerRating! > 4
+                                        ? Icons.star
+                                        : Icons.star_border_outlined,
+                                    color: brown),
+                              ],
+                            ),
+                            SizedBox(height: 2),
+                            Assignment.answerReview != null
+                                ? Text(
+                                    "${Assignment.answerReview}",
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                      color: darkgrey,
+                                      // fontSize: 15.0,
+                                    ),
+                                  )
+                                : Container(),
+
+                            SizedBox(height: 20),
+                            Text(
+                              "Your Answer",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(
+                                color: brown,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Assignment.answerVideo != null &&
+                                    Assignment.answerVideo!.isNotEmpty
+                                ? Container(
+                                    height: (screen(context).width * 2) / 3,
+                                    width: screen(context).width,
+                                    child: VideoWidget(
+                                      play: true,
+                                      url: "$baseUrl/${Assignment.answerVideo}",
+                                    ))
+                                : Container(),
+                            SizedBox(height: 10),
+                            Assignment.answerNote != null
+                                ? Text(
+                                    "${Assignment.answerNote}",
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                      color: darkgrey,
+                                      // fontSize: 15,
+                                    ),
+                                  )
+                                : Container(),
+
+                            SizedBox(height: 50)
                           ],
-                        ),
-                        SizedBox(height: 2),
-                        Assignment.answerReview != null
-                            ? Text(
-                                "${Assignment.answerReview}",
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                  color: darkgrey,
-                                  // fontSize: 15.0,
-                                ),
-                              )
-                            : Container(),
-
-                        SizedBox(height: 20),
-                        Text(
-                          "Your Answer",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          maxLines: 3,
-                          style: TextStyle(
-                            color: brown,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Assignment.answerVideo != null &&
-                                Assignment.answerVideo.isNotEmpty
-                            ? Container(
-                                height: (screen(context).width * 2) / 3,
-                                width: screen(context).width,
-                                child: VideoWidget(
-                                  play: true,
-                                  url: "$baseUrl/${Assignment.answerVideo}",
-                                ))
-                            : Container(),
-                        SizedBox(height: 10),
-                        Assignment.answerNote != null
-                            ? Text(
-                                "${Assignment.answerNote}",
-                                overflow: TextOverflow.visible,
-                                style: TextStyle(
-                                  color: darkgrey,
-                                  // fontSize: 15,
-                                ),
-                              )
-                            : Container(),
-
-                        SizedBox(height: 50)
-                      ],
-                    )),
-              ])),
-            ),
-
-            // answer section
-            Assignment.answerRating < 3
-                ? Container(
-                    padding: EdgeInsets.all(0),
-                    width: screen(context).width,
-                    decoration: BoxDecoration(
-                        color: grey,
-                        border: Border(
-                          bottom: BorderSide(width: 2.0, color: brown),
                         )),
-                    child: TextField(
-                        controller: _answer,
-                        autocorrect: true,
-                        textInputAction: TextInputAction.send,
-                        onChanged: (value) {
-                          if (value.trim().isEmpty)
-                            setState(() => shouldUpload = true);
-                          else
-                            setState(() => shouldUpload = false);
-                        },
-                        onSubmitted: (value) {
-                          if (value.trim().isNotEmpty) {
-                            _submitAnswer();
-                          }
-                        },
-                        style: TextStyle(fontSize: 20.0, color: brown),
-                        decoration: InputDecoration(
-                          hintText: "Enter text",
-                          suffix: shouldUpload == true
-                              ? IconButton(
-                                  // upload answer
-                                  onPressed: () {
-                                    _uploadAnswer();
-                                  },
-                                  tooltip: "Upload assignment",
-                                  icon: Icon(
-                                    Icons.attachment,
-                                    color: brown,
-                                  ))
-                              : IconButton(
-                                  // send
-                                  onPressed: () {
-                                    _submitAnswer();
-                                  },
-                                  tooltip: "Submit assignemnt",
-                                  icon: Icon(
-                                    Icons.send,
-                                    color: brown,
-                                  )),
-                        )))
-                : Container(),
-          ]),
-        ));
+                  ])),
+                ),
+
+                // answer section
+                Assignment.answerRating! < 3
+                    ? Container(
+                        padding: EdgeInsets.all(0),
+                        width: screen(context).width,
+                        decoration: BoxDecoration(
+                            color: grey,
+                            border: Border(
+                              bottom: BorderSide(width: 2.0, color: brown),
+                            )),
+                        child: TextField(
+                            controller: _answer,
+                            autocorrect: true,
+                            textInputAction: TextInputAction.send,
+                            onChanged: (value) {
+                              if (value.trim().isEmpty)
+                                setState(() => shouldUpload = true);
+                              else
+                                setState(() => shouldUpload = false);
+                            },
+                            onSubmitted: (value) {
+                              if (value.trim().isNotEmpty) {
+                                _submitAnswer(courses, studentAssignments);
+                              }
+                            },
+                            style: TextStyle(fontSize: 20.0, color: brown),
+                            decoration: InputDecoration(
+                              hintText: "Enter text",
+                              suffix: shouldUpload == true
+                                  ? IconButton(
+                                      // upload answer
+                                      onPressed: () {
+                                        _uploadAnswer(courses);
+                                      },
+                                      tooltip: "Upload assignment",
+                                      icon: Icon(
+                                        Icons.attachment,
+                                        color: brown,
+                                      ))
+                                  : IconButton(
+                                      // send
+                                      onPressed: () {
+                                        _submitAnswer(
+                                            courses, studentAssignments);
+                                      },
+                                      tooltip: "Submit assignemnt",
+                                      icon: Icon(
+                                        Icons.send,
+                                        color: brown,
+                                      )),
+                            )))
+                    : Container(),
+              ]),
+            ));
+      });
+    });
   }
 }

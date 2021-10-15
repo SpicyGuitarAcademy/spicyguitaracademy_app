@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pdf_flutter/pdf_flutter.dart';
-import 'package:spicyguitaracademy/pages/authenticated/videoWidget.dart';
-import 'package:spicyguitaracademy/pages/authenticated/audioWidget.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Courses.dart';
+import 'package:spicyguitaracademy_app/providers/Lessons.dart';
+import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
+import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+// import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+import 'package:spicyguitaracademy_app/widgets/custom_pdf_viewer.dart';
+import 'package:spicyguitaracademy_app/widgets/custom_video_player.dart';
+import 'package:spicyguitaracademy_app/widgets/custom_audio_player.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class TutorialPage extends StatefulWidget {
   TutorialPage();
@@ -21,66 +29,72 @@ class TutorialPageState extends State<TutorialPage> {
   bool _showComment = false;
   TextEditingController _comment = new TextEditingController();
   List<Widget> _commentWidgets = [];
+  // PDFDocument? _pdfDocument;
 
   @override
   void initState() {
     super.initState();
+    initiateTutorial();
+  }
 
-    if (tutorialLessons.length == 0) {
+  Future initiateTutorial() async {
+    Student student = context.read<Student>();
+    Courses courses = context.read<Courses>();
+    Lessons lessons = context.read<Lessons>();
+    Tutorial tutorial = context.read<Tutorial>();
+
+    if (tutorial.tutorialLessons?.length == 0) {
       print('No lessons');
     }
 
-    // if (Courses.currentCourse.status == false) {
-    //   Navigator.pop(context);
-    // }
-
     // this condition was put in place to restrict students from accessing
     // courses after they've been told to await their assignment review
-    if (tutorialLessonsIsLoadedFromCourse == true &&
-        (currentTutorial == null ||
-            Courses.currentCourse.status == false ||
-            tutorialLessons.length == 0)) {
+    if (lessons.source == LessonSource.normal &&
+        (tutorial.currentTutorial == null ||
+            courses.currentCourse?.status == false ||
+            tutorial.tutorialLessons?.length == 0)) {
       Navigator.pop(context);
     }
 
-    if (currentTutorial.video != null) {
+    if (tutorial.currentTutorial?.video != null) {
       _displayscreen = Screen.video;
-    } else if (currentTutorial.audio != null) {
+    } else if (tutorial.currentTutorial?.audio != null) {
       _displayscreen = Screen.audio;
-    } else if (currentTutorial.tablature != null) {
+    } else if (tutorial.currentTutorial?.tablature != null) {
       _displayscreen = Screen.tablature;
-    } else if (currentTutorial.practice != null) {
+    } else if (tutorial.currentTutorial?.practice != null) {
       _displayscreen = Screen.practice;
     }
 
-    loadUserCommentsOnThisLesson();
+    // await loadPdf(tutorial);
+    await loadUserCommentsOnThisLesson(student, tutorial);
   }
 
-  _submitComment() async {
+  _submitComment(Student student, Tutorial tutorial) async {
     try {
       loading(context);
-      await Tutorial.submitComment(
-          context, _comment.text, currentTutorial.id, currentTutorial.tutor);
+      await tutorial.submitComment(context, _comment.text,
+          tutorial.currentTutorial!.id, tutorial.currentTutorial!.tutor);
       _comment.clear();
       Navigator.pop(context);
-      await loadUserCommentsOnThisLesson();
+      await loadUserCommentsOnThisLesson(student, tutorial);
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
     }
   }
 
-  loadUserCommentsOnThisLesson() async {
+  loadUserCommentsOnThisLesson(Student student, Tutorial tutorial) async {
     try {
-      List<dynamic> comments = await Tutorial.getTutorialComments(context);
+      List<dynamic> comments = await tutorial.getTutorialComments(context);
 
       List<Widget> commentsWidgets = [];
       comments.forEach((comment) {
         String name, avatar, date;
         // who;
-        if (Student.email == comment['sender']) {
-          name = '${Student.firstname} ${Student.lastname}';
-          avatar = '${Student.avatar}';
+        if (student.email == comment['sender']) {
+          name = '${student.firstname} ${student.lastname}';
+          avatar = '${student.avatar}';
           // who = 'me';
         } else {
           name = comment['tutor']['name'];
@@ -152,7 +166,14 @@ class TutorialPageState extends State<TutorialPage> {
     }
   }
 
-  Widget renderDisplayScreen() {
+  // Future loadPdf(Tutorial tutorial) async {
+  //   if (tutorial.currentTutorial!.tablature != null) {
+  //     _pdfDocument = await PDFDocument.fromURL(
+  //         "$baseUrl/${tutorial.currentTutorial!.tablature!}");
+  //   }
+  // }
+
+  Widget renderDisplayScreen(Tutorial tutorial) {
     if (_displayscreen == Screen.video) {
       return Container(
           height: (screen(context).width * 2) / 3,
@@ -160,14 +181,15 @@ class TutorialPageState extends State<TutorialPage> {
           decoration: new BoxDecoration(
             image: new DecorationImage(
               image: NetworkImage(
-                  Uri.parse('$baseUrl/${currentTutorial.thumbnail}').toString(),
+                  Uri.parse('$baseUrl/${tutorial.currentTutorial!.thumbnail}')
+                      .toString(),
                   headers: {'cache-control': 'max-age=0, must-revalidate'}),
               fit: BoxFit.fitWidth,
             ),
           ),
           child: VideoWidget(
             play: true,
-            url: "$baseUrl/${currentTutorial.video}",
+            url: "$baseUrl/${tutorial.currentTutorial!.video}",
           ));
     } else if (_displayscreen == Screen.audio) {
       return Container(
@@ -181,7 +203,10 @@ class TutorialPageState extends State<TutorialPage> {
                 excludeFromSemantics: true,
               ),
             ),
-            AudioWidget(play: true, url: "$baseUrl/${currentTutorial.audio}")
+            AudioWidget(
+                play: true,
+                url: "$baseUrl/${tutorial.currentTutorial!.audio}",
+                loop: false)
           ]));
     } else if (_displayscreen == Screen.practice) {
       return Container(
@@ -195,31 +220,38 @@ class TutorialPageState extends State<TutorialPage> {
                 excludeFromSemantics: true,
               ),
             ),
-            AudioWidget(play: true, url: "$baseUrl/${currentTutorial.practice}")
+            AudioWidget(
+                play: true,
+                url: "$baseUrl/${tutorial.currentTutorial!.practice}",
+                loop: true)
           ]));
     } else if (_displayscreen == Screen.tablature) {
       return Container(
           height: screen(context).height * 0.6,
-          child: PDF.network("$baseUrl/${currentTutorial.tablature}"));
+          child: PdfWidget(
+              url: "$baseUrl/${tutorial.currentTutorial!.tablature}"));
     }
-    // No Audio/Video
+    // No Audio/Video/Practie/Tablature
     return Center(
         child: Icon(Icons.cancel_presentation_rounded, size: 200, color: grey));
   }
 
-  void nextLesson() async {
+  void nextLesson(StudentStudyStatistics studentStats, Courses courses,
+      Lessons lessons, Tutorial tutorial) async {
     try {
       loading(context);
       // get the index of the current tutorial in the tutorial lessons list
-      int currentIndex = tutorialLessons.indexOf(currentTutorial);
+      int currentIndex =
+          tutorial.tutorialLessons!.indexOf(tutorial.currentTutorial!);
 
       // use the index to get the next lesson if this lesson is not the last
-      if (currentTutorial != tutorialLessons.last) {
-        setCurrentTutorial(tutorialLessons.elementAt(currentIndex + 1));
-        if (Lessons.source == LessonSource.normal)
-          await Lessons.activateLesson(context);
-        else if (Lessons.source == LessonSource.featured)
-          await Lessons.activateFeaturedLesson(context);
+      if (tutorial.currentTutorial != tutorial.tutorialLessons!.last) {
+        tutorial.setCurrentTutorial(
+            tutorial.tutorialLessons!.elementAt(currentIndex + 1));
+        if (lessons.source == LessonSource.normal)
+          await lessons.activateLesson(studentStats, courses, tutorial);
+        else if (lessons.source == LessonSource.featured)
+          await lessons.activateFeaturedLesson(courses, tutorial);
         // then route to the lesson
         Navigator.pop(context);
         Navigator.pushReplacementNamed(context, '/tutorial_page');
@@ -230,20 +262,23 @@ class TutorialPageState extends State<TutorialPage> {
     }
   }
 
-  void previousLesson() async {
+  void previousLesson(StudentStudyStatistics studentStats, Courses courses,
+      Lessons lessons, Tutorial tutorial) async {
     try {
       loading(context);
       // get the index of the current tutorial in the tutorial lessons list
-      int currentIndex = tutorialLessons.indexOf(currentTutorial);
+      int currentIndex =
+          tutorial.tutorialLessons!.indexOf(tutorial.currentTutorial!);
 
       // use the index to get the previous lesson if this lesson is not the first
-      if (currentTutorial != tutorialLessons.first) {
-        setCurrentTutorial(tutorialLessons.elementAt(currentIndex - 1));
+      if (tutorial.currentTutorial != tutorial.tutorialLessons?.first) {
+        tutorial.setCurrentTutorial(
+            tutorial.tutorialLessons!.elementAt(currentIndex - 1));
 
-        if (Lessons.source == LessonSource.normal)
-          await Lessons.activateLesson(context);
-        else if (Lessons.source == LessonSource.featured)
-          await Lessons.activateFeaturedLesson(context);
+        if (lessons.source == LessonSource.normal)
+          await lessons.activateLesson(studentStats, courses, tutorial);
+        else if (lessons.source == LessonSource.featured)
+          await lessons.activateFeaturedLesson(courses, tutorial);
         // then route to the lesson
         Navigator.pop(context);
         Navigator.pushReplacementNamed(context, '/tutorial_page');
@@ -256,352 +291,423 @@ class TutorialPageState extends State<TutorialPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: true,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(_displayscreen == Screen.tablature
-                ? screen(context).height * 0.6
-                : (screen(context).width * 2) / 3),
-            child: renderDisplayScreen(),
-          ),
-          body: Column(children: [
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Column(children: <Widget>[
-                Container(
-                    width: screen(context).width,
-                    padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // the tutorial options
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed: currentTutorial.video != null
-                                  ? () => setState(
-                                      () => _displayscreen = Screen.video)
-                                  : () => snackbar(context,
-                                      "There is no video for this lesson, check others."),
+    return Consumer<Student>(builder: (BuildContext context, student, child) {
+      return Consumer<StudentStudyStatistics>(
+          builder: (BuildContext context, studentStats, child) {
+        return Consumer<Courses>(
+            builder: (BuildContext context, courses, child) {
+          return Consumer<Lessons>(
+              builder: (BuildContext context, lessons, child) {
+            return Consumer<Tutorial>(
+                builder: (BuildContext context, tutorial, child) {
+              return SafeArea(
+                  top: true,
+                  child: Scaffold(
+                    backgroundColor: Colors.white,
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(
+                          _displayscreen == Screen.tablature
+                              ? screen(context).height * 0.6
+                              : (screen(context).width * 2) / 3),
+                      child: renderDisplayScreen(tutorial),
+                    ),
+                    body: Column(children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                            child: Column(children: <Widget>[
+                          Container(
+                              width: screen(context).width,
+                              padding: EdgeInsets.symmetric(horizontal: 5.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Video",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: _displayscreen == Screen.video
-                                            ? brown
-                                            : currentTutorial.video != null
-                                                ? darkgrey
-                                                : Colors.grey[350]),
+                                  // the tutorial options
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                        onPressed: tutorial
+                                                    .currentTutorial!.video !=
+                                                null
+                                            ? () => setState(() =>
+                                                _displayscreen = Screen.video)
+                                            : () => snackbar(context,
+                                                "There is no video for this lesson, check others."),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Video",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _displayscreen ==
+                                                          Screen.video
+                                                      ? brown
+                                                      : tutorial.currentTutorial!
+                                                                  .video !=
+                                                              null
+                                                          ? darkgrey
+                                                          : Colors.grey[350]),
+                                            ),
+                                            _displayscreen == Screen.video
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    height: 5,
+                                                    margin:
+                                                        EdgeInsets.only(top: 2),
+                                                    width: 45,
+                                                    color: brown,
+                                                  )
+                                                : Container()
+                                          ],
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: tutorial
+                                                    .currentTutorial!.audio !=
+                                                null
+                                            ? () => setState(() =>
+                                                _displayscreen = Screen.audio)
+                                            : () => snackbar(context,
+                                                "There is no audio for this lesson, check others."),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Audio",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _displayscreen ==
+                                                          Screen.audio
+                                                      ? brown
+                                                      : tutorial.currentTutorial!
+                                                                  .audio !=
+                                                              null
+                                                          ? darkgrey
+                                                          : Colors.grey[350]),
+                                            ),
+                                            _displayscreen == Screen.audio
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    height: 5,
+                                                    margin:
+                                                        EdgeInsets.only(top: 2),
+                                                    width: 45,
+                                                    color: brown,
+                                                  )
+                                                : Container()
+                                          ],
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: tutorial.currentTutorial!
+                                                    .practice !=
+                                                null
+                                            ? () => setState(() =>
+                                                _displayscreen =
+                                                    Screen.practice)
+                                            : () => snackbar(context,
+                                                "There is no practice loop for this lesson, check others."),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Practice Loop",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _displayscreen ==
+                                                          Screen.practice
+                                                      ? brown
+                                                      : tutorial.currentTutorial!
+                                                                  .practice !=
+                                                              null
+                                                          ? darkgrey
+                                                          : Colors.grey[350]),
+                                            ),
+                                            _displayscreen == Screen.practice
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    height: 5,
+                                                    margin:
+                                                        EdgeInsets.only(top: 2),
+                                                    width: 45,
+                                                    color: brown,
+                                                  )
+                                                : Container()
+                                          ],
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: tutorial.currentTutorial!
+                                                    .tablature !=
+                                                null
+                                            ? () => setState(() =>
+                                                _displayscreen =
+                                                    Screen.tablature)
+                                            : () => snackbar(context,
+                                                "There is no tablature for this lesson, check others."),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Tablature",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: _displayscreen ==
+                                                          Screen.tablature
+                                                      ? brown
+                                                      : tutorial.currentTutorial!
+                                                                  .tablature !=
+                                                              null
+                                                          ? darkgrey
+                                                          : Colors.grey[350]),
+                                            ),
+                                            _displayscreen == Screen.tablature
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    height: 5,
+                                                    margin:
+                                                        EdgeInsets.only(top: 2),
+                                                    width: 45,
+                                                    color: brown,
+                                                  )
+                                                : Container()
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  _displayscreen == Screen.video
-                                      ? Container(
-                                          alignment: Alignment.topRight,
-                                          height: 5,
-                                          margin: EdgeInsets.only(top: 2),
-                                          width: 45,
-                                          color: brown,
+
+                                  // The text contents
+                                  Text(
+                                    tutorial.currentTutorial!.title!,
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 3,
+                                    style: TextStyle(
+                                      color: brown,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    tutorial.currentTutorial!.tutor!,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: darkgrey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "${tutorial.currentTutorial!.description}",
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                      color: darkgrey,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 5),
+
+                                  // Read more indication
+                                  tutorial.currentTutorial!.note != null
+                                      ? TextButton(
+                                          onPressed: () => setState(
+                                              () => _showNote = !_showNote),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('Notes',
+                                                  style: TextStyle(
+                                                      color: brown,
+                                                      fontSize: 16)),
+                                              SizedBox(width: 2),
+                                              Icon(
+                                                  _showNote
+                                                      ? Icons.arrow_drop_up
+                                                      : Icons.arrow_drop_down,
+                                                  color: brown)
+                                            ],
+                                          ))
+                                      : Container(),
+
+                                  // lesson Note
+                                  tutorial.currentTutorial!.note != null &&
+                                          _showNote == true
+                                      ? Text(
+                                          tutorial.currentTutorial!.note ??
+                                              "No notes",
+                                          style: TextStyle(
+                                            color: darkgrey,
+                                            fontSize: 15,
+                                          ),
+                                        )
+                                      : Container(),
+
+                                  // the previous/next
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Previous lesson
+                                      tutorial.currentTutorial !=
+                                              tutorial.tutorialLessons?.first
+                                          ? MaterialButton(
+                                              onPressed: () {
+                                                previousLesson(studentStats,
+                                                    courses, lessons, tutorial);
+                                              },
+                                              color: brown,
+                                              textColor: Colors.white,
+                                              child: Text('PREVIOUS',
+                                                  style:
+                                                      TextStyle(fontSize: 16)))
+                                          : Container(),
+
+                                      // Next lesson
+                                      tutorial.currentTutorial !=
+                                              tutorial.tutorialLessons?.last
+                                          ? MaterialButton(
+                                              onPressed: () {
+                                                nextLesson(studentStats,
+                                                    courses, lessons, tutorial);
+                                              },
+                                              color: brown,
+                                              textColor: Colors.white,
+                                              child: Text('NEXT',
+                                                  style:
+                                                      TextStyle(fontSize: 16)))
+                                          : (
+                                                  // tutorialLessonsIsLoadedFromCourse ==
+                                                  //           true &&
+                                                  lessons.source ==
+                                                      LessonSource.normal)
+                                              ? courses.currentCourse!
+                                                          .completedLessons ==
+                                                      courses.currentCourse!
+                                                          .allLessons
+                                                  ? MaterialButton(
+                                                      onPressed: () {
+                                                        // if this course is the last course in the category,
+                                                        // show the completed category page
+                                                        // else show the completed courses page
+                                                        if (courses
+                                                                .studyingCourses
+                                                                .last ==
+                                                            courses
+                                                                .currentCourse) {
+                                                          print('True This');
+                                                          Navigator
+                                                              .pushReplacementNamed(
+                                                                  context,
+                                                                  '/completedcategory');
+                                                        } else {
+                                                          Navigator
+                                                              .pushReplacementNamed(
+                                                                  context,
+                                                                  '/completedcourses');
+                                                        }
+                                                      },
+                                                      color: brown,
+                                                      textColor: Colors.white,
+                                                      child: Text('COMPLETE',
+                                                          style: TextStyle(
+                                                              fontSize: 16)))
+                                                  : Container()
+                                              : Container() // use this if this is not a course
+                                    ],
+                                  ),
+
+                                  TextButton(
+                                      onPressed: () => setState(
+                                          () => _showComment = !_showComment),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('Comments',
+                                              style: TextStyle(
+                                                  color: brown, fontSize: 16)),
+                                          SizedBox(width: 2),
+                                          Icon(
+                                              _showComment
+                                                  ? Icons.arrow_drop_up
+                                                  : Icons.arrow_drop_down,
+                                              color: brown)
+                                        ],
+                                      )),
+
+                                  _showComment == true
+                                      ? Column(
+                                          children: _commentWidgets,
                                         )
                                       : Container()
                                 ],
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: currentTutorial.audio != null
-                                  ? () => setState(
-                                      () => _displayscreen = Screen.audio)
-                                  : () => snackbar(context,
-                                      "There is no audio for this lesson, check others."),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Audio",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: _displayscreen == Screen.audio
-                                            ? brown
-                                            : currentTutorial.audio != null
-                                                ? darkgrey
-                                                : Colors.grey[350]),
-                                  ),
-                                  _displayscreen == Screen.audio
-                                      ? Container(
-                                          alignment: Alignment.topRight,
-                                          height: 5,
-                                          margin: EdgeInsets.only(top: 2),
-                                          width: 45,
-                                          color: brown,
-                                        )
-                                      : Container()
-                                ],
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: currentTutorial.practice != null
-                                  ? () => setState(
-                                      () => _displayscreen = Screen.practice)
-                                  : () => snackbar(context,
-                                      "There is no practice loop for this lesson, check others."),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Practice Loop",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: _displayscreen == Screen.practice
-                                            ? brown
-                                            : currentTutorial.practice != null
-                                                ? darkgrey
-                                                : Colors.grey[350]),
-                                  ),
-                                  _displayscreen == Screen.practice
-                                      ? Container(
-                                          alignment: Alignment.topRight,
-                                          height: 5,
-                                          margin: EdgeInsets.only(top: 2),
-                                          width: 45,
-                                          color: brown,
-                                        )
-                                      : Container()
-                                ],
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: currentTutorial.tablature != null
-                                  ? () => setState(
-                                      () => _displayscreen = Screen.tablature)
-                                  : () => snackbar(context,
-                                      "There is no tablature for this lesson, check others."),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Tablature",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: _displayscreen ==
-                                                Screen.tablature
-                                            ? brown
-                                            : currentTutorial.tablature != null
-                                                ? darkgrey
-                                                : Colors.grey[350]),
-                                  ),
-                                  _displayscreen == Screen.tablature
-                                      ? Container(
-                                          alignment: Alignment.topRight,
-                                          height: 5,
-                                          margin: EdgeInsets.only(top: 2),
-                                          width: 45,
-                                          color: brown,
-                                        )
-                                      : Container()
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                              )),
+                        ])),
+                      ),
 
-                        // The text contents
-                        Text(
-                          currentTutorial.title,
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          maxLines: 3,
-                          style: TextStyle(
-                            color: brown,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          currentTutorial.tutor,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: darkgrey,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "${currentTutorial.description}",
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(
-                            color: darkgrey,
-                            fontSize: 15,
-                          ),
-                        ),
-
-                        SizedBox(height: 5),
-
-                        // Read more indication
-                        currentTutorial.note != null
-                            ? TextButton(
-                                onPressed: () =>
-                                    setState(() => _showNote = !_showNote),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('Notes',
-                                        style: TextStyle(
-                                            color: brown, fontSize: 16)),
-                                    SizedBox(width: 2),
-                                    Icon(
-                                        _showNote
-                                            ? Icons.arrow_drop_up
-                                            : Icons.arrow_drop_down,
-                                        color: brown)
-                                  ],
-                                ))
-                            : Container(),
-
-                        // lesson Note
-                        currentTutorial.note != null && _showNote == true
-                            ? Text(
-                                currentTutorial.note ?? "No notes",
-                                style: TextStyle(
-                                  color: darkgrey,
-                                  fontSize: 15,
-                                ),
-                              )
-                            : Container(),
-
-                        // the previous/next
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Previous lesson
-                            currentTutorial != tutorialLessons.first
-                                ? MaterialButton(
-                                    onPressed: () {
-                                      previousLesson();
-                                    },
-                                    color: brown,
-                                    textColor: Colors.white,
-                                    child: Text('PREVIOUS',
-                                        style: TextStyle(fontSize: 16)))
-                                : Container(),
-
-                            // Next lesson
-                            currentTutorial != tutorialLessons.last
-                                ? MaterialButton(
-                                    onPressed: () {
-                                      nextLesson();
-                                    },
-                                    color: brown,
-                                    textColor: Colors.white,
-                                    child: Text('NEXT',
-                                        style: TextStyle(fontSize: 16)))
-                                : (tutorialLessonsIsLoadedFromCourse == true &&
-                                        Lessons.source == LessonSource.normal)
-                                    ? Courses.currentCourse.completedLessons ==
-                                            Courses.currentCourse.allLessons
-                                        ? MaterialButton(
-                                            onPressed: () {
-                                              // if this course is the last course in the category,
-                                              // show the completed category page
-                                              // else show the completed courses page
-                                              if (studyingCourses.last ==
-                                                  Courses.currentCourse) {
-                                                print('True This');
-                                                Navigator.pushReplacementNamed(
-                                                    context,
-                                                    '/completedcategory');
-                                              } else {
-                                                Navigator.pushReplacementNamed(
-                                                    context,
-                                                    '/completedcourses');
-                                              }
-                                            },
-                                            color: brown,
-                                            textColor: Colors.white,
-                                            child: Text('COMPLETE',
-                                                style: TextStyle(fontSize: 16)))
-                                        : Container()
-                                    : Container() // use this if this is not a course
-                          ],
-                        ),
-
-                        TextButton(
-                            onPressed: () =>
-                                setState(() => _showComment = !_showComment),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Comments',
-                                    style:
-                                        TextStyle(color: brown, fontSize: 16)),
-                                SizedBox(width: 2),
-                                Icon(
-                                    _showComment
-                                        ? Icons.arrow_drop_up
-                                        : Icons.arrow_drop_down,
-                                    color: brown)
-                              ],
-                            )),
-
-                        _showComment == true
-                            ? Column(
-                                children: _commentWidgets,
-                              )
-                            : Container()
-                      ],
-                    )),
-              ])),
-            ),
-
-            // comment section
-            Container(
-                // height: 50,
-                padding: EdgeInsets.all(0),
-                width: screen(context).width,
-                // color: Colors.white,
-                decoration: BoxDecoration(
-                    color: grey,
-                    border: Border(
-                      bottom: BorderSide(width: 2.0, color: brown),
-                      // width: 1.0, color: brown
-                    )),
-                child: TextField(
-                    controller: _comment,
-                    autocorrect: true,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (value) {
-                      _submitComment();
-                    },
-                    style: TextStyle(fontSize: 20.0, color: brown),
-                    decoration: InputDecoration(
-                        hintText: "Ask question",
-                        suffix: IconButton(
-                            onPressed: () {
-                              _submitComment();
-                            },
-                            icon: Icon(
-                              Icons.send,
-                              color: brown,
-                            ))))),
-          ]),
-        ));
+                      // comment section
+                      Container(
+                          // height: 50,
+                          padding: EdgeInsets.all(0),
+                          width: screen(context).width,
+                          // color: Colors.white,
+                          decoration: BoxDecoration(
+                              color: grey,
+                              border: Border(
+                                bottom: BorderSide(width: 2.0, color: brown),
+                                // width: 1.0, color: brown
+                              )),
+                          child: TextField(
+                              controller: _comment,
+                              autocorrect: true,
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
+                                _submitComment(student, tutorial);
+                              },
+                              style: TextStyle(fontSize: 20.0, color: brown),
+                              decoration: InputDecoration(
+                                  hintText: "Ask question",
+                                  suffix: IconButton(
+                                      onPressed: () {
+                                        _submitComment(student, tutorial);
+                                      },
+                                      icon: Icon(
+                                        Icons.send,
+                                        color: brown,
+                                      ))))),
+                    ]),
+                  ));
+            });
+          });
+        });
+      });
+    });
   }
 }

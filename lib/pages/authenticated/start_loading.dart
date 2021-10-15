@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Courses.dart';
+import 'package:spicyguitaracademy_app/providers/Lessons.dart';
+import 'package:spicyguitaracademy_app/providers/StudentNotifications.dart';
+import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
+import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class StartLoading extends StatefulWidget {
   @override
@@ -17,29 +23,37 @@ class StartLoadingState extends State<StartLoading> {
 
   void _initializeCoursesAndLessons() async {
     try {
-      // get all courses
-      await Courses.getAllCourses(context);
+      // initialize
+      Courses courses = context.read<Courses>();
+      StudentSubscription studentSubscription =
+          context.read<StudentSubscription>();
+      StudentStudyStatistics studentStats =
+          context.read<StudentStudyStatistics>();
+      // Lessons lessons = context.read<Lessons>();
+      StudentNotifications studentNotifications =
+          context.read<StudentNotifications>();
 
-      if (Student.subscription == true && Student.studyingCategory != 0) {
-        // get the courses currently being studied
-        await Courses.getStudyingCourses(context);
+      // get all courses
+      await courses.getAllCourses();
+      if (studentSubscription.isSubscribed == true &&
+          studentStats.studyingCategory != 0) {
+        await courses.getStudyingCourses();
       } else {
         // get the courses studied by this student in the past
         // get the lessons studied by this student in the past
       }
 
-      // get featured courses
-      await Courses.getAllFeaturedCourses(context);
-
-      // get my fewatured courses
-      await Courses.getMyFeaturedCourses(context);
+      // get featured and bought courses
+      await courses.getBoughtCourses();
+      // await courses.getFeaturedCourses();
 
       // get free lessons
-      await Lessons.getFreeLessons(context);
+      // await lessons.getFreeLessons();
 
-      await Student.getNotifications(context);
+      // get notifications
+      await studentNotifications.getNotifications();
 
-      Student.isLoaded = true;
+      // Student.isLoaded = true;
 
       // route to dashboard
       Navigator.pushReplacementNamed(context, "/dashboard");
@@ -51,23 +65,38 @@ class StartLoadingState extends State<StartLoading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: grey,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset("assets/imgs/icons/loading_icon.gif"),
-            Container(
-                margin: EdgeInsets.only(top: 30.0),
-                child: Text(
-                  "Loading...",
-                  style: TextStyle(color: brown, fontSize: 20),
-                ))
-          ],
-        ),
-      ),
-    );
+    return Consumer<StudentNotifications>(
+        builder: (BuildContext context, studentNotifications, child) {
+      return Consumer<StudentSubscription>(
+          builder: (BuildContext context, studentSubscription, child) {
+        return Consumer<StudentStudyStatistics>(
+            builder: (BuildContext context, studentStats, child) {
+          return Consumer<Courses>(
+              builder: (BuildContext context, courses, child) {
+            return Consumer<Lessons>(
+                builder: (BuildContext context, lessons, child) {
+              return Scaffold(
+                backgroundColor: grey,
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset("assets/imgs/icons/loading_icon.gif"),
+                      Container(
+                          margin: EdgeInsets.only(top: 30.0),
+                          child: Text(
+                            "Loading...",
+                            style: TextStyle(color: brown, fontSize: 20),
+                          ))
+                    ],
+                  ),
+                ),
+              );
+            });
+          });
+        });
+      });
+    });
   }
 }

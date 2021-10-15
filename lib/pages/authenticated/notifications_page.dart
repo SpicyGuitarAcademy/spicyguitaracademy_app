@@ -1,10 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
-// import 'package:spicyguitaracademy/models.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/StudentNotifications.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -19,27 +19,27 @@ class NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    // _notifications = Student.notifications;
   }
 
-  markAsRead(context, element) async {
+  markAsRead(
+      context, notification, StudentNotifications studentNotifications) async {
     try {
       loading(context);
-      await Student.markNotificationAsRead(context, element['id']);
-      await Student.getNotifications(context);
+      await studentNotifications.markNotificationAsRead(notification['id']);
+      // await studentNotifications.getNotifications();
       Navigator.pop(context);
-      setState(() {});
-      rebuild(page);
+      // setState(() {});
+      // rebuild(page);
     } catch (e) {
       Navigator.pop(context);
       error(context, stripExceptions(e));
     }
   }
 
-  List<Widget> loadNotifications() {
+  List<Widget> loadNotifications(StudentNotifications studentNotifications) {
     List<Widget> notifications = [];
 
-    Student.notifications.forEach((element) {
+    studentNotifications.notifications!.forEach((notification) {
       notifications.add(
         Container(
           padding: EdgeInsets.all(5),
@@ -49,33 +49,34 @@ class NotificationPageState extends State<NotificationPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                element['created_at'],
+                notification['created_at'],
                 style: TextStyle(color: brown),
               ),
               SizedBox(
                 height: 5,
               ),
-              element['route'] == ''
-                  ? Text(parseHtmlString(element['message']))
+              notification['route'] == ''
+                  ? Text(parseHtmlString(notification['message']))
                   : InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, element['route']);
+                        Navigator.pushNamed(context, notification['route']);
                       },
-                      child: Text(parseHtmlString(element['message'])),
+                      child: Text(parseHtmlString(notification['message'])),
                     ),
               SizedBox(
                 height: 5,
               ),
-              element['status'] == 'unread'
+              notification['status'] == 'unread'
                   ? Align(
                       alignment: Alignment.centerRight,
-                      child: RaisedButton(
+                      child: ElevatedButton(
                         onPressed: () async {
-                          markAsRead(context, element);
+                          await markAsRead(
+                              context, notification, studentNotifications);
                         },
                         child: Text(
                           'Mark as read',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ),
                     )
@@ -95,50 +96,50 @@ class NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context).settings.arguments as Map;
-    rebuild = args['rebuild'];
-    page = args['page'];
-    return new Scaffold(
-      backgroundColor: grey,
-      appBar: AppBar(
-        toolbarHeight: 70,
-        iconTheme: IconThemeData(color: brown),
+    return Consumer<StudentNotifications>(
+        builder: (context, studentnotifications, child) {
+      return new Scaffold(
         backgroundColor: grey,
-        centerTitle: true,
-        title: Text(
-          'Notifications',
-          style: TextStyle(
-              color: brown,
-              fontFamily: "Poppins",
-              fontWeight: FontWeight.normal),
+        appBar: AppBar(
+          toolbarHeight: 70,
+          iconTheme: IconThemeData(color: brown),
+          backgroundColor: grey,
+          centerTitle: true,
+          title: Text(
+            'Notifications',
+            style: TextStyle(
+                color: brown,
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.normal),
+          ),
+          elevation: 0,
         ),
-        elevation: 0,
-      ),
-      body: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 5),
-        child: SingleChildScrollView(
-          child: Student.notifications.length > 0
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: loadNotifications(),
-                )
-              : Center(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 100),
-                    child: Column(
-                      children: [
-                        Icon(Icons.notifications_off_outlined),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text('No notifications')
-                      ],
+        body: SafeArea(
+          minimum: EdgeInsets.symmetric(horizontal: 5),
+          child: SingleChildScrollView(
+            child: studentnotifications.notifications!.length > 0
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: loadNotifications(studentnotifications),
+                  )
+                : Center(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 100),
+                      child: Column(
+                        children: [
+                          Icon(Icons.notifications_off_outlined),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text('No notifications')
+                        ],
+                      ),
                     ),
                   ),
-                ),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

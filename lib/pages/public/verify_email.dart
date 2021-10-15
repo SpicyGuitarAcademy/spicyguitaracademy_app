@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class VerifyPage extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class VerifyPage extends StatefulWidget {
 class VerifyPageState extends State<VerifyPage> {
   // properties
   TextEditingController _token = TextEditingController();
-  String _email = "";
+  // String _email = "";
 
   @override
   void initState() {
@@ -20,86 +22,73 @@ class VerifyPageState extends State<VerifyPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (Student.forgotPassword == true) {
-      final Map args = ModalRoute.of(context).settings.arguments as Map;
-      _email = args['email'];
-    }
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 70,
-          iconTheme: IconThemeData(color: brown),
-          backgroundColor: grey,
-          centerTitle: true,
-          title: Text(
-            'Verify Email',
-            style: TextStyle(
-                color: brown,
-                fontSize: 30,
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.normal),
+    return Consumer<Student>(builder: (BuildContext context, student, child) {
+      return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 70,
+            iconTheme: IconThemeData(color: brown),
+            backgroundColor: grey,
+            centerTitle: true,
+            title: Text(
+              'Verify Email',
+              style: TextStyle(
+                  color: brown,
+                  fontSize: 30,
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.normal),
+            ),
+            elevation: 0,
           ),
-          elevation: 0,
-        ),
-        body: SafeArea(
-            minimum: EdgeInsets.all(5.0),
-            child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                  SizedBox(height: 40.0),
+          body: SafeArea(
+              minimum: EdgeInsets.all(5.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                    SizedBox(height: 40.0),
 
-                  Text(
-                      'A 6 digit verification token has been sent to your email.'),
-                  SizedBox(height: 20.0),
+                    Text(
+                        'A 6 digit verification token has been sent to your email.'),
+                    SizedBox(height: 20.0),
 
-                  // Email field
-                  TextField(
-                    controller: _token,
-                    autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    style: TextStyle(fontSize: 20.0, color: brown),
-                    decoration: InputDecoration(
-                        labelText: "Authentication Token", hintText: "******"),
-                  ),
-
-                  SizedBox(height: 40.0),
-
-                  Container(
-                    width: MediaQuery.of(context).copyWith().size.width,
-                    child: RaisedButton(
-                      onPressed: () {
-                        verify();
-                      },
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(5.0),
-                          side: BorderSide(color: brown)),
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text("Verify", style: TextStyle(fontSize: 20.0)),
+                    // Email field
+                    TextField(
+                      controller: _token,
+                      autofocus: true,
+                      textInputAction: TextInputAction.next,
+                      style: TextStyle(fontSize: 20.0, color: brown),
+                      decoration: InputDecoration(
+                          labelText: "Authentication Token",
+                          hintText: "******"),
                     ),
-                  ),
-                ]))));
+
+                    SizedBox(height: 40.0),
+
+                    Container(
+                      width: MediaQuery.of(context).copyWith().size.width,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          verify(student);
+                        },
+                        child: Text("Verify"),
+                      ),
+                    ),
+                  ]))));
+    });
   }
 
-  void verify() async {
+  void verify(Student student) async {
     try {
       loading(context, message: 'Verifying');
 
-      // print("${_token.text} ${_email}");
-      var resp = await request('/api/verify', method: 'POST', body: {
-        'token': _token.text,
-        'email': Student.isNewStudent == true ? Student.email : _email
-      });
+      var resp = await student.verifyEmail(_token.text);
 
-      // error(context, resp['status']);
       if (resp['status'] == true) {
-        Student.status = 'active';
-
         Navigator.pop(context);
-        if (Student.forgotPassword == true) {
-          Navigator.popAndPushNamed(context, "/resetpassword",
-              arguments: {'email': _email});
-        } else if (Student.isNewStudent == true) {
+
+        if (student.hasForgottenPassword == true) {
+          Navigator.popAndPushNamed(context, "/resetpassword");
+        } else if (student.isNewStudent == true) {
           Navigator.popAndPushNamed(context, "/login");
         } else {
           Navigator.popAndPushNamed(context, "/welcome_note");

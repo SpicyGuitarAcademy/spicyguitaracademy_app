@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:accordion/accordion.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
 
 class HelpPage extends StatefulWidget {
   @override
@@ -9,9 +8,6 @@ class HelpPage extends StatefulWidget {
 }
 
 class HelpPageState extends State<HelpPage> {
-  // properties
-  List<Widget> _searchResult = [];
-
   @override
   void initState() {
     super.initState();
@@ -42,12 +38,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 20),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 0});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                         'Questions about learning the Guitar at Spicy Guitar Academy',
                         textAlign: TextAlign.left,
@@ -56,12 +51,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 10),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 1});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                         'Questions about Spicy Guitar Academy Mobile Application',
                         textAlign: TextAlign.left,
@@ -70,12 +64,11 @@ class HelpPageState extends State<HelpPage> {
               SizedBox(height: 10),
               Container(
                   width: screen(context).width,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/helpdetail',
                           arguments: {'index': 2});
                     },
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text('Questions about playing the Guitar',
                         textAlign: TextAlign.left,
                         style: TextStyle(color: Colors.white)),

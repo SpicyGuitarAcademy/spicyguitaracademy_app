@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:spicyguitaracademy/common.dart';
 
 class PrivacyPolicy extends StatefulWidget {
   @override

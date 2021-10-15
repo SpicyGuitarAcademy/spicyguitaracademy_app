@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spicyguitaracademy/common.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
 
 class ReadyToPlayTransaction extends StatelessWidget {
   @override
@@ -45,18 +45,30 @@ class ReadyToPlayTransaction extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       margin: const EdgeInsets.only(right: 10),
                       child: SizedBox(
-                        child: RaisedButton(
-                            onPressed: () async {
-                              Navigator.pushNamed(context, "/start_loading");
-                            },
-                            textColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pushNamed(context, "/start_loading");
+                          },
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.symmetric(
+                                vertical: 18,
+                                horizontal: 30,
+                              ),
                             ),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 18),
-                            child: Text("Start now",
-                                style: TextStyle(fontSize: 16.0))),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(30),
+                                ),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            "Start now",
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ),
                       ),
                     ),
                   ],

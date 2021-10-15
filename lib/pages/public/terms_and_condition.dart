@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:spicyguitaracademy/common.dart';
 
 class TermsAndCondition extends StatefulWidget {
   @override

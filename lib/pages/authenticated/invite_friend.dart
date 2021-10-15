@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spicyguitaracademy/common.dart';
-import 'package:spicyguitaracademy/models.dart';
+import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Auth.dart';
+import 'package:spicyguitaracademy_app/providers/Student.dart';
+import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/exceptions.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/utils/request.dart';
+import 'package:spicyguitaracademy_app/widgets/modals.dart';
 
 class InviteFriend extends StatefulWidget {
   @override
@@ -18,122 +24,134 @@ class InviteFriendState extends State<InviteFriend> {
   Widget build(BuildContext context) {
     TextEditingController _email = TextEditingController();
 
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 70,
-          iconTheme: IconThemeData(color: brown),
-          backgroundColor: grey,
-          centerTitle: true,
-          title: Text(
-            'Invite a friend',
-            style: TextStyle(
-                color: brown,
-                fontSize: 30,
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.normal),
+    return Consumer<Student>(builder: (BuildContext context, student, child) {
+      return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 70,
+            iconTheme: IconThemeData(color: brown),
+            backgroundColor: grey,
+            centerTitle: true,
+            title: Text(
+              'Invite a friend',
+              style: TextStyle(
+                  color: brown,
+                  fontSize: 30,
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.normal),
+            ),
+            elevation: 0,
           ),
-          elevation: 0,
-        ),
-        body: SafeArea(
-            minimum: EdgeInsets.all(5.0),
-            child: SingleChildScrollView(
-                child: Column(children: <Widget>[
-              Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                    // Spicy text
-                    SizedBox(height: 30),
-                    Text(
-                      "Spicy Guitar Academy",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: brown,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 30),
-                    // Message text
-                    Container(
-                      child: Text(
+          body: SafeArea(
+              minimum: EdgeInsets.all(5.0),
+              child: SingleChildScrollView(
+                  child: Column(children: <Widget>[
+                Container(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                      // Spicy text
+                      SizedBox(height: 30),
+                      Text(
+                        "Spicy Guitar Academy",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: brown,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 30),
+                      Text(
+                        "Hi ${student.firstname}, you have a total earning of \"${student.referralUnits} Spicy Units\". You can use your Spicy Units to buy Featured Courses you find interesting.",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: darkgrey, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Your referral code is \"${student.referralCode}\". Invite your friends to Spicy Guitar Academy and earn more Spicy Units",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: darkgrey, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
                         "Enter the email address of your friend and we'll send him/her an invitation email.",
                         textAlign: TextAlign.left,
                         style: TextStyle(color: darkgrey, fontSize: 18),
                       ),
-                    ),
 
-                    SizedBox(height: 30),
+                      SizedBox(height: 30),
 
-                    // text box for entering emails adresses
-                    TextField(
-                        controller: _email,
-                        // autocorrect: true,
-                        autofocus: true,
-                        textInputAction: TextInputAction.done,
-                        // onSubmitted: (value) => _searchCourses(value),
-                        style: TextStyle(fontSize: 20.0, color: brown),
-                        decoration: InputDecoration(
-                          hintText: "Email Address",
-                        )),
+                      // text box for entering emails adresses
+                      TextField(
+                          controller: _email,
+                          // autocorrect: true,
+                          autofocus: true,
+                          textInputAction: TextInputAction.done,
+                          // onSubmitted: (value) => _searchCourses(value),
+                          style: TextStyle(fontSize: 20.0, color: brown),
+                          decoration: InputDecoration(
+                            hintText: "Email Address",
+                          )),
 
-                    // invite btn
-                    Container(
-                      alignment: Alignment.centerRight,
-                      height: 100,
-                      margin: EdgeInsets.only(top: 20, left: 2, bottom: 10),
-                      child: MaterialButton(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        onPressed: () async {
-                          try {
-                            loading(context, message: 'Sending');
-                            var resp = await request(
-                                '/api/student/invite-a-friend',
-                                method: 'POST',
-                                headers: {
-                                  'JWToken': Auth.token,
-                                  'cache-control': 'max-age=0, must-revalidate'
-                                },
-                                body: {
-                                  'friend': _email.text
-                                });
-                            Navigator.pop(context);
-                            if (resp['status'] == false) {
-                              error(context, resp['message']);
-                            } else {
-                              _email.clear();
-                              success(context, resp['message']);
+                      // invite btn
+                      Container(
+                        alignment: Alignment.centerRight,
+                        height: 100,
+                        margin: EdgeInsets.only(top: 20, left: 2, bottom: 10),
+                        child: MaterialButton(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
+                          onPressed: () async {
+                            try {
+                              loading(context, message: 'Sending');
+                              var resp = await request(
+                                  '/api/student/invite-a-friend',
+                                  method: 'POST',
+                                  headers: {
+                                    'JWToken': Auth.token!,
+                                    'cache-control':
+                                        'max-age=0, must-revalidate'
+                                  },
+                                  body: {
+                                    'friend': _email.text
+                                  });
+                              Navigator.pop(context);
+                              if (resp['status'] == false) {
+                                error(context, resp['message']);
+                              } else {
+                                _email.clear();
+                                success(context, resp['message']);
+                              }
+                            } on AuthException catch (e) {
+                              error(context, stripExceptions(e));
+                              // reAuthenticate(context);
+                            } catch (e) {
+                              error(context, stripExceptions(e));
                             }
-                          } on AuthException catch (e) {
-                            error(context, stripExceptions(e));
-                            reAuthenticate(context);
-                          } catch (e) {
-                            error(context, stripExceptions(e));
-                          }
-                        },
-                        color: Colors.white,
-                        textColor: brown,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              "assets/imgs/icons/invite_friend_icon.svg",
-                              matchTextDirection: true,
-                            ),
-                            Text("invite friend",
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w600)),
-                          ],
+                          },
+                          color: Colors.white,
+                          textColor: brown,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20.0),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              SvgPicture.asset(
+                                "assets/imgs/icons/invite_friend_icon.svg",
+                                matchTextDirection: true,
+                              ),
+                              Text("invite friend",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ]))
-            ]))));
+                    ]))
+              ]))));
+    });
   }
 }

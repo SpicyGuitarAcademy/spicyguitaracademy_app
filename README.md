@@ -1,5 +1,6 @@
-# spicyguitaracademy
-Mobile App for Spicy Guitar Academy
+# spicyguitaracademy_app
+
+Mobile App for Spicy Guitar Academy.
 
 ## Getting Started
 
