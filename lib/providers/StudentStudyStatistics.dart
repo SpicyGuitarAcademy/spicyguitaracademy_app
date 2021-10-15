@@ -76,7 +76,7 @@ class StudentStudyStatistics extends ChangeNotifier {
 
   Future rechooseCategory(String? category) async {
     try {
-      var resp = await request('/api/student/category/re-select',
+      await request('/api/student/category/re-select',
           method: 'POST',
           headers: {
             'JWToken': Auth.token!,

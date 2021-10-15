@@ -62,7 +62,6 @@ class Courses extends ChangeNotifier {
   Future getStudyingCourses() async {
     try {
       // TODO: Fix cache max-age
-
       var resp = await request('/api/student/courses/studying',
           method: 'GET',
           headers: {

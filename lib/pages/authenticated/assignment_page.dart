@@ -34,6 +34,7 @@ class AssignmentPageState extends State<AssignmentPage> {
 
     print(Assignment.questionVideo);
 
+    // ignore: unnecessary_null_comparison
     if (Assignment == null) {
       Navigator.pop(context);
     }

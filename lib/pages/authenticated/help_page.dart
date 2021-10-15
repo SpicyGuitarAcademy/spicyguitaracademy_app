@@ -8,9 +8,6 @@ class HelpPage extends StatefulWidget {
 }
 
 class HelpPageState extends State<HelpPage> {
-  // properties
-  List<Widget> _searchResult = [];
-
   @override
   void initState() {
     super.initState();

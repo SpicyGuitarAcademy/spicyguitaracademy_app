@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
-import 'package:spicyguitaracademy_app/utils/request.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
 import 'package:url_launcher/url_launcher.dart';
 

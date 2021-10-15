@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
-import 'package:spicyguitaracademy_app/providers/Lessons.dart';
-import 'package:spicyguitaracademy_app/providers/StudentAssignments.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';

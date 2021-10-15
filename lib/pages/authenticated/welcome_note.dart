@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
-import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/providers/Subscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
