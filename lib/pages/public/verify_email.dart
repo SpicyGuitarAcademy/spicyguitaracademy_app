@@ -106,7 +106,6 @@ class VerifyPageState extends State<VerifyPage> {
         } else {
           msg = resp['message'];
         }
-
         throw Exception("$msg");
       }
     } catch (e) {
