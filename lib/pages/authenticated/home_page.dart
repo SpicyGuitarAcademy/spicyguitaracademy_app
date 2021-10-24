@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lesson.dart';
@@ -124,6 +125,7 @@ class HomePageState extends State<HomePage> {
                                         Row(children: [
                                           Icon(Icons.bookmark,
                                               color: Color(0xFFDAA520)),
+                                          SizedBox(width: 10),
                                           Text(
                                               "${studentSubscription.subscriptionPlanLabel}")
                                         ]),
@@ -134,7 +136,7 @@ class HomePageState extends State<HomePage> {
                               ],
                             ),
 
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
 
                       // current category details
                       studentStats.studyingCategory == 0
@@ -148,7 +150,7 @@ class HomePageState extends State<HomePage> {
                                     "Choose a Category",
                                     style: TextStyle(fontSize: 16),
                                   ),
-                                  SizedBox(width: 10.0),
+                                  SizedBox(width: 10),
                                   Icon(Icons.arrow_forward),
                                 ],
                               ),
@@ -172,7 +174,31 @@ class HomePageState extends State<HomePage> {
                               ),
                             ),
 
-                      SizedBox(height: 20),
+                      SizedBox(height: 5),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 3),
+                            SvgPicture.asset(
+                              "assets/imgs/icons/spicyunit.svg",
+                              width: 20,
+                              matchTextDirection: true,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              '${student.referralUnits} Spicy Units',
+                              style: TextStyle(
+                                  // fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: brown),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 30),
 
                       // last watched lesson
 
