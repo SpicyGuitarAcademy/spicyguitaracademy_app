@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/complete_payment.dart';
 
 // providers
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
+import 'package:spicyguitaracademy_app/providers/Forum.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
 import 'package:spicyguitaracademy_app/providers/StudentAssignments.dart';
@@ -70,6 +72,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => Lessons()),
         ChangeNotifierProvider(create: (context) => Tutorial()),
         ChangeNotifierProvider(create: (context) => StudentAssignments()),
+        ChangeNotifierProvider(create: (context) => Forum()),
       ],
       child: SpicyGuitarAcademy(),
     ),
@@ -111,7 +114,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
             shape: MaterialStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(5),
+                  Radius.circular(30),
                 ),
               ),
             ),
@@ -126,6 +129,20 @@ class SpicyGuitarAcademy extends StatelessWidget {
             overlayColor: MaterialStateProperty.all(darkbrown),
             foregroundColor: MaterialStateProperty.all(white),
             alignment: Alignment.center,
+          ),
+        ),
+
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(
+                vertical: 0,
+                horizontal: 0,
+              ),
+            ),
+            overlayColor: MaterialStateProperty.all(grey),
+            backgroundColor: MaterialStateProperty.all(Colors.transparent),
+            foregroundColor: MaterialStateProperty.all(brown),
           ),
         ),
 
@@ -163,8 +180,11 @@ class SpicyGuitarAcademy extends StatelessWidget {
           layoutBehavior: ButtonBarLayoutBehavior.padded,
           splashColor: Color(0xFF471D0E),
           shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(5.0),
-              side: BorderSide(color: Color(0xFF6B2B14))),
+            borderRadius: new BorderRadius.circular(5.0),
+            side: BorderSide(
+              color: Color(0xFF6B2B14),
+            ),
+          ),
         ),
 
         // brightness
@@ -178,21 +198,22 @@ class SpicyGuitarAcademy extends StatelessWidget {
 
         // text themes
         textTheme: TextTheme(
+          // headline6: TextStyle(
+          //   color: Color(0xFF6B2B14),
+          //   fontSize: 20.0
+          // ),
 
-            // headline6: TextStyle(
-            //   color: Color(0xFF6B2B14),
-            //   fontSize: 20.0
-            // ),
+          // overline: TextStyle(
+          //   color: Color(0xFF6B2B14),
+          //   fontSize: 40.0
+          // ),
 
-            // overline: TextStyle(
-            //   color: Color(0xFF6B2B14),
-            //   fontSize: 40.0
-            // ),
-
-            bodyText2: TextStyle(
-                color: Color(0xFF707070),
-                fontSize: 16.0,
-                fontFamily: 'Poppins')),
+          bodyText2: TextStyle(
+            color: darkgrey,
+            fontSize: 16.0,
+            fontFamily: 'Poppins',
+          ),
+        ),
       ),
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => new LandingPage(), // landing_page
@@ -208,6 +229,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/resetpassword': (BuildContext context) => new ResetPasswordPage(),
         '/welcome_note': (BuildContext context) => new WelcomeNotePage(),
         '/choose_plan': (BuildContext context) => new ChoosePlan(),
+        '/complete_payment': (BuildContext context) => new CompletePayment(),
         '/successful_transaction': (BuildContext context) =>
             new SuccessfulTransaction(),
         '/failed_transaction': (BuildContext context) =>
