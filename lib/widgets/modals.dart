@@ -10,7 +10,9 @@ void loading(BuildContext context, {String message: 'Loading'}) {
         content: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CircularProgressIndicator(),
+            CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(darkbrown),
+            ),
             SizedBox(
               width: 20.0,
             ),
@@ -22,103 +24,65 @@ void loading(BuildContext context, {String message: 'Loading'}) {
   );
 }
 
-void message(BuildContext context, String message, {String title: 'Message'}) {
+void message(BuildContext context, String message) {
   showDialog(
     context: context,
     // barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
         scrollable: true,
-        title: Row(
-          children: [
-            Icon(Icons.info, color: Colors.lightBlueAccent),
-            SizedBox(width: 2.0),
-            Text("$title", style: TextStyle(color: Colors.lightBlueAccent)),
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(Icons.error, color: brown),
         ),
-        content: Column(
-          children: [
-            Text(message, style: TextStyle(color: Colors.lightBlueAccent)),
-          ],
+        content: Text(
+          message,
+          style: TextStyle(color: brown),
         ),
         backgroundColor: Colors.white,
-        // actions: [
-        //   MaterialButton(
-        //     onPressed: () {
-        //       Navigator.pop(context);
-        //     },
-        //     child: Text('Ok'),
-        //   )
-        // ],
       );
     },
   );
 }
 
-void success(BuildContext context, String message, {String title: 'Message'}) {
+void success(BuildContext context, String message) {
   showDialog(
     context: context,
-    // barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
         scrollable: true,
-        title: Row(
-          children: [
-            Icon(Icons.done, color: brown),
-            SizedBox(width: 2.0),
-            Text("$title", style: TextStyle(color: brown)),
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(Icons.check_circle, color: brown),
         ),
-        content: Text(message, style: TextStyle(color: brown)),
+        content: Text(
+          message,
+          style: TextStyle(color: brown),
+        ),
         backgroundColor: Colors.white,
-        // actions: [
-        //   MaterialButton(
-        //     onPressed: () {
-        //       Navigator.pop(context);
-        //     },
-        //     child: Text('Ok'),
-        //   )
-        // ],
       );
     },
   );
 }
 
-void error(BuildContext context, String message,
-    {String title: 'Unknown Error'}) {
+void error(BuildContext context, String message) {
   showDialog(
     context: context,
-    // barrierDismissible: false,
     builder: (context) {
       return AlertDialog(
         scrollable: true,
-        title: Row(
-          children: [
-            Icon(Icons.error, color: Colors.red),
-            SizedBox(width: 2.0),
-            Text("$title", style: TextStyle(color: Colors.red)),
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(Icons.error, color: Colors.red),
         ),
-        content: Text(message, style: TextStyle(color: Colors.red)),
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.red),
+        ),
         backgroundColor: Colors.white,
-        // actions: [
-        //   MaterialButton(
-        //     onPressed: () {
-        //       Navigator.pop(context);
-        //     },
-        //     child: Text('Ok'),
-        //   )
-        // ],
       );
     },
   );
-  // SnackBar(
-  //   content: Text(message, style: TextStyle(color: Colors.red)),
-  //   backgroundColor: Colors.white
-  // );
 }
 
 void snackbar(BuildContext context, String message, {int timeout = 5}) {
@@ -139,14 +103,6 @@ void action(BuildContext context, String message, {String title: ''}) {
     builder: (context) {
       return AlertDialog(
         scrollable: true,
-        title: Row(
-          children: [
-            // Icon(Icons.done, color: brown),
-            // SizedBox(width: 2.0),
-            // Text("$title", style: TextStyle(color: brown)),
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
-        ),
         content: Text(message, style: TextStyle(color: brown)),
         backgroundColor: Colors.white,
         actions: [
