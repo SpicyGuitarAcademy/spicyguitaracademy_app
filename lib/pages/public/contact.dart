@@ -199,7 +199,7 @@ class ContactUsPageState extends State<ContactUsPage> {
         throw Exception(resp['message']);
       }
     } catch (e) {
-      error(context, stripExceptions(e), title: 'Request failed');
+      error(context, stripExceptions(e));
     }
   }
 }

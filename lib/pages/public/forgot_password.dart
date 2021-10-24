@@ -91,7 +91,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: 'Request failed');
+      error(context, stripExceptions(e));
     }
   }
 }

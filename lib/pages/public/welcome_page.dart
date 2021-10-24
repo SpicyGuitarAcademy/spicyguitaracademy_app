@@ -56,42 +56,18 @@ class _WelcomePageState extends State<WelcomePage> {
       StudentSubscription studentSubscription,
       Courses courses) {
     List<Widget> vids = [];
-    List<int> indexes = [];
+    // List<int> indexes = [];
 
-    Random rand = Random(10);
-    if (courses.featuredCourses.length > 10) {
-      while (vids.length < 10) {
-        int index = rand.nextInt(courses.featuredCourses.length);
-
-        if (!indexes.contains(index)) {
-          Course course = courses.featuredCourses[index];
-
-          vids.add(
-            renderCourse(course, context, () async {
-              if (Auth.authenticated == true) {
-                await signInWithCachedData(
-                    student, studentStats, studentSubscription);
-              } else {
-                Navigator.pushNamed(context, '/login');
-              }
-            }, showProgress: false, showPricings: false, addMargin: true),
-          );
-
-          indexes.add(index);
+    courses.featuredCourses.forEach((course) {
+      vids.add(renderCourse(course, context, () async {
+        if (Auth.authenticated == true) {
+          await signInWithCachedData(
+              student, studentStats, studentSubscription);
+        } else {
+          Navigator.pushNamed(context, '/login');
         }
-      }
-    } else {
-      courses.featuredCourses.forEach((course) {
-        vids.add(renderCourse(course, context, () async {
-          if (Auth.authenticated == true) {
-            await signInWithCachedData(
-                student, studentStats, studentSubscription);
-          } else {
-            Navigator.pushNamed(context, '/login');
-          }
-        }));
-      });
-    }
+      }));
+    });
 
     return vids;
   }
@@ -227,7 +203,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               "Hi, Welcome to Spicy Guitar Academy",
                               style: TextStyle(
                                 color: grey,
-                                fontSize: 25,
+                                fontSize: 20,
                               ),
                             ),
                           ),
@@ -236,7 +212,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               ? Column(
                                   children: [
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
                                         onPressed: () {
                                           Navigator.pushNamed(
@@ -247,8 +223,20 @@ class _WelcomePageState extends State<WelcomePage> {
                                     ),
                                     SizedBox(height: 15),
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                          side: MaterialStateProperty.all(
+                                            BorderSide(
+                                              color: brown,
+                                              width: 2,
+                                              style: BorderStyle.solid,
+                                            ),
+                                          ),
+                                        ),
                                         onPressed: () {
                                           Navigator.pushNamed(
                                               context, "/register");
@@ -261,7 +249,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               : Column(
                                   children: [
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           await signInWithCachedData(
@@ -270,13 +258,27 @@ class _WelcomePageState extends State<WelcomePage> {
                                               studentSubscription);
                                         },
                                         child: Text(
-                                            "Continue as ${student.firstname ?? 'Guest'}"),
+                                          "Continue as ${student.firstname ?? 'Guest'}",
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(height: 15),
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                          side: MaterialStateProperty.all(
+                                            BorderSide(
+                                              color: brown,
+                                              width: 2,
+                                              style: BorderStyle.solid,
+                                            ),
+                                          ),
+                                        ),
                                         onPressed: () async {
                                           await student.signout();
                                         },
@@ -313,7 +315,9 @@ class _WelcomePageState extends State<WelcomePage> {
                                 )
                               : Center(
                                   child: CircularProgressIndicator(
-                                    color: brown,
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                            darkbrown),
                                   ),
                                 ),
                           SizedBox(height: 20),
@@ -344,7 +348,9 @@ class _WelcomePageState extends State<WelcomePage> {
                                 )
                               : Center(
                                   child: CircularProgressIndicator(
-                                    color: brown,
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                            darkbrown),
                                   ),
                                 ),
                         ],

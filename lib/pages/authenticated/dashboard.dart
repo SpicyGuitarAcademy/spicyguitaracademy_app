@@ -90,12 +90,9 @@ class DashboardState extends State<Dashboard> {
                                     : SizedBox()
                               ])),
                       IconButton(
-                          onPressed: () => ui.setDashboardPage(3),
-                          // setState(() {
-                          //       _pageIndex = 3;
-                          //     }),
-                          icon: Center(
-                              child: CircleAvatar(
+                        onPressed: () => ui.setDashboardPage(3),
+                        icon: Center(
+                          child: CircleAvatar(
                             radius: 25,
                             backgroundColor: brown,
                             backgroundImage: NetworkImage(
@@ -104,7 +101,9 @@ class DashboardState extends State<Dashboard> {
                                 'cache-control': 'max-age=0, must-revalidate'
                               },
                             ),
-                          )))
+                          ),
+                        ),
+                      )
                     ],
                     elevation: 0,
                   ),
@@ -174,14 +173,11 @@ class DashboardState extends State<Dashboard> {
                               "assets/imgs/icons/sidebar_home_icon.svg", "Home",
                               () {
                             ui.setDashboardPage(0);
-                            // setState(() {
-                            //   _pageIndex = 0;
-                            // });
                           }),
                           sideBarItem(
                               "assets/imgs/icons/sidebar_video_icon.svg",
                               "Tutorial", () {
-                            Navigator.pushNamed(context, '/tutorial_page');
+                            ui.setDashboardPage(1);
                           }),
                           sideBarItem(
                               "assets/imgs/icons/message_icon.svg", "Forum",

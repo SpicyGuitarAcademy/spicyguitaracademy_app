@@ -96,9 +96,7 @@ class _VideoWidgetState extends State<VideoWidget> {
         } else {
           return Center(
             child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(
-                  // Colors.white
-                  darkbrown),
+              valueColor: new AlwaysStoppedAnimation<Color>(darkbrown),
             ),
           );
         }

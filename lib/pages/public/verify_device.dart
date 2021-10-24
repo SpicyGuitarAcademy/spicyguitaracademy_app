@@ -103,7 +103,7 @@ class VerifyDevicePageState extends State<VerifyDevicePage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: 'Verification failed');
+      error(context, stripExceptions(e));
     }
   }
 }
