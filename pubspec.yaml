@@ -28,6 +28,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # For Copy
+  clipboard: ^0.1.3
+
   # For Http
   http: ^0.13.3
 
