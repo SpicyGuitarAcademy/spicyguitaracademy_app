@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Auth.dart';
-import 'package:spicyguitaracademy_app/providers/Course.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lesson.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
