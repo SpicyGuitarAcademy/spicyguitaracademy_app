@@ -8,6 +8,7 @@ import 'package:spicyguitaracademy_app/utils/exceptions.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/utils/request.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
+import 'package:clipboard/clipboard.dart';
 
 class InviteFriend extends StatefulWidget {
   @override
@@ -97,12 +98,25 @@ class InviteFriendState extends State<InviteFriend> {
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 )
-                              : Text(
-                                  '${student.referralCode}',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
+                              : TextButton(
+                                  child: Text(
+                                    '${student.referralCode}',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
+                                  onPressed: () {
+                                    FlutterClipboard.copy(
+                                            '${student.referralCode}')
+                                        .then(
+                                      (value) => snackbar(
+                                        context,
+                                        "Invitation code copied!",
+                                        timeout: 10,
+                                      ),
+                                    );
+                                  },
                                 ),
                         ],
                       ),
@@ -130,7 +144,7 @@ class InviteFriendState extends State<InviteFriend> {
                       // text box for entering emails adresses
                       TextField(
                         controller: _email,
-                        autofocus: true,
+                        autofocus: false,
                         textInputAction: TextInputAction.done,
                         style: TextStyle(fontSize: 20.0, color: brown),
                         decoration: InputDecoration(
