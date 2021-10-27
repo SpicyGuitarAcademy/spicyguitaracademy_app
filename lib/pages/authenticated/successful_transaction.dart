@@ -92,8 +92,9 @@ class SuccessfulTransactionState extends State<SuccessfulTransaction> {
                               .getStudentCategoryAndStats(studentSubscription);
                           Navigator.pop(context);
                           if (studentStats.studyingCategory == 0) {
-                            Navigator.popAndPushNamed(
-                                context, "/choose_category");
+                            Navigator.popUntil(
+                                context, ModalRoute.withName('/welcome_note'));
+                            Navigator.pushNamed(context, '/choose_category');
                           } else {
                             // if (Student.isLoaded == true) {
                             Navigator.popUntil(

@@ -44,7 +44,7 @@ class CompletePaymentState extends State<CompletePayment> {
         Navigator.pushNamed(
           context,
           '/pay_with_paystack',
-          arguments: {'type': 'featured-course', 'course': course},
+          arguments: {'type': 'subscription', 'course': course},
         );
       } else if (medium == 'paypal') {
         await subscription.initiateSubscriptionPayment(
@@ -53,7 +53,7 @@ class CompletePaymentState extends State<CompletePayment> {
         Navigator.pushNamed(
           context,
           '/pay_with_paypal',
-          arguments: {'type': 'featured-course', 'course': course},
+          arguments: {'type': 'subscription', 'course': course},
         );
       } else if (medium == 'spicyunits') {
         var resp = await subscription.completeSubscriptionPaymentWithSpicyUnits(
