@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spicyguitaracademy_app/services/cache_manager.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:video_player/video_player.dart';
@@ -21,19 +22,36 @@ class AudioWidget extends StatefulWidget {
 class _AudioWidgetState extends State<AudioWidget> {
   VideoPlayerController? videoPlayerController;
   Future<void>? _initializeVideoPlayerFuture;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
 
-    cacheManager(widget.url!).then((value) {
-      videoPlayerController = new VideoPlayerController.file(value);
+    getResource(widget.url!);
+  }
+
+  Future getResource(String url) async {
+    final SharedPreferences prefs = await _prefs;
+    if (prefs.getString('resource_$url') == null) {
+      print("\n\n\nLesson do not Exist\n\n");
+      videoPlayerController = new VideoPlayerController.network(url);
       _initializeVideoPlayerFuture =
           videoPlayerController!.initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
-    });
+    } else {
+      print("\n\n\nLesson do Exist\n\n");
+      getCachedFile(url).then((value) {
+        videoPlayerController = new VideoPlayerController.file(value);
+        _initializeVideoPlayerFuture =
+            videoPlayerController!.initialize().then((_) {
+          // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+          setState(() {});
+        });
+      });
+    }
   }
 
   @override

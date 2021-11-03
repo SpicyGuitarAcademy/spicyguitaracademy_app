@@ -6,6 +6,7 @@ import 'package:spicyguitaracademy_app/providers/Lessons.dart';
 import 'package:spicyguitaracademy_app/providers/Student.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
+import 'package:spicyguitaracademy_app/services/cache_manager.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 // import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
@@ -636,31 +637,111 @@ class TutorialPageState extends State<TutorialPage> {
                                                       },
                                                       color: brown,
                                                       textColor: Colors.white,
-                                                      child: Text('COMPLETE',
-                                                          style: TextStyle(
-                                                              fontSize: 16)))
+                                                      child: Text(
+                                                        'COMPLETE',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    )
                                                   : Container()
                                               : Container() // use this if this is not a course
                                     ],
                                   ),
 
                                   TextButton(
-                                      onPressed: () => setState(
-                                          () => _showComment = !_showComment),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text('Comments',
-                                              style: TextStyle(
-                                                  color: brown, fontSize: 16)),
-                                          SizedBox(width: 2),
-                                          Icon(
-                                              _showComment
-                                                  ? Icons.arrow_drop_up
-                                                  : Icons.arrow_drop_down,
-                                              color: brown)
-                                        ],
-                                      )),
+                                    onPressed: () async {
+                                      try {
+                                        snackbar(
+                                            context, 'Downloading Lesson...');
+                                        if (tutorial.currentTutorial!.video !=
+                                            null) {
+                                          await downloadFile(tutorial
+                                                  .currentTutorial!.video!)
+                                              .then(
+                                            (value) => {
+                                              snackbar(context,
+                                                  'Video Lesson downloaded.')
+                                            },
+                                          );
+                                        }
+                                        if (tutorial.currentTutorial!.audio !=
+                                            null) {
+                                          await downloadFile(tutorial
+                                                  .currentTutorial!.audio!)
+                                              .then(
+                                            (value) => {
+                                              snackbar(context,
+                                                  'Audio Lesson downloaded.')
+                                            },
+                                          );
+                                        }
+                                        if (tutorial
+                                                .currentTutorial!.practice !=
+                                            null) {
+                                          await downloadFile(tutorial
+                                                  .currentTutorial!.practice!)
+                                              .then(
+                                            (value) => {
+                                              snackbar(context,
+                                                  'Practice Loop downloaded.')
+                                            },
+                                          );
+                                        }
+                                        if (tutorial
+                                                .currentTutorial!.tablature !=
+                                            null) {
+                                          await downloadFile(tutorial
+                                                  .currentTutorial!.tablature!)
+                                              .then(
+                                            (value) => {
+                                              snackbar(context,
+                                                  'Tablature downloaded.')
+                                            },
+                                          );
+                                        }
+                                      } catch (e) {
+                                        snackbar(context, stripExceptions(e));
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.download),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Download Lesson',
+                                          style: TextStyle(
+                                            color: brown,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  TextButton(
+                                    onPressed: () => setState(
+                                        () => _showComment = !_showComment),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Comments',
+                                          style: TextStyle(
+                                            color: brown,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(width: 2),
+                                        Icon(
+                                            _showComment
+                                                ? Icons.arrow_drop_up
+                                                : Icons.arrow_drop_down,
+                                            color: brown)
+                                      ],
+                                    ),
+                                  ),
 
                                   _showComment == true
                                       ? Column(
