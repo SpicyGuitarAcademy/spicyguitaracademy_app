@@ -54,7 +54,7 @@ class LessonsPageState extends State<LessonsPage> {
     });
 
     // add asignment
-    if (Assignment.status == true) {
+    if (Assignments.status == true) {
       vids.add(renderAssignment(context));
     }
 

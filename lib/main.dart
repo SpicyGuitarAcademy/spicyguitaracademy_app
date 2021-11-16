@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/assignments_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/complete_payment.dart';
 
 // providers
@@ -66,12 +67,11 @@ void main() {
         ChangeNotifierProvider(create: (context) => StudentSubscription()),
         ChangeNotifierProvider(create: (context) => StudentStudyStatistics()),
         ChangeNotifierProvider(create: (context) => StudentNotifications()),
+        ChangeNotifierProvider(create: (context) => StudentAssignments()),
         ChangeNotifierProvider(create: (context) => Subscription()),
         ChangeNotifierProvider(create: (context) => Courses()),
-        ChangeNotifierProvider(create: (context) => StudentAssignments()),
         ChangeNotifierProvider(create: (context) => Lessons()),
         ChangeNotifierProvider(create: (context) => Tutorial()),
-        ChangeNotifierProvider(create: (context) => StudentAssignments()),
         ChangeNotifierProvider(create: (context) => Forum()),
       ],
       child: SpicyGuitarAcademy(),
@@ -242,6 +242,7 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/search_page': (BuildContext context) => new SearchPage(),
         '/invite_friend': (BuildContext context) => new InviteFriend(),
         '/lessons_page': (BuildContext context) => new LessonsPage(),
+        '/assignments_page': (BuildContext context) => new AssignmentsPage(),
         '/tutorial_page': (BuildContext context) => new TutorialPage(),
         '/coursepreview_page': (BuildContext context) =>
             new CoursePreviewPage(),

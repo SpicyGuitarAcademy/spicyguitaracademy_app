@@ -137,9 +137,9 @@ class CompletedCategoryState extends State<CompletedCategory> {
                                 context, ModalRoute.withName('/dashboard'));
                             Navigator.pushNamed(context, '/choose_category');
                           } else {
-                            if (Assignment.status == true) {
+                            if (Assignments.status == true) {
                               Navigator.pushReplacementNamed(
-                                  context, '/assignment_page');
+                                  context, '/assignments_page');
                             } else {
                               Navigator.popUntil(
                                   context, ModalRoute.withName('/dashboard'));

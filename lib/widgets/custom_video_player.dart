@@ -34,6 +34,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     final SharedPreferences prefs = await _prefs;
     if (prefs.getString('resource_$url') == null) {
       print("\n\n\nLesson do not Exist\n\n");
+      print(url);
       videoPlayerController = new VideoPlayerController.network(url);
       _initializeVideoPlayerFuture =
           videoPlayerController!.initialize().then((_) {

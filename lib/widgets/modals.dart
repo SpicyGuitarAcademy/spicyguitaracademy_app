@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
+import 'package:spicyguitaracademy_app/utils/functions.dart';
 
 void loading(BuildContext context, {String message: 'Loading'}) {
   showDialog(
@@ -76,7 +79,10 @@ void error(BuildContext context, String message) {
           child: Icon(Icons.error, color: Colors.red),
         ),
         content: Text(
-          message,
+          // Utf8Decoder(allowMalformed: true).convert(codeUnits)
+          parseHtmlString(message),
+          // .convert(message),
+          // message,
           style: TextStyle(color: Colors.red),
         ),
         backgroundColor: Colors.white,
