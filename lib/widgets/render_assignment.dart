@@ -34,8 +34,8 @@ Widget renderAssignment(context) {
           SizedBox(height: 10),
           Text(
             Assignments.assignments!.length > 0
-                ? '${Assignments.assignments!.length} Course Assignments'
-                : '${Assignments.assignments!.length} Course Assignment',
+                ? '${Assignments.assignments!.length} Assignment Questions'
+                : '${Assignments.assignments!.length} Assignment Question',
             overflow: TextOverflow.visible,
             style: TextStyle(
               color: Color.fromRGBO(112, 112, 112, 1.0),

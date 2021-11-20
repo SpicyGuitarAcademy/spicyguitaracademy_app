@@ -49,7 +49,7 @@ class AssignmentsPageState extends State<AssignmentsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text(
-                "Assignment ${assignment.assignmentNumber!}",
+                "Question ${assignment.assignmentNumber!}",
                 overflow: TextOverflow.clip,
                 style: TextStyle(
                   color: brown,
@@ -57,18 +57,18 @@ class AssignmentsPageState extends State<AssignmentsPage> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                Assignments.assignments!.length > 0
-                    ? '${assignment.questions!.length} Assignment Questions'
-                    : '${assignment.questions!.length} Assignment Question',
-                overflow: TextOverflow.visible,
-                style: TextStyle(
-                  color: Color.fromRGBO(112, 112, 112, 1.0),
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              // SizedBox(height: 10),
+              // Text(
+              //   Assignments.assignments!.length > 0
+              //       ? '${assignment.questions!.length} Assignment Questions'
+              //       : '${assignment.questions!.length} Assignment Question',
+              //   overflow: TextOverflow.visible,
+              //   style: TextStyle(
+              //     color: Color.fromRGBO(112, 112, 112, 1.0),
+              //     fontSize: 15.0,
+              //     fontWeight: FontWeight.w400,
+              //   ),
+              // ),
               SizedBox(height: 10),
               Text('Answer Ratings', style: TextStyle(color: brown)),
               Row(

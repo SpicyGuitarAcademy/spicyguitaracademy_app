@@ -132,7 +132,7 @@ class ForumsPageState extends State<ForumsPage> {
       who = 'me';
     } else {
       if (comment['is_admin'] == '1') {
-        name = comment['tutor']['name'];
+        name = "Admin"; // comment['tutor']['name'];
         avatar = comment['tutor']['avatar'];
         who = 'tutor';
       } else {

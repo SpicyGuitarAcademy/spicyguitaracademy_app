@@ -113,8 +113,45 @@ class AssignmentPageState extends State<AssignmentPage> {
     if (Answers.answers!.length > 0)
       Answers.answers!.forEach((Answer answer) {
         if (answer.isTutor == true) {
-          assignmentAnswers.add(Text('Tutor'));
-          assignmentAnswers.add(SizedBox(height: 5));
+          // assignmentAnswers.add(SizedBox(height: 7));
+          assignmentAnswers.add(Row(
+            children: [
+              Icon(
+                Icons.shield,
+                color: brown,
+                size: 14,
+              ),
+              Expanded(
+                child: Text("Admin",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: brown,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15)),
+              )
+            ],
+          ));
+        } else {
+          // assignmentAnswers.add(SizedBox(height: 7));
+          assignmentAnswers.add(Row(
+            children: [
+              Icon(
+                Icons.person,
+                color: brown,
+                size: 16,
+              ),
+              Expanded(
+                child: Text("Me",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: brown,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15)),
+              )
+            ],
+          ));
         }
         assignmentAnswers.add(SizedBox(height: 5));
         if (answer.type == 'text') {
@@ -155,17 +192,12 @@ class AssignmentPageState extends State<AssignmentPage> {
 
   Widget renderTextContent(String content) {
     return Container(
-      width: screen(context).width,
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      // decoration: new BoxDecoration(
-      //   border: Border.all(
-      //     color: grey,
-      //     width: 1,
-      //     style: BorderStyle.solid,
-      //   ),
-      //   borderRadius: BorderRadius.all(Radius.circular(5)),
-      // ),
+      alignment: Alignment.centerLeft,
+      decoration: new BoxDecoration(
+        color: grey,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Text(content),
     );
   }
@@ -173,16 +205,12 @@ class AssignmentPageState extends State<AssignmentPage> {
   Widget renderImageContent(String content) {
     return Container(
       width: screen(context).width,
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      // decoration: new BoxDecoration(
-      //   border: Border.all(
-      //     color: grey,
-      //     width: 1,
-      //     style: BorderStyle.solid,
-      //   ),
-      //   borderRadius: BorderRadius.all(Radius.circular(5)),
-      // ),
+      alignment: Alignment.centerLeft,
+      decoration: new BoxDecoration(
+        color: grey,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Image.network(
         "$baseUrl/$content",
         fit: BoxFit.cover,
@@ -193,8 +221,12 @@ class AssignmentPageState extends State<AssignmentPage> {
   Widget renderAudioContent(String content) {
     return Container(
       width: screen(context).width,
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.centerLeft,
+      decoration: new BoxDecoration(
+        color: grey,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: AudioWidget(
         play: true,
         url: "$baseUrl/$content",
@@ -206,9 +238,13 @@ class AssignmentPageState extends State<AssignmentPage> {
   Widget renderVideoContent(String content) {
     return Container(
       width: screen(context).width,
-      height: ((screen(context).width - 40) * 2) / 3,
-      margin: EdgeInsets.symmetric(horizontal: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      height: ((screen(context).width) * 2) / 3,
+      alignment: Alignment.centerLeft,
+      decoration: new BoxDecoration(
+        color: grey,
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
       child: VideoWidget(
         play: true,
         url: "$baseUrl/$content",
@@ -222,15 +258,6 @@ class AssignmentPageState extends State<AssignmentPage> {
   List<Widget> renderAssignmentQuestions() {
     List<Widget>? questions = [];
     assignment!.questions!.forEach((Question question) {
-      questions.add(Text(
-        'Question ${question.assignmentOrder}',
-        textAlign: TextAlign.start,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-        ),
-      ));
-      questions.add(SizedBox(height: 5));
       if (question.type == 'text') {
         questions.add(
           renderTextContent(question.content!),
@@ -248,6 +275,7 @@ class AssignmentPageState extends State<AssignmentPage> {
           renderVideoContent(question.content!),
         );
       }
+      // questions.add(SizedBox(height: 5));
 
       questions.add(SizedBox(height: 10));
     });
@@ -271,17 +299,19 @@ class AssignmentPageState extends State<AssignmentPage> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: AppBar(
-                title: Text("Assignment ${assignment!.assignmentNumber}"),
+                title: Text("Question ${assignment!.assignmentNumber}"),
               ),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
                         children: [
+                          SizedBox(height: 20),
                           Text(
-                            'Questions',
+                            'Question',
                             style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.w600,

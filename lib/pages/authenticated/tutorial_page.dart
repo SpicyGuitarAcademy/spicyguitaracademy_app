@@ -98,7 +98,7 @@ class TutorialPageState extends State<TutorialPage> {
           avatar = '${student.avatar}';
           // who = 'me';
         } else {
-          name = comment['tutor']['name'];
+          name = "Admin"; //comment['tutor']['name'];
           avatar = comment['tutor']['avatar'];
           // who = 'tutor';
         }
@@ -755,34 +755,38 @@ class TutorialPageState extends State<TutorialPage> {
 
                       // comment section
                       Container(
-                          // height: 50,
-                          padding: EdgeInsets.all(0),
-                          width: screen(context).width,
-                          // color: Colors.white,
-                          decoration: BoxDecoration(
-                              color: grey,
-                              border: Border(
-                                bottom: BorderSide(width: 2.0, color: brown),
-                                // width: 1.0, color: brown
-                              )),
-                          child: TextField(
-                              controller: _comment,
-                              autocorrect: true,
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (value) {
+                        // height: 50,
+                        padding: EdgeInsets.all(0),
+                        width: screen(context).width,
+                        // color: Colors.white,
+                        decoration: BoxDecoration(
+                            color: grey,
+                            border: Border(
+                              bottom: BorderSide(width: 2.0, color: brown),
+                              // width: 1.0, color: brown
+                            )),
+                        child: TextField(
+                          controller: _comment,
+                          autocorrect: true,
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (value) {
+                            _submitComment(student, tutorial);
+                          },
+                          style: TextStyle(fontSize: 20.0, color: brown),
+                          decoration: InputDecoration(
+                            hintText: "Ask question",
+                            suffix: IconButton(
+                              onPressed: () {
                                 _submitComment(student, tutorial);
                               },
-                              style: TextStyle(fontSize: 20.0, color: brown),
-                              decoration: InputDecoration(
-                                  hintText: "Ask question",
-                                  suffix: IconButton(
-                                      onPressed: () {
-                                        _submitComment(student, tutorial);
-                                      },
-                                      icon: Icon(
-                                        Icons.send,
-                                        color: brown,
-                                      ))))),
+                              icon: Icon(
+                                Icons.send,
+                                color: brown,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ]),
                   ));
             });
