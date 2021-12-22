@@ -11,7 +11,6 @@ import 'package:spicyguitaracademy_app/providers/Student.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
-import 'package:spicyguitaracademy_app/providers/Ui.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/widgets/render_demo_lesson.dart';
