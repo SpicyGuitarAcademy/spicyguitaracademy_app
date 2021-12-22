@@ -149,8 +149,9 @@ class LoginPageState extends State<LoginPage> {
       dynamic resp = await student.verifyDevice();
 
       if (resp['status'] == false) {
-        error(context, resp['message']);
+        Navigator.pop(context);
         Navigator.pushNamed(context, '/verify-device');
+        // error(context, resp['message']);
       } else {
         await studentSubscription.getStudentSubscriptionStatus();
         await studentStats.getStudentCategoryAndStats(studentSubscription);

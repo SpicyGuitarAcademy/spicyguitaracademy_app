@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,8 +11,10 @@ import 'package:spicyguitaracademy_app/providers/Student.dart';
 import 'package:spicyguitaracademy_app/providers/StudentStudyStatistics.dart';
 import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/providers/Tutorial.dart';
+import 'package:spicyguitaracademy_app/providers/Ui.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
+import 'package:spicyguitaracademy_app/widgets/render_demo_lesson.dart';
 import 'package:spicyguitaracademy_app/widgets/render_lesson.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +26,27 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  List<Widget> renderRandomizedLessons(
+      Student student,
+      StudentStudyStatistics studentStats,
+      StudentSubscription studentSubscription,
+      Lessons lessons,
+      Tutorial tutorial) {
+    List<Widget> vids = [];
+
+    Random rand = Random(400);
+    lessons.studyingCateogryLessons!.shuffle(rand);
+
+    lessons.studyingCateogryLessons!.forEach((lesson) {
+      vids.add(
+        renderDemoLesson(lesson, context, () {},
+            addMargin: true, courseLocked: false),
+      );
+    });
+
+    return vids;
   }
 
   @override
@@ -49,11 +74,14 @@ class HomePageState extends State<HomePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Hi, ${student.firstname}",
-                                  style: TextStyle(
-                                      color: brown,
-                                      fontSize: 35.0,
-                                      fontWeight: FontWeight.w900)),
+                              Text(
+                                "Hi, ${student.firstname}",
+                                style: TextStyle(
+                                  color: brown,
+                                  fontSize: 35.0,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
                               Text("Welcome"),
                             ],
                           ),
@@ -68,19 +96,37 @@ class HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 20),
 
-                      // current category thumbnail
-                      Container(
-                        width: screen(context).width,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          image: DecorationImage(
-                            image: AssetImage(
-                                getStudentCategoryThumbnail(studentStats)),
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                      ),
+                      studentStats.studyingCategory! > 0
+                          ?
+                          // studying courses
+                          Container(
+                              width: screen(context).width,
+                              height: 200,
+                              child: ListView(
+                                // This next line does the trick.
+                                scrollDirection: Axis.horizontal,
+                                children: renderRandomizedLessons(
+                                    student,
+                                    studentStats,
+                                    studentSubscription,
+                                    lessons,
+                                    tutorial),
+                              ),
+                            )
+                          :
+                          // current category thumbnail
+                          Container(
+                              width: screen(context).width,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                image: DecorationImage(
+                                  image: AssetImage(defaultThumbnail),
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            ),
 
                       SizedBox(height: 10),
 
@@ -179,20 +225,37 @@ class HomePageState extends State<HomePage> {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(width: 3),
-                            SvgPicture.asset(
-                              "assets/imgs/icons/spicyunit.svg",
-                              width: 20,
-                              matchTextDirection: true,
+                            Row(
+                              children: [
+                                SizedBox(width: 3),
+                                SvgPicture.asset(
+                                  "assets/imgs/icons/spicyunit.svg",
+                                  width: 20,
+                                  matchTextDirection: true,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  '${student.referralUnits} Spicy Units',
+                                  style: TextStyle(
+                                      // fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: brown),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 10),
-                            Text(
-                              '${student.referralUnits} Spicy Units',
-                              style: TextStyle(
-                                  // fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: brown),
+                            MaterialButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/contact_for_spicyunits');
+                              },
+                              color: brown,
+                              textColor: Colors.white,
+                              child: Text(
+                                'Buy more',
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ),
                           ],
                         ),
@@ -259,8 +322,3 @@ class HomePageState extends State<HomePage> {
     return vids;
   }
 }
-
-// shape: RoundedRectangleBorder(
-//   borderRadius: new BorderRadius.circular(15.0),
-//   side: BorderSide(color: brown)
-// ),

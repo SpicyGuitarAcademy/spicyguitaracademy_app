@@ -29,7 +29,7 @@ class ForumsPageState extends State<ForumsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            strokeWidth: 5.0,
+            // strokeWidth: 5.0,
             valueColor: new AlwaysStoppedAnimation<Color>(darkbrown),
           ),
           SizedBox(width: 10),

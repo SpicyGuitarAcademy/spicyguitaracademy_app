@@ -11,6 +11,7 @@ import 'package:spicyguitaracademy_app/widgets/custom_audio_player.dart';
 import 'package:spicyguitaracademy_app/widgets/custom_video_player.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AssignmentPage extends StatefulWidget {
   AssignmentPage();
@@ -115,6 +116,7 @@ class AssignmentPageState extends State<AssignmentPage> {
         if (answer.isTutor == true) {
           // assignmentAnswers.add(SizedBox(height: 7));
           assignmentAnswers.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(
                 Icons.shield,
@@ -129,7 +131,31 @@ class AssignmentPageState extends State<AssignmentPage> {
                         color: brown,
                         fontWeight: FontWeight.bold,
                         fontSize: 15)),
-              )
+              ),
+              if (answer.type != 'text')
+                InkWell(
+                  onTap: () async {
+                    try {
+                      await launch(
+                        '$baseUrl/${answer.content}',
+                      );
+                    } catch (e) {
+                      snackbar(context,
+                          'Could not open resource. ${stripExceptions(e)}');
+                    }
+                  },
+                  child: Row(children: [
+                    Icon(
+                      Icons.download,
+                      color: brown,
+                      size: 14,
+                    ),
+                    Text(
+                      'Download',
+                      style: TextStyle(color: brown),
+                    ),
+                  ]),
+                )
             ],
           ));
         } else {
@@ -198,7 +224,7 @@ class AssignmentPageState extends State<AssignmentPage> {
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      child: Text(content),
+      child: Text(parseHtmlString(content)),
     );
   }
 
@@ -258,6 +284,37 @@ class AssignmentPageState extends State<AssignmentPage> {
   List<Widget> renderAssignmentQuestions() {
     List<Widget>? questions = [];
     assignment!.questions!.forEach((Question question) {
+      if (question.type != 'text')
+        questions.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () async {
+                  try {
+                    await launch(
+                      '$baseUrl/${question.content}',
+                    );
+                  } catch (e) {
+                    snackbar(context,
+                        'Could not open resource. ${stripExceptions(e)}');
+                  }
+                },
+                child: Row(children: [
+                  Icon(
+                    Icons.download,
+                    color: brown,
+                    size: 14,
+                  ),
+                  Text(
+                    'Download',
+                    style: TextStyle(color: brown),
+                  ),
+                ]),
+              )
+            ],
+          ),
+        );
       if (question.type == 'text') {
         questions.add(
           renderTextContent(question.content!),
@@ -275,7 +332,6 @@ class AssignmentPageState extends State<AssignmentPage> {
           renderVideoContent(question.content!),
         );
       }
-      // questions.add(SizedBox(height: 5));
 
       questions.add(SizedBox(height: 10));
     });
@@ -319,6 +375,9 @@ class AssignmentPageState extends State<AssignmentPage> {
                           ),
                           SizedBox(height: 20),
                           ...renderAssignmentQuestions(),
+                          SizedBox(height: 20),
+                          Divider(thickness: 2),
+                          SizedBox(height: 20),
                           Text(
                             'Answers',
                             style: TextStyle(
@@ -405,7 +464,8 @@ class AssignmentPageState extends State<AssignmentPage> {
                               TextField(
                                 controller: _answer,
                                 autocorrect: true,
-                                textInputAction: TextInputAction.send,
+                                maxLines: 3,
+                                textInputAction: TextInputAction.newline,
                                 onChanged: (value) {
                                   if (value.trim().isEmpty)
                                     setState(() => shouldUpload = true);

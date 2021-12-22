@@ -340,33 +340,6 @@ class ChoosePlanState extends State<ChoosePlan> {
                     SizedBox(height: 50),
 
                     studentSubscription.isSubscribed == false
-                        ? Container(
-                            width: screen(context).width - 40,
-                            child: ElevatedButton(
-                                onPressed: _selectedPlan == "0"
-                                    ? null
-                                    : () {
-                                        Navigator.pushNamed(
-                                            context, "/complete_payment",
-                                            arguments: {
-                                              'type': 'subscription',
-                                              'plan': _selectedPlan
-                                            });
-                                      },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("Payment Method"),
-                                    SizedBox(width: 10),
-                                    Icon(Icons.arrow_forward_rounded)
-                                  ],
-                                )),
-                          )
-                        : Container(),
-
-                    SizedBox(height: 50),
-
-                    studentSubscription.isSubscribed == false
                         // && Student.isLoaded == false
                         ? Container(
                             width: screen(context).width, // * 0.8,
@@ -375,7 +348,7 @@ class ChoosePlanState extends State<ChoosePlan> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color.fromRGBO(112, 112, 112, 0.6),
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 18.0),
                               strutStyle: StrutStyle(
                                 fontSize: 20.0,
@@ -407,6 +380,33 @@ class ChoosePlanState extends State<ChoosePlan> {
                               child: Text("Continue to FREE",
                                   style: TextStyle(fontSize: 20.0)),
                             ),
+                          )
+                        : Container(),
+
+                    SizedBox(height: 50),
+
+                    studentSubscription.isSubscribed == false
+                        ? Container(
+                            width: screen(context).width - 40,
+                            child: ElevatedButton(
+                                onPressed: _selectedPlan == "0"
+                                    ? null
+                                    : () {
+                                        Navigator.pushNamed(
+                                            context, "/complete_payment",
+                                            arguments: {
+                                              'type': 'subscription',
+                                              'plan': _selectedPlan
+                                            });
+                                      },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Payment Method"),
+                                    SizedBox(width: 10),
+                                    Icon(Icons.arrow_forward_rounded)
+                                  ],
+                                )),
                           )
                         : Container(),
 

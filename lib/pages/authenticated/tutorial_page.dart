@@ -14,6 +14,7 @@ import 'package:spicyguitaracademy_app/widgets/custom_pdf_viewer.dart';
 import 'package:spicyguitaracademy_app/widgets/custom_video_player.dart';
 import 'package:spicyguitaracademy_app/widgets/custom_audio_player.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
+import 'package:wakelock/wakelock.dart';
 
 class TutorialPage extends StatefulWidget {
   TutorialPage();
@@ -36,6 +37,12 @@ class TutorialPageState extends State<TutorialPage> {
   void initState() {
     super.initState();
     initiateTutorial();
+    Wakelock.enable();
+  }
+
+  void dispose() {
+    super.dispose();
+    Wakelock.disable();
   }
 
   Future initiateTutorial() async {
@@ -150,7 +157,7 @@ class TutorialPageState extends State<TutorialPage> {
                               height: 1.0,
                             ),
                             Text(
-                              "${comment['comment']}",
+                              parseHtmlString("${comment['comment']}"),
                               textAlign: TextAlign.start,
                             )
                           ],
@@ -601,9 +608,11 @@ class TutorialPageState extends State<TutorialPage> {
                                               },
                                               color: brown,
                                               textColor: Colors.white,
-                                              child: Text('NEXT',
-                                                  style:
-                                                      TextStyle(fontSize: 16)))
+                                              child: Text(
+                                                'NEXT',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            )
                                           : (
                                                   // tutorialLessonsIsLoadedFromCourse ==
                                                   //           true &&

@@ -32,7 +32,6 @@ class CompletePaymentState extends State<CompletePayment> {
       Subscription subscription,
       String medium,
       StudentSubscription studentSubscription) async {
-    // medium = 'paystack' | 'paypal' | 'spicyunits'
     try {
       loading(context);
 
@@ -259,7 +258,43 @@ class CompletePaymentState extends State<CompletePayment> {
                                 "SPICY UNITS - ${student.referralUnits}",
                                 style: TextStyle(
                                   fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Divider(
+                          height: 5,
+                          thickness: 1,
+                          color: darkgrey,
+                        ),
+                        SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, '/contact_for_spicyunits');
+                          },
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.symmetric(
+                                vertical: 9,
+                                horizontal: 25,
+                              ),
+                            ),
+                            overlayColor: MaterialStateProperty.all(darkgrey),
+                            backgroundColor: MaterialStateProperty.all(white),
+                            foregroundColor: MaterialStateProperty.all(brown),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Buy more Spicy Units",
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],

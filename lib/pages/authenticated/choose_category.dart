@@ -33,8 +33,8 @@ class ChooseCategoryState extends State<ChooseCategory> {
     if (_selectedCategory != "" && studentSubscription.isSubscribed == true) {
       canChooseAnotherCategory =
           (studentStats.takenCourses! > 0 && studentStats.takenLessons! > 0) &&
-              (studentStats.takenCourses == studentStats.allCourses &&
-                  studentStats.takenLessons == studentStats.allLessons);
+              (studentStats.takenCourses! >= studentStats.allCourses! &&
+                  studentStats.takenLessons! >= studentStats.allLessons!);
     }
   }
 
@@ -348,6 +348,8 @@ class ChooseCategoryState extends State<ChooseCategory> {
                                       } else {
                                         await studentStats
                                             .rechooseCategory(category);
+                                        snackbar(context,
+                                            "The Administrators have been notified, you would moved to $_selectedCategory category soon.");
                                       }
                                       Navigator.pop(context);
                                       if (studentStats.studyingCategory == 0) {

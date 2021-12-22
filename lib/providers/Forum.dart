@@ -28,7 +28,7 @@ class Forum extends ChangeNotifier {
   Future submitMessage(
       StudentStudyStatistics studentStats, comment, replyId) async {
     try {
-      var resp = await request('/api/forum/message', method: 'POST', body: {
+      await request('/api/forum/message', method: 'POST', body: {
         'comment': comment,
         'categoryId': studentStats.studyingCategory.toString(),
         'replyId': replyId
@@ -36,8 +36,6 @@ class Forum extends ChangeNotifier {
         'JWToken': Auth.token!,
         'cache-control': 'max-age=0, must-revalidate'
       });
-
-      return resp['status'] ?? false;
     } on AuthException catch (e) {
       throw (e);
     } catch (e) {

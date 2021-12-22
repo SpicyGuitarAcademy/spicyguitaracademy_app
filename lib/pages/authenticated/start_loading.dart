@@ -29,7 +29,7 @@ class StartLoadingState extends State<StartLoading> {
           context.read<StudentSubscription>();
       StudentStudyStatistics studentStats =
           context.read<StudentStudyStatistics>();
-      // Lessons lessons = context.read<Lessons>();
+      Lessons lessons = context.read<Lessons>();
       StudentNotifications studentNotifications =
           context.read<StudentNotifications>();
 
@@ -48,7 +48,10 @@ class StartLoadingState extends State<StartLoading> {
       // await courses.getFeaturedCourses();
 
       // get free lessons
-      // await lessons.getFreeLessons();
+      await lessons.getFreeLessons();
+
+      await lessons
+          .getCourseLessonsForStudyingCategory(studentStats.studyingCategory);
 
       // get notifications
       await studentNotifications.getNotifications();

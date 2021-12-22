@@ -13,6 +13,8 @@ import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
 import 'package:spicyguitaracademy_app/widgets/render_course.dart';
+import 'package:spicyguitaracademy_app/widgets/render_demo_course.dart';
+import 'package:spicyguitaracademy_app/widgets/render_demo_lesson.dart';
 import 'package:spicyguitaracademy_app/widgets/render_lesson.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   bool fetchFeaturedCourses = false;
-  bool fetchFreeLessons = false;
+  bool fetchLessons = false;
 
   Future initiatePage() async {
     try {
@@ -42,8 +44,8 @@ class _WelcomePageState extends State<WelcomePage> {
 
       await courses.getFeaturedCourses();
       setState(() => fetchFeaturedCourses = true);
-      await lessons.getFreeLessons();
-      setState(() => fetchFreeLessons = true);
+      await lessons.getAllLessons();
+      setState(() => fetchLessons = true);
     } catch (e) {
       error(context, stripExceptions(e));
     }
@@ -58,7 +60,7 @@ class _WelcomePageState extends State<WelcomePage> {
     // List<int> indexes = [];
 
     courses.featuredCourses.forEach((course) {
-      vids.add(renderCourse(course, context, () async {
+      vids.add(renderDemoCourse(course, context, () async {
         if (Auth.authenticated == true) {
           await signInWithCachedData(
               student, studentStats, studentSubscription);
@@ -71,7 +73,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return vids;
   }
 
-  List<Widget> renderFreeLessons(
+  List<Widget> renderShuffledCategoryLessons(
       Student student,
       StudentStudyStatistics studentStats,
       StudentSubscription studentSubscription,
@@ -79,16 +81,18 @@ class _WelcomePageState extends State<WelcomePage> {
     List<Widget> vids = [];
     List<int> indexes = [];
 
-    Random rand = Random(10);
-    if (lessons.freeLessons!.length > 10) {
+    Random rand = Random(400);
+    lessons.allLessons!.shuffle(rand);
+
+    if (lessons.allLessons!.length > 400) {
       while (vids.length < 10) {
-        int index = rand.nextInt(lessons.freeLessons!.length);
+        int index = rand.nextInt(lessons.allLessons!.length);
 
         if (!indexes.contains(index)) {
-          Lesson lesson = lessons.freeLessons![index];
+          Lesson lesson = lessons.allLessons![index];
 
           vids.add(
-            renderLesson(
+            renderDemoLesson(
               lesson,
               context,
               () {
@@ -106,9 +110,9 @@ class _WelcomePageState extends State<WelcomePage> {
         }
       }
     } else {
-      lessons.freeLessons!.forEach((lesson) {
+      lessons.allLessons!.forEach((lesson) {
         vids.add(
-          renderLesson(lesson, context, () async {
+          renderDemoLesson(lesson, context, () async {
             if (Auth.authenticated == true) {
               await signInWithCachedData(
                   student, studentStats, studentSubscription);
@@ -135,7 +139,6 @@ class _WelcomePageState extends State<WelcomePage> {
       if (resp['status'] == false) {
         Navigator.pop(context);
         Navigator.pushNamed(context, '/verify-device');
-        error(context, resp['message']);
       } else {
         await studentSubscription.getStudentSubscriptionStatus();
         await studentStats.getStudentCategoryAndStats(studentSubscription);
@@ -290,26 +293,28 @@ class _WelcomePageState extends State<WelcomePage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Featured Courses",
+                              "FEATURED COURSES",
                               style: TextStyle(
                                 color: grey,
                                 fontSize: 25,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           SizedBox(height: 15),
                           fetchFeaturedCourses
                               ? SizedBox(
-                                  height: 120,
+                                  height: 220,
                                   width: screen(context).width,
                                   child: ListView(
                                     // This next line does the trick.
                                     scrollDirection: Axis.horizontal,
                                     children: renderFeaturedCourses(
-                                        student,
-                                        studentStats,
-                                        studentSubscription,
-                                        courses),
+                                      student,
+                                      studentStats,
+                                      studentSubscription,
+                                      courses,
+                                    ),
                                   ),
                                 )
                               : Center(
@@ -323,26 +328,28 @@ class _WelcomePageState extends State<WelcomePage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Free Lessons",
+                              "LESSONS",
                               style: TextStyle(
                                 color: grey,
                                 fontSize: 25,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           SizedBox(height: 10),
-                          fetchFreeLessons
+                          fetchLessons
                               ? SizedBox(
-                                  height: 300,
+                                  height: 220,
                                   width: screen(context).width,
                                   child: ListView(
                                     // This next line does the trick.
                                     scrollDirection: Axis.horizontal,
-                                    children: renderFreeLessons(
-                                        student,
-                                        studentStats,
-                                        studentSubscription,
-                                        lessons),
+                                    children: renderShuffledCategoryLessons(
+                                      student,
+                                      studentStats,
+                                      studentSubscription,
+                                      lessons,
+                                    ),
                                   ),
                                 )
                               : Center(
@@ -352,6 +359,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                             darkbrown),
                                   ),
                                 ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     )
