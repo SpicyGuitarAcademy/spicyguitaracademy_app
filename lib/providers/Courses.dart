@@ -59,6 +59,32 @@ class Courses extends ChangeNotifier {
     }
   }
 
+  Future getStudyingCoursesFromPreviousCategory(int category) async {
+    try {
+      // TODO: Fix cache max-age
+      var resp = await request(
+        '/api/student/courses/studying/previous/$category',
+        method: 'GET',
+        headers: {
+          'JWToken': Auth.token!,
+          'cache-control': 'private, max-age=2592000, must-revalidate'
+        },
+      );
+
+      List<dynamic> courses = resp['data'] ?? [];
+      studyingCourses = [];
+      courses.forEach((course) {
+        studyingCourses.add(Course.fromJson(course));
+      });
+
+      notifyListeners();
+    } on AuthException catch (e) {
+      throw (e);
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future getStudyingCourses() async {
     try {
       // TODO: Fix cache max-age
