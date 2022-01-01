@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/assignments_page.dart';
 import 'package:spicyguitaracademy_app/pages/authenticated/complete_payment.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/crop_image.dart';
+import 'package:spicyguitaracademy_app/pages/authenticated/previous_categories.dart';
 import 'package:spicyguitaracademy_app/pages/public/contact_for_spicyunits.dart';
 
 // providers
@@ -262,6 +264,9 @@ class SpicyGuitarAcademy extends StatelessWidget {
         '/pay_with_paypal': (BuildContext context) => new PayWithPayPal(),
         '/contact_for_spicyunits': (BuildContext context) =>
             new ContactForSpicyUnitsPage(),
+        '/previous_categories': (BuildContext context) =>
+            new PreviousCategories(),
+        '/crop_image': (BuildContext context) => new CropImage(),
       },
     );
   }

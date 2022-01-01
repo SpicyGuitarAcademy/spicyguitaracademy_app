@@ -84,27 +84,30 @@ class StudyingCoursesPageState extends State<StudyingCoursesPage> {
     if (courses.studyingCourses.length > 0) {
       courses.studyingCourses.forEach((course) {
         vids.add(renderCourse(course, context, () async {
-          // try {
-          // get the lessons on this course
-          // and the assignments for the course
+          try {
+            // get the lessons on this course
+            // and the assignments for the course
 
-          lessons.source = LessonSource.normal;
-          courses.currentCourse = course;
-          loading(context);
-          await courses.activateCourse(context);
-          await lessons.getCourseLessons(context, course.id);
-          await studentAssignments.getAssigment(course.id);
+            lessons.source = LessonSource.normal;
+            courses.currentCourse = course;
+            loading(context);
 
-          Navigator.pop(context);
-          Navigator.pushNamed(context, "/lessons_page", arguments: {
-            'courseTitle': courses.currentCourse!.title,
-            'courseActive': courses.currentCourse!.status,
-            'courseId': courses.currentCourse!.id,
-          });
-          // } catch (e) {
-          //   Navigator.pop(context);
-          //   error(context, stripExceptions(e));
-          // }
+            await courses.activateCourse(context);
+            await lessons.getCourseLessons(context, course.id);
+            if (studentStats.viewingPreviousCourse == false) {
+              await studentAssignments.getAssigment(course.id);
+            }
+
+            Navigator.pop(context);
+            Navigator.pushNamed(context, "/lessons_page", arguments: {
+              'courseTitle': courses.currentCourse!.title,
+              'courseActive': courses.currentCourse!.status,
+              'courseId': courses.currentCourse!.id,
+            });
+          } catch (e) {
+            Navigator.pop(context);
+            error(context, stripExceptions(e));
+          }
         }));
       });
     } else {

@@ -12,10 +12,9 @@ import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
-import 'package:spicyguitaracademy_app/widgets/render_course.dart';
 import 'package:spicyguitaracademy_app/widgets/render_demo_course.dart';
 import 'package:spicyguitaracademy_app/widgets/render_demo_lesson.dart';
-import 'package:spicyguitaracademy_app/widgets/render_lesson.dart';
+import 'package:upgrader/upgrader.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -24,6 +23,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   bool authenticated = false;
+  bool hasShownUpdate = false;
 
   @override
   void initState() {
@@ -157,6 +157,9 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: remove before building
+    Upgrader().clearSavedSettings();
+
     return Consumer<Student>(builder: (context, student, child) {
       return Consumer<StudentSubscription>(
           builder: (context, studentSubscription, child) {
@@ -198,6 +201,30 @@ class _WelcomePageState extends State<WelcomePage> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: new Column(
                         children: <Widget>[
+                          if (!hasShownUpdate)
+                            UpgradeAlert(
+                              child: Text(''),
+                              debugLogging: true,
+                              showReleaseNotes: true,
+                              onLater: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                              onIgnore: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                              onUpdate: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                            ),
                           SizedBox(height: 50),
                           Align(
                             alignment: Alignment.centerLeft,
