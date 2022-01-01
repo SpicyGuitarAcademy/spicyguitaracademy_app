@@ -13,8 +13,6 @@ import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/utils/upload.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
-// ---------------------------------------------------
-// import 'package:'
 
 class UserProfilePage extends StatefulWidget {
   UserProfilePage();
@@ -39,18 +37,7 @@ class UserProfilePageState extends State<UserProfilePage> {
       if (result != null) {
         file = File(result.files.single.path!);
 
-        loading(context, message: 'Uploading');
-
-        var resp = await upload('/api/student/avatar/update', 'avatar', file,
-            method: 'POST',
-            headers: {
-              'JWToken': Auth.token!,
-              'cache-control': 'max-age=0, must-revalidate'
-            });
-        if (resp['status'] == true) {
-          setState(() => student.avatar = resp['data']['path']);
-        }
-        Navigator.pop(context);
+        Navigator.pushNamed(context, '/crop_image', arguments: {'file': file});
       } else {
         print(result);
       }
@@ -76,31 +63,22 @@ class UserProfilePageState extends State<UserProfilePage> {
                   CircleAvatar(
                     radius: 70,
                     backgroundColor: brown,
-                    backgroundImage: NetworkImage('$baseUrl/${student.avatar}',
-                        headers: {
-                          'cache-control': 'max-age=0, must-revalidate'
-                        }),
+                    backgroundImage: NetworkImage(
+                      '$baseUrl/${student.avatar}',
+                      headers: {'cache-control': 'max-age=0, must-revalidate'},
+                    ),
                   ),
                   IconButton(
-                      splashRadius: 30,
-                      tooltip: "Update avatar",
-                      icon: SvgPicture.asset(
-                        "assets/imgs/icons/editprofile.svg",
-                        matchTextDirection: true,
-                      ),
-                      // Container(
-                      //     width: 40,
-                      //     height: 40,
-                      //     decoration: BoxDecoration(
-                      //         color: brown,
-                      //         borderRadius: BorderRadius.all(Radius.circular(50))),
-                      //     child: Icon(
-                      //       Icons.edit,
-                      //       color: grey,
-                      //     )),
-                      onPressed: () {
-                        selectImage(student);
-                      })
+                    splashRadius: 30,
+                    tooltip: "Update avatar",
+                    icon: SvgPicture.asset(
+                      "assets/imgs/icons/editprofile.svg",
+                      matchTextDirection: true,
+                    ),
+                    onPressed: () {
+                      selectImage(student);
+                    },
+                  )
                 ],
               ),
 
