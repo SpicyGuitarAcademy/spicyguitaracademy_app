@@ -48,8 +48,7 @@ class StartLoadingState extends State<StartLoading> {
       // get free lessons
       await lessons.getFreeLessons();
 
-      await lessons
-          .getCourseLessonsForStudyingCategory(studentStats.studyingCategory);
+      if (lessons.allLessons!.length == 0) await lessons.getAllLessons();
 
       // get notifications
       await studentNotifications.getNotifications();
