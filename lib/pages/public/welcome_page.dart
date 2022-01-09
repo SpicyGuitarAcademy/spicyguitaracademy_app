@@ -57,7 +57,6 @@ class _WelcomePageState extends State<WelcomePage> {
       StudentSubscription studentSubscription,
       Courses courses) {
     List<Widget> vids = [];
-    // List<int> indexes = [];
 
     courses.featuredCourses.forEach((course) {
       vids.add(renderDemoCourse(course, context, () async {
@@ -73,7 +72,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return vids;
   }
 
-  List<Widget> renderShuffledCategoryLessons(
+  List<Widget> renderShuffledLessons(
       Student student,
       StudentStudyStatistics studentStats,
       StudentSubscription studentSubscription,
@@ -84,7 +83,7 @@ class _WelcomePageState extends State<WelcomePage> {
     Random rand = Random(400);
     lessons.allLessons!.shuffle(rand);
 
-    if (lessons.allLessons!.length > 400) {
+    if (lessons.allLessons!.length > 50) {
       while (vids.length < 10) {
         int index = rand.nextInt(lessons.allLessons!.length);
 
@@ -331,7 +330,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           SizedBox(height: 15),
                           fetchFeaturedCourses
                               ? SizedBox(
-                                  height: 220,
+                                  height: 180,
                                   width: screen(context).width,
                                   child: ListView(
                                     // This next line does the trick.
@@ -371,7 +370,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                   child: ListView(
                                     // This next line does the trick.
                                     scrollDirection: Axis.horizontal,
-                                    children: renderShuffledCategoryLessons(
+                                    children: renderShuffledLessons(
                                       student,
                                       studentStats,
                                       studentSubscription,
