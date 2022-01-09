@@ -35,10 +35,10 @@ class HomePageState extends State<HomePage> {
       Tutorial tutorial) {
     List<Widget> vids = [];
 
-    Random rand = Random(400);
-    lessons.studyingCateogryLessons!.shuffle(rand);
+    Random rand = Random(50);
+    lessons.allLessons!.shuffle(rand);
 
-    lessons.studyingCateogryLessons!.forEach((lesson) {
+    lessons.allLessons!.forEach((lesson) {
       vids.add(
         renderDemoLesson(lesson, context, () {},
             addMargin: true, courseLocked: false),
@@ -95,37 +95,21 @@ class HomePageState extends State<HomePage> {
                       ),
                       SizedBox(height: 20),
 
-                      studentStats.studyingCategory! > 0
-                          ?
-                          // studying courses
-                          Container(
-                              width: screen(context).width,
-                              height: 200,
-                              child: ListView(
-                                // This next line does the trick.
-                                scrollDirection: Axis.horizontal,
-                                children: renderRandomizedLessons(
-                                    student,
-                                    studentStats,
-                                    studentSubscription,
-                                    lessons,
-                                    tutorial),
-                              ),
-                            )
-                          :
-                          // current category thumbnail
-                          Container(
-                              width: screen(context).width,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                image: DecorationImage(
-                                  image: AssetImage(defaultThumbnail),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                              ),
-                            ),
+                      // all lessons video
+                      Container(
+                        width: screen(context).width,
+                        height: 200,
+                        child: ListView(
+                          // This next line does the trick.
+                          scrollDirection: Axis.horizontal,
+                          children: renderRandomizedLessons(
+                              student,
+                              studentStats,
+                              studentSubscription,
+                              lessons,
+                              tutorial),
+                        ),
+                      ),
 
                       SizedBox(height: 10),
 
