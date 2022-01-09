@@ -58,31 +58,6 @@ class Lessons extends ChangeNotifier {
     }
   }
 
-  Future getCourseLessonsForStudyingCategory(studyingCategory) async {
-    try {
-      var resp = await request('/api/category/$studyingCategory/lessons',
-          method: 'GET',
-          headers: {
-            'JWToken': Auth.token!,
-            'cache-control': 'max-age=0, must-revalidate'
-          });
-      List<dynamic> lessons = resp['data'] ?? [];
-      studyingCateogryLessons = [];
-      lessons.forEach((lesson) {
-        studyingCateogryLessons?.add(Lesson.fromJson(lesson));
-      });
-
-      print('Category Lessons');
-      print(lessons);
-
-      notifyListeners();
-    } on AuthException catch (e) {
-      throw (e);
-    } catch (e) {
-      throw (e);
-    }
-  }
-
   Future getCourseLessons(context, courseid) async {
     try {
       var resp = await request('/api/course/$courseid/lessons',
