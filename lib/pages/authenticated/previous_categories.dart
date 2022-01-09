@@ -122,6 +122,7 @@ class PreviousCategoriesState extends State<PreviousCategories> {
           ),
         ),
       );
+      categories.add(SizedBox(height: 50));
     }
 
     return categories;
