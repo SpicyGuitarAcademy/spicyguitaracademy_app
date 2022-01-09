@@ -291,12 +291,11 @@ class ChooseCategoryState extends State<ChooseCategory> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 100),
                   (studentStats.studyingCategory == 0 ||
                               canChooseAnotherCategory == true) &&
                           studentSubscription.isSubscribed == true
                       ? Container(
-                          margin:
-                              const EdgeInsets.only(top: 100.0, bottom: 30.0),
                           width: screen(context).width * 0.8,
                           child: ElevatedButton(
                             style: ButtonStyle(
@@ -387,9 +386,9 @@ class ChooseCategoryState extends State<ChooseCategory> {
                           ),
                         )
                       : Container(),
+                  SizedBox(height: 10),
                   if (studentStats.studyingCategory != 0)
                     Container(
-                      margin: const EdgeInsets.only(top: 100.0, bottom: 30.0),
                       width: screen(context).width * 0.8,
                       child: ElevatedButton(
                         style: ButtonStyle(
