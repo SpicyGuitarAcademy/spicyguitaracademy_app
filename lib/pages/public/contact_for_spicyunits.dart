@@ -48,9 +48,13 @@ class ContactForSpicyUnitsPageState extends State<ContactForSpicyUnitsPage> {
                 Icon(Icons.phone, size: 70, color: brown),
                 SizedBox(height: 20.0),
                 Text(
-                  'Call any of the numbers below to buy more Spicy Units',
+                  'You get 2% Bonus when you purchase Spicy Units. \n\n' +
+                      'You can purchase Spicy Units with local Bank transfers or USSD Code\n\n' +
+                      'You can purchase Spicy Units with either: Crypto Currency, Chipper Cash, Skrill\n\n' +
+                      'Call or Send a WhatsApp message to any of the numbers below to buy more Spicy Units',
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
