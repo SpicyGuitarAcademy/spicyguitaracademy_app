@@ -719,7 +719,7 @@ class TutorialPageState extends State<TutorialPage> {
                                         Icon(Icons.download),
                                         SizedBox(width: 5),
                                         Text(
-                                          'Download Lesson',
+                                          'Save Offline',
                                           style: TextStyle(
                                             color: brown,
                                             fontSize: 16,
