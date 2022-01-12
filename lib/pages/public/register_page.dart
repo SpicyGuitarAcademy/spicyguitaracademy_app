@@ -88,7 +88,7 @@ class RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(fontSize: 20.0, color: brown),
                   decoration: InputDecoration(
                       labelText: "Email Address",
-                      hintText: "yourname@domain.com"),
+                      hintText: "email@address.com"),
                 ),
                 SizedBox(
                   height: 20.0,
