@@ -221,7 +221,7 @@ class DashboardState extends State<Dashboard> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "version: v2.0.4",
+                                    "version: v2.0.6",
                                     style: TextStyle(color: brown),
                                   ),
                                 ],

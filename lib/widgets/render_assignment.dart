@@ -33,7 +33,7 @@ Widget renderAssignment(context) {
           ),
           SizedBox(height: 10),
           Text(
-            Assignments.assignments!.length > 0
+            Assignments.assignments!.length > 1
                 ? '${Assignments.assignments!.length} Assignment Questions'
                 : '${Assignments.assignments!.length} Assignment Question',
             overflow: TextOverflow.visible,

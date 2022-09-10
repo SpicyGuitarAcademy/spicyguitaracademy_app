@@ -157,7 +157,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: remove before building
-    Upgrader().clearSavedSettings();
+    // Upgrader().clearSavedSettings();
 
     return Consumer<Student>(builder: (context, student, child) {
       return Consumer<StudentSubscription>(

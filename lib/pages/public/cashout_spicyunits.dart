@@ -5,13 +5,12 @@ import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ContactForSpicyUnitsPage extends StatefulWidget {
+class CashOutSpicyUnitsPage extends StatefulWidget {
   @override
-  ContactForSpicyUnitsPageState createState() =>
-      new ContactForSpicyUnitsPageState();
+  CashOutSpicyUnitsPageState createState() => new CashOutSpicyUnitsPageState();
 }
 
-class ContactForSpicyUnitsPageState extends State<ContactForSpicyUnitsPage> {
+class CashOutSpicyUnitsPageState extends State<CashOutSpicyUnitsPage> {
   @override
   void initState() {
     super.initState();
@@ -27,7 +26,7 @@ class ContactForSpicyUnitsPageState extends State<ContactForSpicyUnitsPage> {
           backgroundColor: grey,
           centerTitle: true,
           title: Text(
-            'Buy more Spicy Units',
+            'Cash out Spicy Units',
             style: TextStyle(
                 color: brown,
                 fontSize: 30,
@@ -46,10 +45,9 @@ class ContactForSpicyUnitsPageState extends State<ContactForSpicyUnitsPage> {
                 Icon(Icons.phone, size: 70, color: brown),
                 SizedBox(height: 20.0),
                 Text(
-                  'You get 2% Bonus when you purchase Spicy Units. \n\n' +
-                      'You can purchase Spicy Units with local Bank transfers or USSD Code\n\n' +
-                      'You can purchase Spicy Units with either: Crypto Currency, Chipper Cash, Skrill\n\n' +
-                      'Call or Send a WhatsApp message to any of the numbers below to buy more Spicy Units',
+                  'The value of ${student.referralUnits ?? 0} units is equivalent to ${student.referralUnits ?? 0} Nigerian Naira.\n\n' +
+                      'Your bonus Spicy Units would be sent to your Nigerian bank accounts when you request to cash out.\n\n' +
+                      'To cash out your Spicy Units, Call or Chat either of the numbers below via WhatsApp.',
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
@@ -87,18 +85,6 @@ class ContactForSpicyUnitsPageState extends State<ContactForSpicyUnitsPage> {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/cashout_spicyunits');
-                  },
-                  child: Text(
-                    'Cash out Spicy Units',
-                    style: TextStyle(fontSize: 16),
-                  ),
                 ),
                 SizedBox(
                   height: 20.0,
