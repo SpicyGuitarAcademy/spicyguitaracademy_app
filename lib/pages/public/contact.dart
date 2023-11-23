@@ -89,7 +89,7 @@ class ContactUsPageState extends State<ContactUsPage> {
                         }
                       },
                       child: Text(
-                        "+2348169000486, ",
+                        "+234 816 900 0486, ",
                         style: TextStyle(color: brown),
                       ),
                     ),
@@ -108,7 +108,7 @@ class ContactUsPageState extends State<ContactUsPage> {
                         }
                       },
                       child: Text(
-                        "+2347080861654, ",
+                        "+234 708 086 1654, ",
                         style: TextStyle(color: brown),
                       ),
                     ),
@@ -123,7 +123,7 @@ class ContactUsPageState extends State<ContactUsPage> {
                         }
                       },
                       child: Text(
-                        "+2348076159020",
+                        "+234 807 615 9020",
                         style: TextStyle(color: brown),
                       ),
                     ),
@@ -199,7 +199,7 @@ class ContactUsPageState extends State<ContactUsPage> {
         throw Exception(resp['message']);
       }
     } catch (e) {
-      error(context, stripExceptions(e), title: 'Request failed');
+      error(context, stripExceptions(e));
     }
   }
 }

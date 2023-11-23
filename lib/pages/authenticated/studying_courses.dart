@@ -87,12 +87,16 @@ class StudyingCoursesPageState extends State<StudyingCoursesPage> {
           try {
             // get the lessons on this course
             // and the assignments for the course
+
             lessons.source = LessonSource.normal;
             courses.currentCourse = course;
             loading(context);
+
             await courses.activateCourse(context);
             await lessons.getCourseLessons(context, course.id);
-            await studentAssignments.getAssigment(course.id);
+            if (studentStats.viewingPreviousCourse == false) {
+              await studentAssignments.getAssigment(course.id);
+            }
 
             Navigator.pop(context);
             Navigator.pushNamed(context, "/lessons_page", arguments: {

@@ -90,12 +90,9 @@ class DashboardState extends State<Dashboard> {
                                     : SizedBox()
                               ])),
                       IconButton(
-                          onPressed: () => ui.setDashboardPage(3),
-                          // setState(() {
-                          //       _pageIndex = 3;
-                          //     }),
-                          icon: Center(
-                              child: CircleAvatar(
+                        onPressed: () => ui.setDashboardPage(3),
+                        icon: Center(
+                          child: CircleAvatar(
                             radius: 25,
                             backgroundColor: brown,
                             backgroundImage: NetworkImage(
@@ -104,7 +101,9 @@ class DashboardState extends State<Dashboard> {
                                 'cache-control': 'max-age=0, must-revalidate'
                               },
                             ),
-                          )))
+                          ),
+                        ),
+                      )
                     ],
                     elevation: 0,
                   ),
@@ -125,87 +124,112 @@ class DashboardState extends State<Dashboard> {
                     child: Drawer(
                       semanticLabel: "Side Navigation Bar",
                       child: SingleChildScrollView(
-                          child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 40),
-                          Container(
-                            alignment: Alignment.topRight,
-                            margin: EdgeInsets.only(right: 10.0),
-                            child: backButton(
-                              context,
-                              padding: 10,
-                              radius: 12.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: <Widget>[
+                                SizedBox(height: 40),
+                                Container(
+                                  alignment: Alignment.topRight,
+                                  margin: EdgeInsets.only(right: 10.0),
+                                  child: backButton(
+                                    context,
+                                    padding: 10,
+                                    radius: 12.0,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: brown,
+                                  backgroundImage: NetworkImage(
+                                    '$baseUrl/${student.avatar}',
+                                    headers: {
+                                      'cache-control':
+                                          'max-age=0, must-revalidate'
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  "${student.firstname} ${student.lastname}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18.0,
+                                    color: darkgrey,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 1.5, horizontal: 15),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      color: brown),
+                                  child: Text(
+                                    "${studentStats.takenCourses} of ${studentStats.allCourses}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                sideBarItem(
+                                    "assets/imgs/icons/sidebar_home_icon.svg",
+                                    "Home", () {
+                                  ui.setDashboardPage(0);
+                                }),
+                                sideBarItem(
+                                    "assets/imgs/icons/sidebar_video_icon.svg",
+                                    "Tutorial", () {
+                                  ui.setDashboardPage(1);
+                                }),
+                                sideBarItem(
+                                    "assets/imgs/icons/message_icon.svg",
+                                    "Forum", () {
+                                  Navigator.pushNamed(context, '/forums');
+                                }, width: 20),
+
+                                // sideBarItem("assets/imgs/icons/settings_icon.svg", "Settings",
+                                //     () {
+                                //   Navigator.pushNamed(context, '/settings');
+                                // }),
+                                sideBarItem(
+                                    "assets/imgs/icons/contactus_icon.svg",
+                                    "Contact Us", () {
+                                  Navigator.pushNamed(context, '/contactus');
+                                }),
+                                sideBarItem(
+                                    "assets/imgs/icons/signout_icon.svg",
+                                    "Sign Out", () {
+                                  student.signout();
+                                  Navigator.popUntil(
+                                      context, ModalRoute.withName('/'));
+                                  Navigator.pushNamed(context, '/welcome_page');
+                                }),
+                              ],
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: brown,
-                            backgroundImage: NetworkImage(
-                              '$baseUrl/${student.avatar}',
-                              headers: {
-                                'cache-control': 'max-age=0, must-revalidate'
-                              },
-                            ),
-                          ),
-                          Text("${student.firstname} ${student.lastname}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18.0,
-                                  color: darkgrey)),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 1.5, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                color: brown),
-                            child: Text(
-                              "${studentStats.takenCourses} of ${studentStats.allCourses}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
+                            Container(
+                              width: screen(context).width,
+                              margin: EdgeInsets.only(top: 50),
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "version: v2.0.8",
+                                    style: TextStyle(color: brown),
+                                  ),
+                                ],
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          sideBarItem(
-                              "assets/imgs/icons/sidebar_home_icon.svg", "Home",
-                              () {
-                            ui.setDashboardPage(0);
-                            // setState(() {
-                            //   _pageIndex = 0;
-                            // });
-                          }),
-                          sideBarItem(
-                              "assets/imgs/icons/sidebar_video_icon.svg",
-                              "Tutorial", () {
-                            Navigator.pushNamed(context, '/tutorial_page');
-                          }),
-                          sideBarItem(
-                              "assets/imgs/icons/message_icon.svg", "Forum",
-                              () {
-                            Navigator.pushNamed(context, '/forums');
-                          }, width: 20),
-                          // sideBarItem("assets/imgs/icons/settings_icon.svg", "Settings",
-                          //     () {
-                          //   Navigator.pushNamed(context, '/settings');
-                          // }),
-                          sideBarItem("assets/imgs/icons/contactus_icon.svg",
-                              "Contact Us", () {
-                            Navigator.pushNamed(context, '/contactus');
-                          }),
-                          sideBarItem(
-                              "assets/imgs/icons/signout_icon.svg", "Sign Out",
-                              () {
-                            student.signout();
-                            Navigator.popUntil(
-                                context, ModalRoute.withName('/'));
-                            Navigator.pushNamed(context, '/welcome_page');
-                          }),
-                        ],
-                      )),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
 
@@ -238,27 +262,32 @@ class DashboardState extends State<Dashboard> {
   ListTile sideBarItem(String asset, String title, Function callback,
       {double? width}) {
     return ListTile(
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              asset,
-              width: width,
-              matchTextDirection: true,
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            asset,
+            width: width,
+            matchTextDirection: true,
+          ),
+          SizedBox(width: 20),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: darkgrey,
+              fontSize: 14.0,
             ),
-            SizedBox(width: 20),
-            Text(title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: darkgrey, fontSize: 14.0)),
-          ],
-        ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 14, color: brown),
-        onTap: () {
-          Navigator.pop(context);
-          callback();
-          // Navigator.pushNamed(context, route);
-        });
+          ),
+        ],
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, size: 14, color: brown),
+      onTap: () {
+        Navigator.pop(context);
+        callback();
+      },
+    );
   }
 
   BottomNavigationBarItem bottomNavBarItem(String label, String asset) {

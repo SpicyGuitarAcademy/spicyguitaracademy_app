@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spicyguitaracademy_app/providers/Auth.dart';
-import 'package:spicyguitaracademy_app/providers/Course.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lesson.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
@@ -13,8 +12,9 @@ import 'package:spicyguitaracademy_app/providers/StudentSubscription.dart';
 import 'package:spicyguitaracademy_app/utils/constants.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
-import 'package:spicyguitaracademy_app/widgets/render_course.dart';
-import 'package:spicyguitaracademy_app/widgets/render_lesson.dart';
+import 'package:spicyguitaracademy_app/widgets/render_demo_course.dart';
+import 'package:spicyguitaracademy_app/widgets/render_demo_lesson.dart';
+import 'package:upgrader/upgrader.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -23,6 +23,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   bool authenticated = false;
+  bool hasShownUpdate = false;
 
   @override
   void initState() {
@@ -31,7 +32,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   bool fetchFeaturedCourses = false;
-  bool fetchFreeLessons = false;
+  bool fetchLessons = false;
 
   Future initiatePage() async {
     try {
@@ -43,8 +44,8 @@ class _WelcomePageState extends State<WelcomePage> {
 
       await courses.getFeaturedCourses();
       setState(() => fetchFeaturedCourses = true);
-      await lessons.getFreeLessons();
-      setState(() => fetchFreeLessons = true);
+      await lessons.getAllLessons();
+      setState(() => fetchLessons = true);
     } catch (e) {
       error(context, stripExceptions(e));
     }
@@ -56,47 +57,22 @@ class _WelcomePageState extends State<WelcomePage> {
       StudentSubscription studentSubscription,
       Courses courses) {
     List<Widget> vids = [];
-    List<int> indexes = [];
 
-    Random rand = Random(10);
-    if (courses.featuredCourses.length > 10) {
-      while (vids.length < 10) {
-        int index = rand.nextInt(courses.featuredCourses.length);
-
-        if (!indexes.contains(index)) {
-          Course course = courses.featuredCourses[index];
-
-          vids.add(
-            renderCourse(course, context, () async {
-              if (Auth.authenticated == true) {
-                await signInWithCachedData(
-                    student, studentStats, studentSubscription);
-              } else {
-                Navigator.pushNamed(context, '/login');
-              }
-            }, showProgress: false, showPricings: false, addMargin: true),
-          );
-
-          indexes.add(index);
+    courses.featuredCourses.forEach((course) {
+      vids.add(renderDemoCourse(course, context, () async {
+        if (Auth.authenticated == true) {
+          await signInWithCachedData(
+              student, studentStats, studentSubscription);
+        } else {
+          Navigator.pushNamed(context, '/login');
         }
-      }
-    } else {
-      courses.featuredCourses.forEach((course) {
-        vids.add(renderCourse(course, context, () async {
-          if (Auth.authenticated == true) {
-            await signInWithCachedData(
-                student, studentStats, studentSubscription);
-          } else {
-            Navigator.pushNamed(context, '/login');
-          }
-        }));
-      });
-    }
+      }));
+    });
 
     return vids;
   }
 
-  List<Widget> renderFreeLessons(
+  List<Widget> renderShuffledLessons(
       Student student,
       StudentStudyStatistics studentStats,
       StudentSubscription studentSubscription,
@@ -104,16 +80,18 @@ class _WelcomePageState extends State<WelcomePage> {
     List<Widget> vids = [];
     List<int> indexes = [];
 
-    Random rand = Random(10);
-    if (lessons.freeLessons!.length > 10) {
+    Random rand = Random(400);
+    lessons.allLessons!.shuffle(rand);
+
+    if (lessons.allLessons!.length > 50) {
       while (vids.length < 10) {
-        int index = rand.nextInt(lessons.freeLessons!.length);
+        int index = rand.nextInt(lessons.allLessons!.length);
 
         if (!indexes.contains(index)) {
-          Lesson lesson = lessons.freeLessons![index];
+          Lesson lesson = lessons.allLessons![index];
 
           vids.add(
-            renderLesson(
+            renderDemoLesson(
               lesson,
               context,
               () {
@@ -131,9 +109,9 @@ class _WelcomePageState extends State<WelcomePage> {
         }
       }
     } else {
-      lessons.freeLessons!.forEach((lesson) {
+      lessons.allLessons!.forEach((lesson) {
         vids.add(
-          renderLesson(lesson, context, () async {
+          renderDemoLesson(lesson, context, () async {
             if (Auth.authenticated == true) {
               await signInWithCachedData(
                   student, studentStats, studentSubscription);
@@ -160,7 +138,6 @@ class _WelcomePageState extends State<WelcomePage> {
       if (resp['status'] == false) {
         Navigator.pop(context);
         Navigator.pushNamed(context, '/verify-device');
-        error(context, resp['message']);
       } else {
         await studentSubscription.getStudentSubscriptionStatus();
         await studentStats.getStudentCategoryAndStats(studentSubscription);
@@ -179,6 +156,9 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: remove before building
+    // Upgrader().clearSavedSettings();
+
     return Consumer<Student>(builder: (context, student, child) {
       return Consumer<StudentSubscription>(
           builder: (context, studentSubscription, child) {
@@ -220,6 +200,30 @@ class _WelcomePageState extends State<WelcomePage> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: new Column(
                         children: <Widget>[
+                          if (!hasShownUpdate)
+                            UpgradeAlert(
+                              child: Text(''),
+                              debugLogging: true,
+                              showReleaseNotes: true,
+                              onLater: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                              onIgnore: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                              onUpdate: () {
+                                setState(() {
+                                  hasShownUpdate = true;
+                                });
+                                return false;
+                              },
+                            ),
                           SizedBox(height: 50),
                           Align(
                             alignment: Alignment.centerLeft,
@@ -227,7 +231,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               "Hi, Welcome to Spicy Guitar Academy",
                               style: TextStyle(
                                 color: grey,
-                                fontSize: 25,
+                                fontSize: 20,
                               ),
                             ),
                           ),
@@ -236,7 +240,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               ? Column(
                                   children: [
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
                                         onPressed: () {
                                           Navigator.pushNamed(
@@ -247,8 +251,20 @@ class _WelcomePageState extends State<WelcomePage> {
                                     ),
                                     SizedBox(height: 15),
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                          side: MaterialStateProperty.all(
+                                            BorderSide(
+                                              color: brown,
+                                              width: 2,
+                                              style: BorderStyle.solid,
+                                            ),
+                                          ),
+                                        ),
                                         onPressed: () {
                                           Navigator.pushNamed(
                                               context, "/register");
@@ -261,7 +277,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               : Column(
                                   children: [
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           await signInWithCachedData(
@@ -270,13 +286,27 @@ class _WelcomePageState extends State<WelcomePage> {
                                               studentSubscription);
                                         },
                                         child: Text(
-                                            "Continue as ${student.firstname ?? 'Guest'}"),
+                                          "Continue as ${student.firstname ?? 'Guest'}",
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(height: 15),
                                     SizedBox(
-                                      width: screen(context).width,
+                                      width: screen(context).width * 0.6,
                                       child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.transparent),
+                                          side: MaterialStateProperty.all(
+                                            BorderSide(
+                                              color: brown,
+                                              width: 2,
+                                              style: BorderStyle.solid,
+                                            ),
+                                          ),
+                                        ),
                                         onPressed: () async {
                                           await student.signout();
                                         },
@@ -289,64 +319,73 @@ class _WelcomePageState extends State<WelcomePage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Featured Courses",
+                              "FEATURED COURSES",
                               style: TextStyle(
                                 color: grey,
                                 fontSize: 25,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           SizedBox(height: 15),
                           fetchFeaturedCourses
                               ? SizedBox(
-                                  height: 120,
+                                  height: 180,
                                   width: screen(context).width,
                                   child: ListView(
                                     // This next line does the trick.
                                     scrollDirection: Axis.horizontal,
                                     children: renderFeaturedCourses(
-                                        student,
-                                        studentStats,
-                                        studentSubscription,
-                                        courses),
+                                      student,
+                                      studentStats,
+                                      studentSubscription,
+                                      courses,
+                                    ),
                                   ),
                                 )
                               : Center(
                                   child: CircularProgressIndicator(
-                                    color: brown,
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                            darkbrown),
                                   ),
                                 ),
                           SizedBox(height: 20),
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Free Lessons",
+                              "LESSONS",
                               style: TextStyle(
                                 color: grey,
                                 fontSize: 25,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
                           SizedBox(height: 10),
-                          fetchFreeLessons
+                          fetchLessons
                               ? SizedBox(
-                                  height: 300,
+                                  height: 220,
                                   width: screen(context).width,
                                   child: ListView(
                                     // This next line does the trick.
                                     scrollDirection: Axis.horizontal,
-                                    children: renderFreeLessons(
-                                        student,
-                                        studentStats,
-                                        studentSubscription,
-                                        lessons),
+                                    children: renderShuffledLessons(
+                                      student,
+                                      studentStats,
+                                      studentSubscription,
+                                      lessons,
+                                    ),
                                   ),
                                 )
                               : Center(
                                   child: CircularProgressIndicator(
-                                    color: brown,
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                            darkbrown),
                                   ),
                                 ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     )

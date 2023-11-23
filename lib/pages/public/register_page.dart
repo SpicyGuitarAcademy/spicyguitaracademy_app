@@ -88,7 +88,7 @@ class RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(fontSize: 20.0, color: brown),
                   decoration: InputDecoration(
                       labelText: "Email Address",
-                      hintText: "yourname@domain.com"),
+                      hintText: "email@address.com"),
                 ),
                 SizedBox(
                   height: 20.0,
@@ -149,8 +149,8 @@ class RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                   style: TextStyle(fontSize: 20.0, color: brown),
                   decoration: InputDecoration(
-                      labelText: "Referral Code (optional)",
-                      hintText: "Enter your referral code"),
+                      labelText: "Invite Code (optional)",
+                      hintText: "Enter your invite code"),
                 ),
                 SizedBox(
                   height: 20.0,
@@ -248,7 +248,7 @@ class RegisterPageState extends State<RegisterPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: "Registeration failed");
+      error(context, stripExceptions(e));
     }
   }
 }

@@ -43,8 +43,7 @@ class _PayWithPayPalState extends State<PayWithPayPal> {
         Navigator.pushNamed(context, "/failed_transaction");
       }
     } catch (e) {
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.popUntil(context, ModalRoute.withName('/choose_plan'));
       error(context, stripExceptions(e));
     }
   }
@@ -58,22 +57,21 @@ class _PayWithPayPalState extends State<PayWithPayPal> {
           .then((value) async {
         Navigator.pop(context);
         if (subscription.featuredPaymentStatus == true) {
-          // update my featured courses
-          await courses.getBoughtCourses();
           courses.featuredCourses
               .firstWhere((element) => element.id == course!.id)
               .status = true;
           Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
-          ui.setDashboardPage(0);
+          ui.setDashboardPage(2);
+          ui.setFeaturedCoursesPage(0);
           success(context, 'Payment verified.');
         } else {
+          Navigator.popUntil(
+              context, ModalRoute.withName('/coursepreview_page'));
           snackbar(context, 'Payment verification failed');
-          Navigator.popUntil(context, ModalRoute.withName('/dashboard'));
         }
       });
     } catch (e) {
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.popUntil(context, ModalRoute.withName('/coursepreview_page'));
       error(context, stripExceptions(e));
     }
   }

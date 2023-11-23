@@ -29,7 +29,7 @@ class StartLoadingState extends State<StartLoading> {
           context.read<StudentSubscription>();
       StudentStudyStatistics studentStats =
           context.read<StudentStudyStatistics>();
-      // Lessons lessons = context.read<Lessons>();
+      Lessons lessons = context.read<Lessons>();
       StudentNotifications studentNotifications =
           context.read<StudentNotifications>();
 
@@ -38,17 +38,17 @@ class StartLoadingState extends State<StartLoading> {
       if (studentSubscription.isSubscribed == true &&
           studentStats.studyingCategory != 0) {
         await courses.getStudyingCourses();
-      } else {
-        // get the courses studied by this student in the past
-        // get the lessons studied by this student in the past
       }
 
       // get featured and bought courses
       await courses.getBoughtCourses();
-      // await courses.getFeaturedCourses();
+      if (courses.featuredCourses.length == 0)
+        await courses.getFeaturedCourses();
 
       // get free lessons
-      // await lessons.getFreeLessons();
+      await lessons.getFreeLessons();
+
+      if (lessons.allLessons!.length == 0) await lessons.getAllLessons();
 
       // get notifications
       await studentNotifications.getNotifications();

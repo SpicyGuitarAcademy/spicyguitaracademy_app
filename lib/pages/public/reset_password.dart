@@ -134,7 +134,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> {
         throw Exception("$msg");
       }
     } catch (e) {
-      error(context, stripExceptions(e), title: "Reset Password failed");
+      error(context, stripExceptions(e));
     }
   }
 }

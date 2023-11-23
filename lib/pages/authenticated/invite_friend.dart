@@ -8,6 +8,7 @@ import 'package:spicyguitaracademy_app/utils/exceptions.dart';
 import 'package:spicyguitaracademy_app/utils/functions.dart';
 import 'package:spicyguitaracademy_app/utils/request.dart';
 import 'package:spicyguitaracademy_app/widgets/modals.dart';
+import 'package:clipboard/clipboard.dart';
 
 class InviteFriend extends StatefulWidget {
   @override
@@ -26,81 +27,155 @@ class InviteFriendState extends State<InviteFriend> {
 
     return Consumer<Student>(builder: (BuildContext context, student, child) {
       return Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 70,
-            iconTheme: IconThemeData(color: brown),
-            backgroundColor: grey,
-            centerTitle: true,
-            title: Text(
-              'Invite a friend',
-              style: TextStyle(
-                  color: brown,
-                  fontSize: 30,
-                  fontFamily: "Poppins",
-                  fontWeight: FontWeight.normal),
-            ),
-            elevation: 0,
+        appBar: AppBar(
+          toolbarHeight: 70,
+          iconTheme: IconThemeData(color: brown),
+          backgroundColor: grey,
+          centerTitle: true,
+          title: Text(
+            'Invite a friend',
+            style: TextStyle(
+                color: brown,
+                fontSize: 30,
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.normal),
           ),
-          body: SafeArea(
-              minimum: EdgeInsets.all(5.0),
-              child: SingleChildScrollView(
-                  child: Column(children: <Widget>[
+          elevation: 0,
+        ),
+        body: SafeArea(
+          minimum: EdgeInsets.all(5.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
                 Container(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
                       // Spicy text
-                      SizedBox(height: 30),
-                      Text(
-                        "Spicy Guitar Academy",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: brown,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 30),
-                      Text(
-                        "Hi ${student.firstname}, you have a total earning of \"${student.referralUnits} Spicy Units\". You can use your Spicy Units to buy Featured Courses you find interesting.",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: darkgrey, fontSize: 18),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Your referral code is \"${student.referralCode}\". Invite your friends to Spicy Guitar Academy and earn more Spicy Units",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: darkgrey, fontSize: 18),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Enter the email address of your friend and we'll send him/her an invitation email.",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: darkgrey, fontSize: 18),
-                      ),
 
+                      SizedBox(height: 30),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/imgs/icons/spicyunit.svg",
+                            width: 30,
+                            matchTextDirection: true,
+                          ),
+                          SizedBox(width: 7),
+                          Text(
+                            '${student.referralUnits} Spicy Units',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: brown),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Invitation Code',
+                            style: TextStyle(fontSize: 25),
+                          ),
+                          SizedBox(width: 7),
+                          student.referralCode == ''
+                              ? ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      loading(context, message: 'Requesting');
+                                      await student.requestReferralCode();
+                                      Navigator.pop(context);
+                                    } catch (e) {
+                                      Navigator.pop(context);
+                                      error(context, stripExceptions(e));
+                                    }
+                                  },
+                                  child: Text(
+                                    'Request Code',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              : TextButton(
+                                  child: Text(
+                                    '${student.referralCode}',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    FlutterClipboard.copy(
+                                            '${student.referralCode}')
+                                        .then(
+                                      (value) => snackbar(
+                                        context,
+                                        "Invitation code copied!",
+                                        timeout: 10,
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ],
+                      ),
+                      SizedBox(height: 30),
+
+                      Text(
+                        "Hi ${student.firstname}, Enter the email address of your friend and we'll send him/her an invitation mail with your invite code.",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: darkgrey, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "You receive Spicy Units whenever your friend Subscribes or buys a Featured Course.",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: darkgrey, fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "You can use your Spicy Units to buy Featured Courses you find interesting.",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: darkgrey, fontSize: 18),
+                      ),
                       SizedBox(height: 30),
 
                       // text box for entering emails adresses
                       TextField(
-                          controller: _email,
-                          // autocorrect: true,
-                          autofocus: true,
-                          textInputAction: TextInputAction.done,
-                          // onSubmitted: (value) => _searchCourses(value),
-                          style: TextStyle(fontSize: 20.0, color: brown),
-                          decoration: InputDecoration(
-                            hintText: "Email Address",
-                          )),
+                        controller: _email,
+                        autofocus: false,
+                        textInputAction: TextInputAction.done,
+                        style: TextStyle(fontSize: 20.0, color: brown),
+                        decoration: InputDecoration(
+                          hintText: "Email Address",
+                        ),
+                      ),
+
+                      SizedBox(height: 30),
 
                       // invite btn
                       Container(
-                        alignment: Alignment.centerRight,
-                        height: 100,
-                        margin: EdgeInsets.only(top: 20, left: 2, bottom: 10),
-                        child: MaterialButton(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
+                        width: screen(context).width,
+                        height: 60,
+                        child: ElevatedButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/imgs/icons/invite_friend_icon.svg",
+                                matchTextDirection: true,
+                                color: white,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "invite friend",
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
                           onPressed: () async {
                             try {
                               loading(context, message: 'Sending');
@@ -129,29 +204,16 @@ class InviteFriendState extends State<InviteFriend> {
                               error(context, stripExceptions(e));
                             }
                           },
-                          color: Colors.white,
-                          textColor: brown,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(20.0),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SvgPicture.asset(
-                                "assets/imgs/icons/invite_friend_icon.svg",
-                                matchTextDirection: true,
-                              ),
-                              Text("invite friend",
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w600)),
-                            ],
-                          ),
                         ),
                       ),
-                    ]))
-              ]))));
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
     });
   }
 }

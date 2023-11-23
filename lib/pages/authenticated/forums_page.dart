@@ -29,7 +29,8 @@ class ForumsPageState extends State<ForumsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            strokeWidth: 5.0,
+            // strokeWidth: 5.0,
+            valueColor: new AlwaysStoppedAnimation<Color>(darkbrown),
           ),
           SizedBox(width: 10),
           Text('Loading messages...')
@@ -97,7 +98,6 @@ class ForumsPageState extends State<ForumsPage> {
       Student student, Forum forum, StudentStudyStatistics studentStats) async {
     try {
       loading(context);
-      print(replyId);
       await forum.submitMessage(
           studentStats, _message.text, replyId.toString());
       await loadForumMessages(student, forum, studentStats);
@@ -132,7 +132,7 @@ class ForumsPageState extends State<ForumsPage> {
       who = 'me';
     } else {
       if (comment['is_admin'] == '1') {
-        name = comment['tutor']['name'];
+        name = "Admin"; // comment['tutor']['name'];
         avatar = comment['tutor']['avatar'];
         who = 'tutor';
       } else {
@@ -324,50 +324,51 @@ class ForumsPageState extends State<ForumsPage> {
             builder: (BuildContext context, studentStats, child) {
           return Consumer<Forum>(builder: (BuildContext context, forum, child) {
             return new Scaffold(
+              backgroundColor: grey,
+              appBar: AppBar(
+                toolbarHeight: 70,
+                iconTheme: IconThemeData(color: brown),
                 backgroundColor: grey,
-                appBar: AppBar(
-                  toolbarHeight: 70,
-                  iconTheme: IconThemeData(color: brown),
-                  backgroundColor: grey,
-                  centerTitle: true,
-                  title: Text(
-                    'Forums',
-                    style: TextStyle(
-                        color: brown,
-                        fontSize: 30,
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.normal),
-                  ),
-                  bottom: PreferredSize(
-                      preferredSize: Size.fromHeight(100),
-                      child: Container(
-                        width: screen(context).width,
-                        decoration: new BoxDecoration(
-                          color: darkbrown,
-                          // borderRadius:
-                          //     BorderRadius.all(Radius.circular(5)),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10.0,
-                                spreadRadius: 3.0)
-                          ],
-                        ),
-                        child: Text(
-                          forumSubtitle(studentSubscription, studentStats),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontFamily: "Poppins",
-                              fontWeight: FontWeight.normal),
-                        ),
-                      )),
-                  elevation: 0,
+                centerTitle: true,
+                title: Text(
+                  'Forums',
+                  style: TextStyle(
+                      color: brown,
+                      fontSize: 30,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.normal),
                 ),
-                body: Stack(
-                  children: <Widget>[
-                    Column(children: <Widget>[
+                bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(100),
+                    child: Container(
+                      width: screen(context).width,
+                      decoration: new BoxDecoration(
+                        color: darkbrown,
+                        // borderRadius:
+                        //     BorderRadius.all(Radius.circular(5)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10.0,
+                              spreadRadius: 3.0)
+                        ],
+                      ),
+                      child: Text(
+                        forumSubtitle(studentSubscription, studentStats),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontFamily: "Poppins",
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )),
+                elevation: 0,
+              ),
+              body: Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
                       Flexible(
                         child: ListView(
                           addAutomaticKeepAlives: true,
@@ -519,9 +520,11 @@ class ForumsPageState extends State<ForumsPage> {
                                 ),
                               ),
                             ),
-                    ]),
-                  ],
-                ));
+                    ],
+                  ),
+                ],
+              ),
+            );
           });
         });
       });

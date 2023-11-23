@@ -89,7 +89,18 @@ class Student extends ChangeNotifier {
         isNewStudent = false;
         hasForgottenPassword = false;
 
-        await cacheSigninData();
+        final SharedPreferences prefs = await _prefs;
+        prefs.setString('id', id!);
+        prefs.setString('firstname', firstname!);
+        prefs.setString('lastname', lastname!);
+        prefs.setString('email', email!);
+        prefs.setString('telephone', telephone!);
+        prefs.setString('avatar', avatar!);
+        prefs.setString('referralCode', referralCode!);
+        prefs.setInt('referralUnits', referralUnits!);
+        prefs.setString('status', status!);
+        prefs.setString('token', Auth.token!);
+        prefs.setBool('authenticated', Auth.authenticated!);
 
         notifyListeners();
       } else {
@@ -177,7 +188,9 @@ class Student extends ChangeNotifier {
 
     if (resp['status'] == true) {
       email = _email;
-      await cacheSigninData();
+
+      final SharedPreferences prefs = await _prefs;
+      prefs.setString('email', email!);
     }
 
     notifyListeners();
@@ -208,9 +221,9 @@ class Student extends ChangeNotifier {
     try {
       final SharedPreferences prefs = await _prefs;
       Auth.authenticated = prefs.getBool('authenticated') ?? false;
-      // Auth.token = prefs.getString('token');
 
       if (Auth.authenticated == true) {
+        Auth.token = prefs.getString('token');
         firstname = prefs.getString('firstname');
       }
 
@@ -227,6 +240,8 @@ class Student extends ChangeNotifier {
       Auth.authenticated = prefs.getBool('authenticated') ?? false;
 
       if (Auth.authenticated == true) {
+        await getProfile();
+
         id = prefs.getString('id');
         firstname = prefs.getString('firstname');
         lastname = prefs.getString('lastname');
@@ -249,8 +264,65 @@ class Student extends ChangeNotifier {
     }
   }
 
+  Future requestReferralCode() async {
+    try {
+      var resp = await request('/api/student/request-referral-code', headers: {
+        'JWToken': Auth.token!,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+
+      if (resp['status'] == true) {
+        final SharedPreferences prefs = await _prefs;
+        referralCode = resp['data']['referral_code'];
+        prefs.setString('referralCode', referralCode!);
+
+        notifyListeners();
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future getProfile() async {
+    try {
+      var resp = await request('/api/student/profile', headers: {
+        'JWToken': Auth.token!,
+        'cache-control': 'max-age=0, must-revalidate'
+      });
+
+      if (resp['status'] == true) {
+        var student = resp['data'];
+
+        id = student['id'];
+        firstname = student['firstname'];
+        lastname = student['lastname'];
+        email = student['email'];
+        telephone = student['telephone'];
+        avatar = student['avatar'];
+        referralCode = student['referral_code'] ?? '';
+        referralUnits = int.parse(student['referral_units']);
+        status = student['status'];
+
+        final SharedPreferences prefs = await _prefs;
+        prefs.setString('id', id!);
+        prefs.setString('firstname', firstname!);
+        prefs.setString('lastname', lastname!);
+        prefs.setString('email', email!);
+        prefs.setString('telephone', telephone!);
+        prefs.setString('avatar', avatar!);
+        prefs.setString('referralCode', referralCode!);
+        prefs.setInt('referralUnits', referralUnits!);
+        prefs.setString('status', status!);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future cacheSigninData() async {
-    // store user data in sharedpreference
+    //? store user data in sharedpreference
     final SharedPreferences prefs = await _prefs;
     prefs.setString('id', id!);
     prefs.setString('firstname', firstname!);

@@ -57,7 +57,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       style: TextStyle(fontSize: 20.0, color: brown),
                       decoration: InputDecoration(
                           labelText: "Email Address",
-                          hintText: "yourname@domain.com"),
+                          hintText: "email@address.com"),
                     ),
 
                     SizedBox(height: 40.0),
@@ -91,7 +91,7 @@ class ForgotPasswordPageState extends State<ForgotPasswordPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: 'Request failed');
+      error(context, stripExceptions(e));
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spicyguitaracademy_app/providers/Course.dart';
 import 'package:spicyguitaracademy_app/providers/Courses.dart';
 import 'package:spicyguitaracademy_app/providers/Lessons.dart';
 import 'package:spicyguitaracademy_app/providers/StudentAssignments.dart';
@@ -71,7 +72,13 @@ class FeaturedCoursesState extends State<FeaturedCourses> {
       ),
     ));
 
+    Iterable<int?> listOfBoughtCoursesId;
+    listOfBoughtCoursesId =
+        courses.boughtCourses.map((Course course) => course.id);
+
     courses.featuredCourses.forEach((course) {
+      course.status = listOfBoughtCoursesId.contains(course.id);
+
       vids.add(renderCourse(course, context, () async {
         try {
           loading(context);

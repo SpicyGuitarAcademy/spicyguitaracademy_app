@@ -24,56 +24,95 @@ class VerifyPageState extends State<VerifyPage> {
   Widget build(BuildContext context) {
     return Consumer<Student>(builder: (BuildContext context, student, child) {
       return Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 70,
-            iconTheme: IconThemeData(color: brown),
-            backgroundColor: grey,
-            centerTitle: true,
-            title: Text(
-              'Verify Email',
-              style: TextStyle(
-                  color: brown,
-                  fontSize: 30,
-                  fontFamily: "Poppins",
-                  fontWeight: FontWeight.normal),
-            ),
-            elevation: 0,
+        appBar: AppBar(
+          toolbarHeight: 70,
+          iconTheme: IconThemeData(color: brown),
+          backgroundColor: grey,
+          centerTitle: true,
+          title: Text(
+            'Verify Email',
+            style: TextStyle(
+                color: brown,
+                fontSize: 30,
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.normal),
           ),
-          body: SafeArea(
-              minimum: EdgeInsets.all(5.0),
-              child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                    SizedBox(height: 40.0),
+          elevation: 0,
+        ),
+        body: SafeArea(
+          minimum: EdgeInsets.all(5.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 40.0),
 
-                    Text(
-                        'A 6 digit verification token has been sent to your email.'),
-                    SizedBox(height: 20.0),
+                Text(
+                    'A 6 digit verification token has been sent to your email.'),
+                SizedBox(height: 20.0),
 
-                    // Email field
-                    TextField(
-                      controller: _token,
-                      autofocus: true,
-                      textInputAction: TextInputAction.next,
-                      style: TextStyle(fontSize: 20.0, color: brown),
-                      decoration: InputDecoration(
-                          labelText: "Authentication Token",
-                          hintText: "******"),
+                // Email field
+                TextField(
+                  controller: _token,
+                  autofocus: true,
+                  textInputAction: TextInputAction.next,
+                  style: TextStyle(fontSize: 20.0, color: brown),
+                  decoration: InputDecoration(
+                      labelText: "Authentication Token", hintText: "******"),
+                ),
+
+                SizedBox(height: 40.0),
+
+                Container(
+                  width: screen(context).width,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      verify(student);
+                    },
+                    child: Text("Verify"),
+                  ),
+                ),
+
+                SizedBox(height: 10),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Didn't get the token?"),
+                        TextButton(
+                            onPressed: () async {
+                              try {
+                                loading(context);
+                                await student.forgotPassword(student.email!);
+                                Navigator.pop(context);
+                              } catch (e) {
+                                Navigator.pop(context);
+                                error(context, stripExceptions(e));
+                              }
+                            },
+                            child: Text('Resend'))
+                      ],
                     ),
-
-                    SizedBox(height: 40.0),
-
-                    Container(
-                      width: MediaQuery.of(context).copyWith().size.width,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          verify(student);
-                        },
-                        child: Text("Verify"),
-                      ),
-                    ),
-                  ]))));
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Need Assistance?"),
+                        TextButton(
+                            onPressed: () =>
+                                {Navigator.pushNamed(context, '/contactus')},
+                            child: Text('Contact us'))
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      );
     });
   }
 
@@ -110,7 +149,7 @@ class VerifyPageState extends State<VerifyPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: 'Verification failed');
+      error(context, stripExceptions(e));
     }
   }
 }

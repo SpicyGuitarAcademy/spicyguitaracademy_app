@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-// const String baseUrl = "https://spicyguitaracademy.com";
-const String baseUrl = "https://test.spicyguitaracademy.com";
+const String baseUrl = "https://spicyguitaracademy.com";
+// const String baseUrl = "https://test.spicyguitaracademy.com";
 // const String baseUrl = "http://10.0.2.2/sga_web";
+
 // const String baseUrl = "http://192.168.43.163/sga_web";
 
 const String appName = "Spicy Guitar Academy";

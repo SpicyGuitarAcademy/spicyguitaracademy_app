@@ -164,7 +164,7 @@ class EditPasswordPageState extends State<EditPasswordPage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: "Update password failed");
+      error(context, stripExceptions(e));
     }
   }
 }

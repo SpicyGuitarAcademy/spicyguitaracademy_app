@@ -12,7 +12,30 @@ enum LessonSource { free, featured, normal }
 class Lessons extends ChangeNotifier {
   List<Lesson>? courseLessons = [];
   List<Lesson>? freeLessons = [];
+  List<Lesson>? allLessons = [];
+  List<Lesson>? studyingCateogryLessons = [];
   LessonSource? source;
+
+  Future getAllLessons() async {
+    try {
+      var resp =
+          await request('/api/student/alllessons', method: 'GET', headers: {
+        // 'JWToken': Auth.token!,
+        'cache-control': 'public, max-age=2592000, must-revalidate'
+      });
+      List<dynamic> lessons = resp['data'] ?? [];
+      allLessons = [];
+      lessons.forEach((lesson) {
+        allLessons?.add(Lesson.fromJson(lesson));
+      });
+
+      notifyListeners();
+    } on AuthException catch (e) {
+      throw (e);
+    } catch (e) {
+      throw (e);
+    }
+  }
 
   Future getFreeLessons() async {
     try {

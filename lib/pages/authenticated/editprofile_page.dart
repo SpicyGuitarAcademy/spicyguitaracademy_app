@@ -157,7 +157,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (e) {
       Navigator.pop(context);
-      error(context, stripExceptions(e), title: "Profile update failed");
+      error(context, stripExceptions(e));
     }
   }
 }

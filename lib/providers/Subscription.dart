@@ -32,6 +32,70 @@ class Subscription extends ChangeNotifier {
     }
   }
 
+  Future completeSubscriptionPaymentWithSpicyUnits(String selectedPlan,
+      Student student, StudentSubscription studentSubscription) async {
+    try {
+      var resp = await request(
+        '/api/subscription/spicyunits/complete-subscription',
+        method: 'POST',
+        body: {'email': student.email, 'plan': selectedPlan},
+        headers: {
+          'JWToken': Auth.token!,
+          'cache-control': 'max-age=0, must-revalidate'
+        },
+      );
+
+      if (resp['status'] == true) {
+        subscriptionPaymentStatus = true;
+
+        // update spicy units
+        await student.getProfile();
+
+        // get subscription status again
+        await studentSubscription.getStudentSubscriptionStatus();
+      } else {
+        subscriptionPaymentStatus = false;
+      }
+
+      notifyListeners();
+
+      return resp;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future completeFeaturedPaymentWithSpicyUnits(
+      Course course, Student student, Courses courses) async {
+    try {
+      var resp = await request(
+        '/api/subscription/spicyunits/complete-featured',
+        method: 'POST',
+        body: {'email': student.email, 'course': course.id.toString()},
+        headers: {
+          'JWToken': Auth.token!,
+          'cache-control': 'max-age=0, must-revalidate'
+        },
+      );
+
+      if (resp['status'] == true) {
+        featuredPaymentStatus = true;
+
+        // update spicy units
+        await student.getProfile();
+
+        // get bought courses again
+        courses.getBoughtCourses();
+      } else {
+        featuredPaymentStatus = false;
+      }
+
+      return resp;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future initiateFeaturedPayment(
       Course course, Student student, String medium) async {
     try {
